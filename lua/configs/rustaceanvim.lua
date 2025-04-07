@@ -6,6 +6,7 @@ local this_os = vim.uv.os_uname().sysname;
 
 -- The path is different on Windows
 if this_os:find "Windows" then
+  local win_path = os.getenv("UserProfile") .. "\\.vscode\\extensions\\vadimcn.vscode-lldb-1.11.4\\"
   codelldb_path = extension_path .. "adapter\\codelldb.exe"
   liblldb_path = extension_path .. "lldb\\bin\\liblldb.dll"
 else
@@ -13,7 +14,7 @@ else
   liblldb_path = liblldb_path .. (this_os == "Linux" and ".so" or ".dylib")
 end
 
-  local cfg = require('rustaceanvim.config')
+local cfg = require('rustaceanvim.config')
 
 vim.g.rustaceanvim = {
   -- Plugin configuration
