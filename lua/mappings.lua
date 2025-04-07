@@ -114,7 +114,7 @@ end
 local toggle_modes = {'n', 't'}
 local mappings = {
   -- General
-  { 'v', "<M-c>", '"*y', "Copy"}, -- It's for MacOS
+  --{ 'v', "<M-c>", '"*y', "Copy"}, -- It's for MacOS
   { 'v', "<C-c>", '"*y', "Copy"},
   { 'i', "<C-v>", "<C-r>+", "Paste" },
   -- save
@@ -152,7 +152,7 @@ local mappings = {
 
 for _, mapping in ipairs(mappings) do
   local opts = { noremap = true, silent = true, desc = mapping[4] }
-  vim.keymap.set(mapping[1], mapping[2], mapping[3], opts)
+  map(mapping[1], mapping[2], mapping[3], opts)
 end
 
 --[[
