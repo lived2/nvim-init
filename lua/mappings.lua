@@ -54,6 +54,14 @@ if vim.g.neovide then
   map({'n', 'i'}, '<ScrollWheelUp>', '<ScrollWheelUp>')
 end
 ]]
+-- MacOS
+--[[
+map('v', "<M-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
+map('v', "<D-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
+if vim.g.neovide then
+  map('i', "<D-v>", "<C-r>+", { desc = "Paste" }) -- It's for MacOS
+end
+]]
 -- Key mapping END
 
 
@@ -122,7 +130,9 @@ end
 local toggle_modes = {'n', 't'}
 local mappings = {
   -- General
-  --{ 'v', "<M-c>", '"*y', "Copy"}, -- It's for MacOS
+  --{ 'v', "<M-c>", '"*y', "Copy"},      -- It's for MacOS
+  --{ 'v', "<D-c>", '"*y', "Copy"},      -- It's for MacOS
+  --{ 'i', "<D-v>", "<C-r>+", "Paste" }, -- It's for MacOS
   { 'v', "<C-c>", '"*y', "Copy"},
   { 'i', "<C-v>", "<C-r>+", "Paste" },
   -- save
