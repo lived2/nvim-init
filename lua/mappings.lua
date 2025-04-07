@@ -5,7 +5,7 @@ require "nvchad.mappings"
 local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
-map("i", "jk", "<ESC>")
+--map("i", "jk", "<ESC>")
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 --
@@ -23,17 +23,23 @@ map("i", "<F3>", '<ESC><cmd>:lua ReduceLSPDiag()<CR>a')
 map("n", "<F4>", ':Outline<CR>')
 map("i", "<F4>", '<ESC>:Outline<CR>')
 
-map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
-map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
+if vim.bo.filetype == 'rust' then
+  map("n", "<F5>", ':RustLsp debuggables ')
+  map("i", "<F5>", '<ESC>:w!<CR>:RustLsp debuggables ')
+  map("n", "<F9>", ':RustLsp runnables ')
+  map("i", "<F9>", '<ESC>:w!<CR>:RustLsp runnables ')
+else
+  map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
+  map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
+  map("n", "<F9>", '<cmd>:lua Run()<CR>')
+  map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
+end
 
 map("n", "<F6>", ':DapToggleBreakpoint<CR>')
 map("i", "<F6>", '<ESC>:DapToggleBreakpoint<CR>')
 
 map("n", "<F7>", ':DapTerminate<CR>')
 map("n", "<F8>", ':DapStepOver<CR>')
-
-map("n", "<F9>", '<cmd>:lua Run()<CR>')
-map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
 
 map('n', '<F10>', ':w!<CR>')
 map('i', '<F10>', '<ESC>:w!<CR>')
@@ -82,10 +88,11 @@ function RunDebugPython()
 end
 
 function RunDebug()
-  if vim.bo.filetype == 'rust' then
+  --if vim.bo.filetype == 'rust' then
     --vim.cmd.RustLsp('debug')
-    vim.cmd.RustLsp('debuggables')
-  elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+    --vim.cmd.RustLsp('debuggables')
+  --else
+  if vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     local bin = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
     local cmd = "!cp target/debug/" .. bin .. " ."
     vim.cmd('!cd target/debug ; make -j4')
@@ -99,11 +106,12 @@ function RunDebug()
 end
 
 function Run()
-  if vim.bo.filetype == 'rust' then
+  --if vim.bo.filetype == 'rust' then
     --vim.cmd.RustLsp('run')
-    vim.cmd.RustLsp('runnables')
+    --vim.cmd.RustLsp('runnables')
     --vim.cmd('!cargo run')
-  elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+  --else
+  if vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     vim.cmd('!cd target/debug ; make -j4 ; ./run.sh')
   elseif vim.bo.filetype == 'python' then
     vim.cmd('!python3 %')
@@ -118,7 +126,8 @@ local mappings = {
   { 'v', "<C-c>", '"*y', "Copy"},
   { 'i', "<C-v>", "<C-r>+", "Paste" },
   -- save
-  { 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
+  {{ "n", "i", "v" }, "<C-s>", "<cmd> w <CR>", "Save file" },
+  --{ 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
 
   { 'n', "<C-c>", '"*y', "Copy" },
   { 'n', "<C-F11>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
