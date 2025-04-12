@@ -28,6 +28,11 @@ if vim.bo.filetype == 'rust' then
   map("i", "<F5>", '<ESC>:w!<CR>:RustLsp debuggables ')
   map("n", "<F9>", ':RustLsp runnables ')
   map("i", "<F9>", '<ESC>:w!<CR>:RustLsp runnables ')
+elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+  map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
+  map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
+  map("n", "<F9>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
+  map("i", "<F9>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
 else
   map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
   map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
@@ -119,9 +124,10 @@ function Run()
     --vim.cmd.RustLsp('runnables')
     --vim.cmd('!cargo run')
   --else
-  if vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-    vim.cmd('!cd target/debug ; make -j4 ; ./run.sh')
-  elseif vim.bo.filetype == 'python' then
+  --if vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+  --  vim.cmd('!cd target/debug ; make -j4 ; ./run.sh')
+  --else
+  if vim.bo.filetype == 'python' then
     vim.cmd('!python3 %')
   end
 end
