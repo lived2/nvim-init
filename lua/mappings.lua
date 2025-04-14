@@ -52,21 +52,18 @@ map('i', '<F10>', '<ESC>:w!<CR>')
 map('n', '<F12>', ':qall<CR>')
 map('i', '<F12>', '<ESC>:qall<CR>')
 
--- Scroll reverse for MacBook only
---[[
+-- MacOS Start
+--map('v', "<M-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
+--map('v', "<D-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
+-- MacOS End
+
 if vim.g.neovide then
-  map({'n', 'i'}, '<ScrollWheelDown>', '<ScrollWheelDown>')
-  map({'n', 'i'}, '<ScrollWheelUp>', '<ScrollWheelUp>')
-end
-]]
--- MacOS
---[[
-map('v', "<M-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
-map('v', "<D-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
-]]
-if vim.g.neovide then
-  map({'n', 'i', 'c'}, "<D-v>", "<C-r>+", { desc = "Paste" })
-  map({'n', 'i', 'c'}, "<C-v>", "<C-r>+", { desc = "Paste" })
+  -- Scroll reverse for MacBook only [Start]
+  --map({'n', 'i'}, '<ScrollWheelDown>', '<ScrollWheelDown>')
+  --map({'n', 'i'}, '<ScrollWheelUp>', '<ScrollWheelUp>')
+  -- Scroll reverse for MacBook only [End]
+  map({'n', 'i', 'c'}, "<D-v>", "<C-r>+", { desc = "Paste" }) -- CMD-V in MacOS
+  map({'n', 'i', 'c'}, "<C-v>", "<C-r>+", { desc = "Paste" }) -- Ctrl-V
 end
 -- Key mapping END
 
