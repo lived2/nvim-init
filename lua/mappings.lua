@@ -63,10 +63,11 @@ end
 --[[
 map('v', "<M-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
 map('v', "<D-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
-if vim.g.neovide then
-  map('i', "<D-v>", "<C-r>+", { desc = "Paste" }) -- It's for MacOS
-end
 ]]
+if vim.g.neovide then
+  map({'n', 'i', 'c'}, "<D-v>", "<C-r>+", { desc = "Paste" })
+  map({'n', 'i', 'c'}, "<C-v>", "<C-r>+", { desc = "Paste" })
+end
 -- Key mapping END
 
 
