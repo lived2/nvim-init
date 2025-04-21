@@ -23,19 +23,15 @@ map("i", "<F3>", '<ESC><cmd>:lua ReduceLSPDiag()<CR>a')
 map("n", "<F4>", ':Outline<CR>')
 map("i", "<F4>", '<ESC>:Outline<CR>')
 
+map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
+map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
 if vim.bo.filetype == 'rust' then
-  map("n", "<F5>", ':RustLsp debuggables ')
-  map("i", "<F5>", '<ESC>:w!<CR>:RustLsp debuggables ')
   map("n", "<F9>", ':RustLsp runnables ')
   map("i", "<F9>", '<ESC>:w!<CR>:RustLsp runnables ')
 elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-  map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
-  map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
   map("n", "<F9>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
   map("i", "<F9>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
 else
-  map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
-  map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
   map("n", "<F9>", '<cmd>:lua Run()<CR>')
   map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
 end
@@ -99,15 +95,16 @@ function RunDebugPython()
 end
 
 function RunDebug()
-  --if vim.bo.filetype == 'rust' then
+  if vim.bo.filetype == 'rust' then
     --vim.cmd.RustLsp('debug')
     --vim.cmd.RustLsp('debuggables')
-  --else
-  if vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-    local bin = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-    local cmd = "!cp target/debug/" .. bin .. " ."
+    vim.cmd('!cargo build')
+    vim.cmd('DapContinue')
+  elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+    --local bin = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+    --local cmd = "!cp target/debug/" .. bin .. " ."
     vim.cmd('!cd target/debug ; make -j4')
-    vim.cmd(cmd)
+    --vim.cmd(cmd)
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'python' then
     RunDebugPython()

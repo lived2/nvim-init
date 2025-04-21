@@ -122,6 +122,9 @@ return {
         "codelldb",
       },
     },
+    config = function()
+      return require "configs.mason-nvim-dap"
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter",
