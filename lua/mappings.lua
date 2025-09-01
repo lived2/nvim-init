@@ -3,6 +3,7 @@ require "nvchad.mappings"
 -- add yours here
 
 local map = vim.keymap.set
+local autocmd = vim.api.nvim_create_autocmd
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 --map("i", "jk", "<ESC>")
@@ -25,17 +26,6 @@ map("i", "<F4>", '<ESC>:Outline<CR>')
 
 map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
 map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
-if vim.bo.filetype == 'rust' then
-  map("n", "<F9>", ':RustLsp runnables ')
-  map("i", "<F9>", '<ESC>:w!<CR>:RustLsp runnables ')
-elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-  map("n", "<F9>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
-  map("i", "<F9>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
-else
-  map("n", "<F9>", '<cmd>:lua Run()<CR>')
-  map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
-end
-
 map("n", "<F6>", ':DapToggleBreakpoint<CR>')
 map("i", "<F6>", '<ESC>:DapToggleBreakpoint<CR>')
 
@@ -126,6 +116,21 @@ function Run()
     vim.cmd('!python3 %')
   end
 end
+
+autocmd('BufEnter', {
+  callback = function()
+    if vim.bo.filetype == 'rust' then
+      map("n", "<F9>", ':RustLsp runnables ')
+      map("i", "<F9>", '<ESC>:w!<CR>:RustLsp runnables ')
+    elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+      map("n", "<F9>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
+      map("i", "<F9>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
+    else
+      map("n", "<F9>", '<cmd>:lua Run()<CR>')
+      map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
+    end
+  end
+})
 
 
 local toggle_modes = {'n', 't'}
