@@ -155,9 +155,10 @@ local function open_nvim_tree(data)
   local directory = vim.fn.isdirectory(data.file) == 1
 
   -- buffer is a [No Name]
-  local no_name = data.file == "" and vim.bo[data.buf].buftype == ""
+  --local no_name = data.file == "" and vim.bo[data.buf].buftype == ""
 
-  if not directory and not no_name then
+  --if not directory and not no_name then
+  if not directory then
     return
   end
   if vim.g.neovide then
