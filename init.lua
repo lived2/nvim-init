@@ -51,6 +51,7 @@ LspDiagReduced = 0
 -- (happens when dropping a file on gvim) and for a commit message (it's
 -- likely a different one than last time).
 local autocmd = vim.api.nvim_create_autocmd
+local map = vim.keymap.set
 
 -- adapted from https://github.com/ethanholz/nvim-lastplace/blob/main/lua/nvim-lastplace/init.lua
 local ignore_buftype = { "quickfix", "nofile", "help" }
@@ -101,6 +102,17 @@ autocmd({'BufWinEnter', 'FileType'}, {
 
 autocmd('BufEnter', {
   callback = function()
+    if vim.bo.filetype == 'rust' then
+      map("n", "<F9>", ':RustLsp runnables ')
+      map("i", "<F9>", '<ESC>:w!<CR>:RustLsp runnables ')
+    elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+      map("n", "<F9>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
+      map("i", "<F9>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
+    else
+      map("n", "<F9>", '<cmd>:lua Run()<CR>')
+      map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
+    end
+
     if vim.bo.filetype == "rust" or vim.bo.filetype == "cpp" then
       opt.shiftwidth = 4
       opt.tabstop = 4
