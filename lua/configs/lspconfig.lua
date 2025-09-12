@@ -35,6 +35,12 @@ lspconfig.clangd.setup {
   filetypes = {"cpp","c"},
 }
 
+lspconfig.gopls.setup({
+  on_attach = nvlsp.on_attach,
+  capabilities = nvlsp.capabilities,
+  filetypes = {"go"},
+})
+
 lspconfig.pyright.setup({
   on_attach = nvlsp.on_attach,
   capabilities = nvlsp.capabilities,
