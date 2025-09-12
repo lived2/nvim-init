@@ -39,8 +39,10 @@ map('n', '<F12>', ':qall<CR>')
 map('i', '<F12>', '<ESC>:qall<CR>')
 
 -- MacOS Start
---map('v', "<M-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
---map('v', "<D-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
+if vim.loop.os_uname().sysname == 'Darwin' then
+  map('v', "<M-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
+  map('v', "<D-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
+end
 -- MacOS End
 
 if vim.g.neovide then
