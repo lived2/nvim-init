@@ -108,9 +108,15 @@ autocmd('BufEnter', {
     elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
       map("n", "<F9>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
       map("i", "<F9>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
+    elseif vim.bo.filetype == 'go' then
+      map("n", "<F9>", "':!go run ' . expand('%') . ' '", { expr=true })
+      map("i", "<F9>", "'<ESC>:!go run  ' . expand('%') . ' '", { expr=true })
+    elseif vim.bo.filetype == 'python' then
+      map("n", "<F9>", "':!python ' . expand('%') . ' '", { expr=true })
+      map("i", "<F9>", "'<ESC>:!python ' . expand('%') . ' '", { expr=true })
     else
-      map("n", "<F9>", '<cmd>:lua Run()<CR>')
-      map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
+      --map("n", "<F9>", '<cmd>:lua Run()<CR>')
+      --map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
     end
 
     if vim.bo.filetype == "rust" or vim.bo.filetype == "cpp" then

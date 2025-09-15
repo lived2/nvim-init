@@ -105,6 +105,7 @@ function RunDebug()
   end
 end
 
+--[[
 function Run()
   --if vim.bo.filetype == 'rust' then
     --vim.cmd.RustLsp('run')
@@ -116,8 +117,11 @@ function Run()
   --else
   if vim.bo.filetype == 'python' then
     vim.cmd('!python3 %')
+  elseif vim.bo.filetype == 'go' then
+    vim.cmd('!go run %')
   end
 end
+]]
 
 autocmd('BufEnter', {
   callback = function()
