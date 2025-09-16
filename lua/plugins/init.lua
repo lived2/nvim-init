@@ -99,6 +99,16 @@ return {
     --end,
   },
   {
+    "leoluz/nvim-dap-go",
+    ft = "go",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    init = function()
+      return require "configs.dap_go_config"
+    end,
+  },
+  {
     "rcarriga/nvim-dap-ui",
     event = "VeryLazy",
     dependencies = {
