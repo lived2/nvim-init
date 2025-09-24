@@ -43,6 +43,7 @@ local opt = vim.opt
 opt.clipboard = ""
 opt.wrapscan = false
 opt.scrolloff = 10
+opt.cinoptions = "l1,g0,:0,N-s"
 
 LspDiagReduced = 0
 -- ---
@@ -119,7 +120,8 @@ autocmd('BufEnter', {
       --map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
     end
 
-    if vim.bo.filetype == "rust" or vim.bo.filetype == "cpp" then
+    --if vim.bo.filetype == "rust" or vim.bo.filetype == "cpp" then
+    if vim.bo.filetype == "rust" then
       opt.shiftwidth = 4
       opt.tabstop = 4
       opt.softtabstop = 4
