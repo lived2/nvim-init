@@ -148,10 +148,17 @@ autocmd('BufEnter', {
   end
 })
 
+function string.starts(String,Start)
+  return string.sub(String, 1, string.len(Start)) == Start
+end
+
 autocmd("BufWritePre", {
   pattern = "*",
   callback = function(args)
-    require("conform").format { bufnr = args.buf }
+    local path = vim.fn.getcwd()
+    if string.starts(path, "/usr2/seonggoo/build/project/") then
+      require("conform").format { bufnr = args.buf }
+    end
   end,
 })
 
