@@ -43,6 +43,7 @@ local opt = vim.opt
 opt.clipboard = ""
 opt.wrapscan = false
 opt.scrolloff = 10
+opt.expandtab = true
 opt.cinoptions = "l1,g0,:0,N-s"
 
 LspDiagReduced = 0
@@ -145,6 +146,13 @@ autocmd('BufEnter', {
     end
     --]]
   end
+})
+
+autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function(args)
+    require("conform").format { bufnr = args.buf }
+  end,
 })
 
 autocmd('BufReadPost', {
