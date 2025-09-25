@@ -152,12 +152,20 @@ function string.starts(String,Start)
   return string.sub(String, 1, string.len(Start)) == Start
 end
 
+local private_paths = {
+  "/Users/lived/project/",
+  "/usr2/seonggoo/build/project/",
+}
+
 autocmd("BufWritePre", {
   pattern = "*",
   callback = function(args)
-    local path = vim.fn.getcwd()
-    if string.starts(path, "/usr2/seonggoo/build/project/") then
-      require("conform").format { bufnr = args.buf }
+    local cur_path = vim.fn.getcwd()
+    for _, path in ipairs(private_paths) do
+      if string.starts(cur_path, path) then
+        require("conform").format { bufnr = args.buf }
+        do return end
+      end
     end
   end,
 })
