@@ -138,7 +138,7 @@ local mappings = {
   { 'v', "<C-c>", '"*y', "Copy"},
   { 'i', "<C-v>", "<C-r>+", "Paste" },
   -- save
-  {{ "n", "i", "v" }, "<C-s>", "<cmd> w <CR>", "Save file" },
+  --{{ "n", "i", "v" }, "<C-s>", "<cmd> w <CR>", "Save file" },
   --{ 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
 
   { 'n', "<C-c>", '"*y', "Copy" },
