@@ -2,10 +2,12 @@
 require("nvchad.configs.lspconfig").defaults()
 vim.diagnostic.config({ update_in_insert = true })
 
-local lspconfig = require "lspconfig"
-
 -- EXAMPLE
-local servers = { "html", "cssls" }
+--local servers = { "html", "cssls" }
+local servers = { "clangd", "rust-analyzer", "gopls", "pyright" }
+vim.lsp.enable(servers)
+--[[
+local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
@@ -16,6 +18,7 @@ for _, lsp in ipairs(servers) do
     capabilities = nvlsp.capabilities,
   }
 end
+]]
 
 -- configuring single server, example: typescript
 -- lspconfig.ts_ls.setup {
@@ -24,6 +27,7 @@ end
 --   capabilities = nvlsp.capabilities,
 -- }
 --
+--[[
 local on_attach = nvlsp.on_attach
 
 lspconfig.clangd.setup {
@@ -46,3 +50,4 @@ lspconfig.pyright.setup({
   capabilities = nvlsp.capabilities,
   filetypes = {"python"},
 })
+]]
