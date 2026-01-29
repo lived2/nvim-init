@@ -52,6 +52,10 @@ if vim.g.neovide then
   -- Scroll reverse for MacBook only [End]
   map({'n', 'i', 'c'}, "<D-v>", "<C-r>+", { desc = "Paste" }) -- CMD-V in MacOS
   map({'n', 'i', 'c'}, "<C-v>", "<C-r>+", { desc = "Paste" }) -- Ctrl-V
+  if vim.loop.os_uname().sysname == 'Darwin' then
+    map({'n', 'v'}, "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
+    map({'i'}, "<D-s>", "<ESC>:w<CR>", { desc = "Save file" })
+  end
 end
 -- Key mapping END
 
@@ -138,8 +142,8 @@ local mappings = {
   { 'v', "<C-c>", '"*y', "Copy"},
   { 'i', "<C-v>", "<C-r>+", "Paste" },
   -- save
-  --{{ "n", "i", "v" }, "<C-s>", "<cmd> w <CR>", "Save file" },
-  --{ 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
+  {{ 'n', 'v' }, "<C-s>", "<cmd> w <CR>", "Save file" },
+  { 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
 
   { 'n', "<C-c>", '"*y', "Copy" },
   { 'n', "<C-F11>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
@@ -175,6 +179,7 @@ for _, mapping in ipairs(mappings) do
   local opts = { noremap = true, silent = true, desc = mapping[4] }
   map(mapping[1], mapping[2], mapping[3], opts)
 end
+
 
 --[[
 local M = {}
