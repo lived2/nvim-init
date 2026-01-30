@@ -28,9 +28,16 @@ map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
 map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
 map("n", "<F6>", ':DapToggleBreakpoint<CR>')
 map("i", "<F6>", '<ESC>:DapToggleBreakpoint<CR>')
-
-map("n", "<F7>", ':DapTerminate<CR>')
-map("n", "<F8>", ':DapStepOver<CR>')
+map("n", "<F7>", ':DapStepOver<CR>')
+if vim.loop.os_uname().sysname == 'Darwin' and not vim.g.neovide then
+  map("n", "<F35>", ':DapStepInto<CR>')
+  map("n", "<F23>", ':DapStepOut<CR>')
+  map("n", "<F17>", ':DapTerminate<CR>')
+else
+  map("n", "<C-F11>", ':DapStepInto<CR>')
+  map("n", "<S-F11>", ':DapStepOut<CR>')
+  map("n", "<S-F5>", ':DapTerminate<CR>')
+end
 
 map('n', '<F10>', ':w!<CR>')
 map('i', '<F10>', '<ESC>:w!<CR>')
@@ -99,15 +106,20 @@ function RunDebugPython()
 end
 
 function RunDebug()
+  local dap_session = require("dap").status()
   if vim.bo.filetype == 'rust' then
     --vim.cmd.RustLsp('debug')
     --vim.cmd.RustLsp('debuggables')
-    vim.cmd('!cargo build')
+    if not dap_session then
+      vim.cmd('!cargo build')
+    end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     --local bin = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
     --local cmd = "!cp target/debug/" .. bin .. " ."
-    vim.cmd('!cd target/debug ; make -j4')
+    if not dap_session then
+      vim.cmd('!cd target/debug ; make -j4')
+    end
     --vim.cmd(cmd)
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'python' then
@@ -154,7 +166,8 @@ local mappings = {
   { 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
 
   { 'n', "<C-c>", '"*y', "Copy" },
-  { 'n', "<C-F11>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
+  --{ 'n', "<C-F11>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
+  { 'n', "<D-Enter>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
   { 'n', "<leader>fg", "<cmd> lua require'telescope.builtin'.live_grep({default_text = vim.fn.expand(\"<cword>\")})<CR>", "Live grep with cword" },
   { 'n', "<Leader>cf", "<cmd> echo expand('%:p') <CR>", "Current File Path" },
   -- close buffer + hide terminal buffer
