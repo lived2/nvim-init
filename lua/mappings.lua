@@ -26,18 +26,20 @@ map("i", "<F4>", '<ESC>:Outline<CR>')
 
 map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
 map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
-map("n", "<F6>", ':DapToggleBreakpoint<CR>')
-map("i", "<F6>", '<ESC>:DapToggleBreakpoint<CR>')
 map("n", "<F7>", ':DapStepOver<CR>')
 if not vim.g.neovide then
   map("n", "<F35>", ':DapStepInto<CR>')
   map("n", "<F23>", ':DapStepOut<CR>')
   map("n", "<F17>", ':DapTerminate<CR>')
+  map("n", "<F41>", '<cmd>:lua require("dap").restart()<CR>')
 else
   map("n", "<C-F11>", ':DapStepInto<CR>')
   map("n", "<S-F11>", ':DapStepOut<CR>')
   map("n", "<S-F5>", ':DapTerminate<CR>')
+  map("n", "<C-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
 end
+map("n", "<F9>", ':DapToggleBreakpoint<CR>')
+map("i", "<F9>", '<ESC>:DapToggleBreakpoint<CR>')
 
 map('n', '<F10>', ':w!<CR>')
 map('i', '<F10>', '<ESC>:w!<CR>')
