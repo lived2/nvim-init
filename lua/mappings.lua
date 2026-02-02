@@ -106,13 +106,10 @@ function RunDebugPython()
 end
 
 function RunDebug()
-  local dap_session = require("dap").status()
+  local dap_session = require("dap").session() ~= nil
   if vim.bo.filetype == 'rust' then
     --vim.cmd.RustLsp('debug')
     --vim.cmd.RustLsp('debuggables')
-    if not dap_session then
-      vim.cmd('!cargo build')
-    end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     --local bin = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
