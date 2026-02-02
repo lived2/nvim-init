@@ -112,12 +112,9 @@ function RunDebug()
     --vim.cmd.RustLsp('debuggables')
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-    --local bin = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-    --local cmd = "!cp target/debug/" .. bin .. " ."
     if not dap_session then
       vim.cmd('!cd target/debug ; make -j4')
     end
-    --vim.cmd(cmd)
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'python' then
     RunDebugPython()
