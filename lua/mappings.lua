@@ -31,12 +31,18 @@ if not vim.g.neovide then
   map("n", "<F35>", ':DapStepInto<CR>')
   map("n", "<F23>", ':DapStepOut<CR>')
   map("n", "<F17>", ':DapTerminate<CR>')
-  map("n", "<F41>", '<cmd>:lua require("dap").restart()<CR>')
+  if vim.loop.os_uname().sysname ~= 'Darwin' then
+    map("n", "<F41>", '<cmd>:lua require("dap").restart()<CR>')
+  end
 else
   map("n", "<C-F11>", ':DapStepInto<CR>')
   map("n", "<S-F11>", ':DapStepOut<CR>')
   map("n", "<S-F5>", ':DapTerminate<CR>')
-  map("n", "<C-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
+  if vim.loop.os_uname().sysname == 'Darwin' then
+    map("n", "<D-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
+  else
+    map("n", "<C-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
+  end
 end
 map("n", "<F9>", ':DapToggleBreakpoint<CR>')
 map("i", "<F9>", '<ESC>:DapToggleBreakpoint<CR>')

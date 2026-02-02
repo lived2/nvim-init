@@ -105,17 +105,17 @@ autocmd({'BufWinEnter', 'FileType'}, {
 autocmd('BufEnter', {
   callback = function()
     if vim.bo.filetype == 'rust' then
-      map("n", "<F9>", ':RustLsp runnables ')
-      map("i", "<F9>", '<ESC>:w!<CR>:RustLsp runnables ')
+      map("n", "<F6>", ':RustLsp runnables ')
+      map("i", "<F6>", '<ESC>:w!<CR>:RustLsp runnables ')
     elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-      map("n", "<F9>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
-      map("i", "<F9>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
+      map("n", "<F6>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
+      map("i", "<F6>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
     elseif vim.bo.filetype == 'go' then
-      map("n", "<F9>", "':!go run ' . expand('%') . ' '", { expr=true })
-      map("i", "<F9>", "'<ESC>:!go run  ' . expand('%') . ' '", { expr=true })
+      map("n", "<F6>", "':!go run ' . expand('%') . ' '", { expr=true })
+      map("i", "<F6>", "'<ESC>:!go run  ' . expand('%') . ' '", { expr=true })
     elseif vim.bo.filetype == 'python' then
-      map("n", "<F9>", "':!python ' . expand('%') . ' '", { expr=true })
-      map("i", "<F9>", "'<ESC>:!python ' . expand('%') . ' '", { expr=true })
+      map("n", "<F6>", "':!python ' . expand('%') . ' '", { expr=true })
+      map("i", "<F6>", "'<ESC>:!python ' . expand('%') . ' '", { expr=true })
     else
       --map("n", "<F9>", '<cmd>:lua Run()<CR>')
       --map("i", "<F9>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
