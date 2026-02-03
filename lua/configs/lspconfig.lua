@@ -4,7 +4,18 @@ vim.diagnostic.config({ update_in_insert = true })
 
 -- EXAMPLE
 --local servers = { "html", "cssls" }
-local servers = { "clangd", "rust-analyzer", "gopls", "pyright" }
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local servers = { 'clangd', 'rust-analyzer', 'gopls', 'pyright' }
+for _, lsp in ipairs(servers) do
+  vim.lsp.config(lsp, {
+    -- Server-specific settings. See `:help lsp-quickstart`
+    settings = {
+      [lsp] = {
+        capabilities = capabilities
+      },
+    },
+  })
+end
 vim.lsp.enable(servers)
 --[[
 local lspconfig = require "lspconfig"
