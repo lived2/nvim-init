@@ -108,8 +108,10 @@ autocmd('BufEnter', {
       map("n", "<F6>", ':RustLsp runnables ')
       map("i", "<F6>", '<ESC>:w!<CR>:RustLsp runnables ')
     elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-      map("n", "<F6>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
-      map("i", "<F6>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
+      --map("n", "<F6>", ':!cd target/debug ; make -j 4 ; ./run.sh ')
+      --map("i", "<F6>", '<ESC>:!cd target/debug ; make -j 4 ; ./run.sh ')
+      map("n", "<F6>", ':!cmake --build target/debug -j8 ; cd target/debug ; ./run.sh ')
+      map("i", "<F6>", '<ESC>:!cmake --build target/debug -j8 ; cd target/debug ; ./run.sh ')
     elseif vim.bo.filetype == 'go' then
       map("n", "<F6>", "':!go run ' . expand('%') . ' '", { expr=true })
       map("i", "<F6>", "'<ESC>:!go run  ' . expand('%') . ' '", { expr=true })

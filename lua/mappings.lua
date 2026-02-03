@@ -121,7 +121,7 @@ function RunDebug()
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     if not dap_session then
-      vim.cmd('!cd target/debug ; make -j4')
+      vim.cmd('!cmake --build target/debug -j8')
     end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'python' then
