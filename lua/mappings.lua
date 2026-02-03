@@ -152,10 +152,12 @@ function Run()
 end
 ]]
 
+--[[
 autocmd('BufEnter', {
   callback = function()
   end
 })
+]]
 
 
 local toggle_modes = {'n', 't'}
