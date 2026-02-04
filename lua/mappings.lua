@@ -115,6 +115,9 @@ end
 
 function RunDebug()
   local dap_session = require("dap").session() ~= nil
+  if not dap_session and vim.bo.modified then
+    vim.cmd('w')
+  end
   if vim.bo.filetype == 'rust' then
     --vim.cmd.RustLsp('debug')
     --vim.cmd.RustLsp('debuggables')
