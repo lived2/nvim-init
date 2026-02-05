@@ -159,32 +159,8 @@ function RunDebug()
   end
 end
 
---[[
-function Run()
-  --if vim.bo.filetype == 'rust' then
-    --vim.cmd.RustLsp('run')
-    --vim.cmd.RustLsp('runnables')
-    --vim.cmd('!cargo run')
-  --else
-  --if vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-  --  vim.cmd('!cd target/debug ; make -j4 ; ./run.sh')
-  --else
-  if vim.bo.filetype == 'python' then
-    vim.cmd('!python3 %')
-  elseif vim.bo.filetype == 'go' then
-    vim.cmd('!go run %')
-  end
-end
-]]
 
---[[
-autocmd('BufEnter', {
-  callback = function()
-  end
-})
-]]
-
-
+-----------------------------------------------------------------------------------------------------------------------------------------------------
 local toggle_modes = {'n', 't'}
 local mappings = {
   -- General
