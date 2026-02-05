@@ -26,6 +26,8 @@ map("i", "<F4>", '<ESC>:Outline<CR>')
 
 map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
 map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
+map("n", "<F6>", '<cmd>:lua Run()<CR>')
+map("i", "<F6>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
 map("n", "<F7>", ':DapStepOver<CR>')
 if not vim.g.neovide then
   map("n", "<F35>", ':DapStepInto<CR>')
@@ -102,6 +104,26 @@ function ReduceLSPDiag()
       signs = {severity = {min = vim.diagnostic.severity.ERROR}},
       underline = {severity = {min = vim.diagnostic.severity.ERROR}},
     })
+  end
+end
+
+function Run()
+  local dap_session = require("dap").session() ~= nil
+  if not dap_session and vim.bo.modified then
+    vim.cmd('w')
+  end
+  if dap_session then
+    return
+  end
+  local args = vim.fn.input("Arguments: ")
+  if vim.bo.filetype == 'rust' then
+    vim.cmd('RustLsp runnables ' .. args)
+  elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+    vim.cmd('!cmake --build target/debug -j8 ; cd target/debug ; ./run.sh ' .. args)
+  elseif vim.bo.filetype == 'go' then
+    vim.cmd('!go run % ' .. args)
+  elseif vim.bo.filetype == 'python' then
+    vim.cmd('!python % ' .. args)
   end
 end
 
