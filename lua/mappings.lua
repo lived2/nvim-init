@@ -123,7 +123,7 @@ function Run()
   elseif vim.bo.filetype == 'go' then
     vim.cmd('!go run % ' .. args)
   elseif vim.bo.filetype == 'python' then
-    vim.cmd('!python % ' .. args)
+    vim.cmd('!python3 % ' .. args)
   end
 end
 
