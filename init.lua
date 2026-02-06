@@ -46,6 +46,10 @@ opt.scrolloff = 10
 opt.expandtab = true
 opt.cinoptions = "l1,g0,:0,N-s"
 
+if vim.g.neovide then
+  opt.clipboard = "unnamedplus"
+end
+
 LspDiagReduced = 0
 -- ---
 -- When editing a file, always jump to the last known cursor position.
