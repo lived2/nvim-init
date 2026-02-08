@@ -185,7 +185,6 @@ return {
       --return M
     --end,
   },
-  --[[
   {
     "ray-x/lsp_signature.nvim",
     event = "InsertEnter",
@@ -198,7 +197,6 @@ return {
     -- or use config
     -- config = function(_, opts) require'lsp_signature'.setup({you options}) end
   },
-  ]]
   {
     "hedyhli/outline.nvim",
     lazy = true,
