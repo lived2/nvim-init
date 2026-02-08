@@ -171,8 +171,8 @@ local mappings = {
   { 'v', "<C-c>", '"*y', "Copy"},
   { 'i', "<C-v>", "<C-r>+", "Paste" },
   -- save
-  {{ 'n', 'v' }, "<C-s>", "<cmd> w <CR>", "Save file" },
-  { 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
+  --{{ 'n', 'v' }, "<C-s>", "<cmd> w <CR>", "Save file" },
+  --{ 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
 
   { 'n', "<C-c>", '"*y', "Copy" },
   --{ 'n', "<C-F11>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
