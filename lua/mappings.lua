@@ -116,6 +116,7 @@ function Run()
     return
   end
   local args = vim.fn.input("Arguments: ")
+  print('\n')
   if vim.bo.filetype == 'rust' then
     vim.cmd('RustLsp runnables ' .. args)
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then

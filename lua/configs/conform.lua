@@ -1,7 +1,7 @@
 local options = {
   -- Map of filetype to formatters
   formatters_by_ft = {
-    lua = { "stylua" },
+    --lua = { "stylua" },
     cpp = { "clang-format" },
     -- Conform will run multiple formatters sequentially
     go = { "goimports", "gofmt" },
