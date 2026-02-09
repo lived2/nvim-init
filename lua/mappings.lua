@@ -107,6 +107,12 @@ function ReduceLSPDiag()
   end
 end
 
+local cpu_info = vim.loop.cpu_info()
+local core_count = #cpu_info
+if core_count > 32 then
+  core_count = 32
+end
+
 function Run()
   local dap_session = require("dap").session() ~= nil
   if not dap_session and vim.bo.modified then
@@ -120,7 +126,7 @@ function Run()
   if vim.bo.filetype == 'rust' then
     vim.cmd('RustLsp runnables ' .. args)
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-    vim.cmd('!cmake --build target/debug -j8 ; cd target/debug ; ./run.sh ' .. args)
+    vim.cmd('!cmake --build target/debug -j' .. core_count .. ' ; cd target/debug ; ./run.sh ' .. args)
   elseif vim.bo.filetype == 'go' then
     vim.cmd('!go run % ' .. args)
   elseif vim.bo.filetype == 'python' then
@@ -145,12 +151,12 @@ function RunDebug()
     --vim.cmd.RustLsp('debug')
     --vim.cmd.RustLsp('debuggables')
     if not dap_session then
-      vim.cmd('!cargo build -j8')
+      vim.cmd('!cargo build -j' .. core_count)
     end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     if not dap_session then
-      vim.cmd('!cmake --build target/debug -j8')
+      vim.cmd('!cmake --build target/debug -j' .. core_count)
     end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'python' then
