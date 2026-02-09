@@ -57,7 +57,7 @@ LspDiagReduced = 0
 -- (happens when dropping a file on gvim) and for a commit message (it's
 -- likely a different one than last time).
 local autocmd = vim.api.nvim_create_autocmd
-local map = vim.keymap.set
+--local map = vim.keymap.set
 
 -- adapted from https://github.com/ethanholz/nvim-lastplace/blob/main/lua/nvim-lastplace/init.lua
 local ignore_buftype = { "quickfix", "nofile", "help" }
@@ -77,9 +77,11 @@ local function run()
 
   -- If a line has already been specified on the command line, we are done
   --   nvim file +num
+  --[[
   if vim.fn.line(".") > 1 then
     return
   end
+  ]]
 
   local last_line = vim.fn.line([['"]])
   local buff_last_line = vim.fn.line("$")
