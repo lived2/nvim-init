@@ -33,14 +33,12 @@ if not vim.g.neovide then
   map("n", "<F35>", ':DapStepInto<CR>')
   map("n", "<F23>", ':DapStepOut<CR>')
   map("n", "<F17>", ':DapTerminate<CR>')
-  if vim.loop.os_uname().sysname ~= 'Darwin' then
-    map("n", "<F41>", '<cmd>:lua require("dap").restart()<CR>')
-  end
+  map("n", "<F41>", '<cmd>:lua require("dap").restart()<CR>')
 else
   map("n", "<C-F11>", ':DapStepInto<CR>')
   map("n", "<S-F11>", ':DapStepOut<CR>')
   map("n", "<S-F5>", ':DapTerminate<CR>')
-  if vim.loop.os_uname().sysname == 'Darwin' then
+  if IsMac == 1 then
     map("n", "<D-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
   else
     map("n", "<C-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
@@ -61,7 +59,7 @@ map('n', '<F12>', ':qall<CR>')
 map('i', '<F12>', '<ESC>:qall<CR>')
 
 -- MacOS Start
-if vim.loop.os_uname().sysname == 'Darwin' then
+if IsMac == 1 then
   map('v', "<M-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
   map('v', "<D-c>", '"*y', { desc = "Copy" })      -- It's for MacOS
 end
@@ -74,7 +72,7 @@ if vim.g.neovide then
   -- Scroll reverse for MacBook only [End]
   map({'n', 'i', 'c'}, "<D-v>", "<C-r>+", { desc = "Paste" }) -- CMD-V in MacOS
   map({'n', 'i', 'c'}, "<C-v>", "<C-r>+", { desc = "Paste" }) -- Ctrl-V
-  if vim.loop.os_uname().sysname == 'Darwin' then
+  if IsMac == 1 then
     map({'n', 'v'}, "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
     map({'i'}, "<D-s>", "<ESC>:w<CR>", { desc = "Save file" })
   end

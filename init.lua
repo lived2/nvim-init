@@ -52,6 +52,12 @@ end
 
 LspDiagReduced = 0
 
+IsMac = 0
+local os = vim.loop.os_uname().sysname
+if os == 'Darwin' then
+  IsMac = 1
+end
+
 IsWork = 0
 local hostname = vim.fn.hostname()
 local work_hostnames = {
@@ -223,7 +229,6 @@ autocmd('VimEnter', { callback = open_nvim_tree })
 
 if vim.g.neovide then
   -- Put anything you want to happen only in Neovide here
-  local os = vim.loop.os_uname().sysname
   if os == "Windows_NT" then
     vim.o.guifont = "JetBrainsMono Nerd Font:h10"
   else
