@@ -52,6 +52,11 @@ map("i", "<F9>", '<ESC>:DapToggleBreakpoint<CR>')
 map('n', '<F10>', ':w!<CR>')
 map('i', '<F10>', '<ESC>:w!<CR>')
 
+if IsWork == 1 then
+  map('n', '<F11>', ':lua ToggleLSPDiag()<CR>')
+  map('i', '<F11>', '<ESC>:lua ToggleLSPDiag()<CR>')
+end
+
 map('n', '<F12>', ':qall<CR>')
 map('i', '<F12>', '<ESC>:qall<CR>')
 
@@ -74,7 +79,6 @@ if vim.g.neovide then
     map({'i'}, "<D-s>", "<ESC>:w<CR>", { desc = "Save file" })
   end
 end
--- Key mapping END
 
 --[[
 vim.keymap.set({ 'n' }, '<C-k>', function()       require('lsp_signature').toggle_float_win()
@@ -84,6 +88,21 @@ vim.keymap.set({ 'n' }, '<Leader>k', function()
   vim.lsp.buf.signature_help()
 end, { silent = true, noremap = true, desc = 'toggle signature' })
 ]]
+-- Key mapping END
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+if IsWork == 1 then
+  local LspDiagEnabled = 1
+  function ToggleLSPDiag()
+    if LspDiagEnabled == 1 then
+      LspDiagEnabled = 0
+      vim.cmd('LspStop')
+    else
+      LspDiagEnabled = 1
+      vim.cmd('LspStart')
+    end
+  end
+end
 
 LspDiagReducedChanged = 1
 

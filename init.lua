@@ -51,6 +51,19 @@ if vim.g.neovide then
 end
 
 LspDiagReduced = 0
+
+IsWork = 0
+local hostname = vim.fn.hostname()
+local work_hostnames = {
+  "passat",
+}
+
+for _, work_hostname in ipairs(work_hostnames) do
+  if hostname == work_hostname then
+    IsWork = 1
+  end
+end
+
 -- ---
 -- When editing a file, always jump to the last known cursor position.
 -- Don't do it when the position is invalid, when inside an event handler
