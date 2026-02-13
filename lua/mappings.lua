@@ -33,7 +33,9 @@ if not vim.g.neovide then
   map("n", "<F35>", ':DapStepInto<CR>')
   map("n", "<F23>", ':DapStepOut<CR>')
   map("n", "<F17>", ':DapTerminate<CR>')
-  map("n", "<F41>", '<cmd>:lua require("dap").restart()<CR>')
+  if IsMac == 0 then
+    map("n", "<F41>", '<cmd>:lua require("dap").restart()<CR>')
+  end
 else
   map("n", "<C-F11>", ':DapStepInto<CR>')
   map("n", "<S-F11>", ':DapStepOut<CR>')
