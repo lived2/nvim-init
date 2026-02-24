@@ -50,6 +50,7 @@ if vim.g.neovide then
   opt.clipboard = "unnamedplus"
 end
 
+LspDiagEnabled = 1
 LspDiagReduced = 0
 
 IsMac = 0
@@ -165,6 +166,30 @@ local workspace_paths = {
   "/home/lived/project",
   "/usr2/seonggoo/build/project/",
 }
+
+local ctags_paths = {
+  "/vendor/qcom/opensource/display-drivers/",
+}
+
+if IsWork == 1 then
+  autocmd("BufReadPre", {
+    pattern = "*",
+    callback = function()
+      local cur_path = vim.fn.getcwd()
+      if string.starts(cur_path, "/usr2/seonggoo/build/") and not string.starts(cur_path, "/usr2/seonggoo/build/project/") then
+        for _, path in ipairs(ctags_paths) do
+          local start_pos, end_pos = string.find(cur_path, path, 1, true)
+          if start_pos ~= nil then
+            local cur_proj = cur_path:sub(1, end_pos)
+            local cmd = "set tags+=" .. cur_proj .. "tags"
+            vim.cmd(cmd)
+            LspDiagEnabled = 0
+          end
+        end
+      end
+    end,
+  })
+end
 
 autocmd("BufWritePre", {
   pattern = "*",

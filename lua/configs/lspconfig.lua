@@ -16,7 +16,9 @@ for _, lsp in ipairs(servers) do
     },
   })
 end
-vim.lsp.enable(servers)
+if LspDiagEnabled == 1 then
+  vim.lsp.enable(servers)
+end
 --[[
 local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"

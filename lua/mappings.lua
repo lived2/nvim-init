@@ -92,7 +92,6 @@ end, { silent = true, noremap = true, desc = 'toggle signature' })
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 if IsWork == 1 then
-  local LspDiagEnabled = 1
   function ToggleLSPDiag()
     if LspDiagEnabled == 1 then
       LspDiagEnabled = 0
