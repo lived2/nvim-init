@@ -169,13 +169,15 @@ local workspace_paths = {
 
 local ctags_paths = {
   "/vendor/qcom/opensource/display-drivers/",
+  "/boot/QcomPkg/",
 }
 
 if IsWork == 1 then
   autocmd("BufReadPre", {
     pattern = "*",
     callback = function()
-      local cur_path = vim.fn.getcwd()
+      --local cur_path = vim.fn.getcwd()
+      local cur_path = vim.fn.expand('%:p')
       if string.starts(cur_path, "/usr2/seonggoo/build/") and not string.starts(cur_path, "/usr2/seonggoo/build/project/") then
         for _, path in ipairs(ctags_paths) do
           local start_pos, end_pos = string.find(cur_path, path, 1, true)
