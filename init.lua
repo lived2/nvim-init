@@ -168,7 +168,7 @@ local workspace_paths = {
 }
 
 local ctags_paths = {
-  "/vendor/qcom/opensource/display-drivers/",
+  "/vendor/qcom/opensource/",
   "/boot/QcomPkg/",
 }
 
