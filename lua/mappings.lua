@@ -91,6 +91,7 @@ end, { silent = true, noremap = true, desc = 'toggle signature' })
 -- Key mapping END
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
+--[[
 if IsWork == 1 then
   function ToggleLSPDiag()
     if LspDiagEnabled == 1 then
@@ -102,12 +103,16 @@ if IsWork == 1 then
     end
   end
 end
+]]
 
-LspDiagReducedChanged = 1
+if IsWorkSource == 1 then
+  LspDiagReduced = 1
+else
+  LspDiagReduced = 0
+end
 
 function ReduceLSPDiag()
   -- Configure LSP diagnostic level
-  LspDiagReducedChanged = 1
   if LspDiagReduced == 1 then
     LspDiagReduced = 0
     vim.diagnostic.config({
@@ -118,9 +123,9 @@ function ReduceLSPDiag()
   else
     LspDiagReduced = 1
     vim.diagnostic.config({
-      virtual_text = {severity = {min = vim.diagnostic.severity.ERROR}},
-      signs = {severity = {min = vim.diagnostic.severity.ERROR}},
-      underline = {severity = {min = vim.diagnostic.severity.ERROR}},
+      virtual_text = false,
+      signs = false,
+      underline = false,
     })
   end
 end

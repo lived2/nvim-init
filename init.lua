@@ -50,9 +50,8 @@ if vim.g.neovide then
   opt.clipboard = "unnamedplus"
 end
 
-LspDiagEnabled = 1
-LspDiagReduced = 0
-
+-- ---
+-- Customizing flags
 IsMac = 0
 local os = vim.loop.os_uname().sysname
 if os == 'Darwin' then
@@ -70,6 +69,7 @@ for _, work_hostname in ipairs(work_hostnames) do
     IsWork = 1
   end
 end
+IsWorkSource = 0
 
 -- ---
 -- When editing a file, always jump to the last known cursor position.
@@ -179,13 +179,13 @@ if IsWork == 1 then
       --local cur_path = vim.fn.getcwd()
       local cur_path = vim.fn.expand('%:p')
       if string.starts(cur_path, "/usr2/seonggoo/build/") and not string.starts(cur_path, "/usr2/seonggoo/build/project/") then
+        IsWorkSource = 1
         for _, path in ipairs(ctags_paths) do
           local start_pos, end_pos = string.find(cur_path, path, 1, true)
           if start_pos ~= nil then
             local cur_proj = cur_path:sub(1, end_pos)
             local cmd = "set tags+=" .. cur_proj .. "tags"
             vim.cmd(cmd)
-            LspDiagEnabled = 0
           end
         end
       end
@@ -209,6 +209,7 @@ autocmd("BufWritePre", {
 autocmd('BufReadPost', {
   --group = vim.g.user.event,
   callback = function()
+    --[[
     if LspDiagReducedChanged == 1 then
       LspDiagReducedChanged = 0
       if LspDiagReduced == 0 then
@@ -225,6 +226,7 @@ autocmd('BufReadPost', {
         })
       end
     end
+    ]]
     print(vim.fn.expand('%:p'))
   end,
 })

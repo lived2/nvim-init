@@ -16,8 +16,13 @@ for _, lsp in ipairs(servers) do
     },
   })
 end
-if LspDiagEnabled == 1 then
-  vim.lsp.enable(servers)
+vim.lsp.enable(servers)
+if IsWorkSource == 1 then
+  vim.diagnostic.config({
+    virtual_text = false,
+    signs = false,
+    underline = false,
+  })
 end
 --[[
 local lspconfig = require "lspconfig"
