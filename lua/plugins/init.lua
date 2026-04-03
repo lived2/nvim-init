@@ -136,8 +136,11 @@ return {
       return require "configs.mason-nvim-dap"
     end,
   },
+  --[[
   {
     "nvim-treesitter/nvim-treesitter",
+    lazy = false,
+    build = ':TSUpdate',
     opts = function()
       return require "configs.treesitter"
     end,
@@ -146,6 +149,7 @@ return {
       require("nvim-treesitter.configs").setup(opts)
     end,
   },
+  ]]
   {
     "nvim-treesitter/nvim-treesitter-context",
     init = function()
