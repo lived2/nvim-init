@@ -54,7 +54,7 @@ end
 -- Customizing flags
 IsTerm = 0
 local term = os.getenv("TERM")
-if not term == nil then
+if term ~= nil then
   IsTerm = 1
 end
 
