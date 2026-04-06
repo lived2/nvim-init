@@ -2,7 +2,7 @@ require "nvchad.mappings"
 
 -- add yours here
 
-local autocmd = vim.api.nvim_create_autocmd
+--local autocmd = vim.api.nvim_create_autocmd
 local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
@@ -29,7 +29,7 @@ map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
 map("n", "<F6>", '<cmd>:lua Run()<CR>')
 map("i", "<F6>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
 map("n", "<F7>", ':DapStepOver<CR>')
-if IsTerm == 1 then
+if IsTerm == 1 and not vim.g.neovide then
   map("n", "<F35>", ':DapStepInto<CR>')
   map("n", "<F23>", ':DapStepOut<CR>')
   map("n", "<F17>", ':DapTerminate<CR>')
