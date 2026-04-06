@@ -259,7 +259,8 @@ autocmd('VimEnter', { callback = open_nvim_tree })
 if vim.g.neovide then
   -- Put anything you want to happen only in Neovide here
   if os == "Windows_NT" then
-    vim.o.guifont = "JetBrainsMono Nerd Font:h10"
+    vim.o.guifont = "JetBrainsMono Nerd Font:h11"
+    vim.o.linespace = -2
   else
     vim.o.guifont = "JetBrainsMono Nerd Font:h13"
   end
