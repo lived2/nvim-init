@@ -52,6 +52,12 @@ end
 
 -- ---
 -- Customizing flags
+IsTerm = 0
+local term = os.getenv("TERM")
+if not term == nil then
+  IsTerm = 1
+end
+
 IsMac = 0
 local os = vim.loop.os_uname().sysname
 if os == 'Darwin' then

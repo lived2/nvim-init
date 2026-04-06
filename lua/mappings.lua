@@ -29,7 +29,7 @@ map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
 map("n", "<F6>", '<cmd>:lua Run()<CR>')
 map("i", "<F6>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
 map("n", "<F7>", ':DapStepOver<CR>')
-if not vim.g.neovide and not os == "Windows_NT" then
+if IsTerm == 1 then
   map("n", "<F35>", ':DapStepInto<CR>')
   map("n", "<F23>", ':DapStepOut<CR>')
   map("n", "<F17>", ':DapTerminate<CR>')
