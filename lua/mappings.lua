@@ -158,7 +158,12 @@ function Run()
 end
 
 function RunDebugPython()
-  local path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+  local path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/"
+  if IsWin == 1 then
+    path = path .. "Scripts/python"
+  else
+    path = path .. "bin/python"
+  end
   require("dap-python").setup(path)
   require('dap-python').test_method()
   --require('dap-python').debug_selection()

@@ -59,9 +59,12 @@ if term ~= nil then
 end
 
 IsMac = 0
+IsWin = 0
 local os = vim.loop.os_uname().sysname
 if os == 'Darwin' then
   IsMac = 1
+elseif os == "Windows_NT" then
+  IsWin = 1
 end
 
 IsWork = 0
@@ -264,8 +267,22 @@ autocmd('VimEnter', { callback = open_nvim_tree })
 
 if vim.g.neovide then
   -- Put anything you want to happen only in Neovide here
-  if os == "Windows_NT" then
-    vim.o.guifont = "JetBrainsMono Nerd Font:h11"
+  if IsWin == 1 then
+    local width = 0
+    local handle = io.popen("wmic path Win32_VideoController get CurrentHorizontalResolution")
+    if handle ~= nil then
+      width = handle:read()
+      width = handle:read("*n")
+      handle:close()
+    end
+
+    if width == 1920 then
+      vim.o.guifont = "JetBrainsMono Nerd Font:h10"
+    elseif width == 2560 then
+      vim.o.guifont = "JetBrainsMono Nerd Font:h11"
+    else
+      vim.o.guifont = "JetBrainsMono Nerd Font:h11"
+    end
     vim.o.linespace = -2
   else
     vim.o.guifont = "JetBrainsMono Nerd Font:h13"
