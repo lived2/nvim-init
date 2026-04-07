@@ -67,6 +67,9 @@ elseif os == "Windows_NT" then
   IsWin = 1
 end
 
+local jit = require("jit")
+arch = jit.arch
+
 IsWork = 0
 local hostname = vim.fn.hostname()
 local work_hostnames = {
