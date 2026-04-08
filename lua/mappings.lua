@@ -212,6 +212,7 @@ local mappings = {
   --{ 'n', "<C-F11>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
   { 'n', "<D-Enter>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
   { 'n', "<leader>fg", "<cmd> lua require'telescope.builtin'.live_grep({default_text = vim.fn.expand(\"<cword>\")})<CR>", "Live grep with cword" },
+  { 'n', "<leader>fc", "<cmd> lua require'telescope.builtin'.commands()<CR>", "Commands" },
   { 'n', "<Leader>cf", "<cmd> echo expand('%:p') <CR>", "Current File Path" },
   -- close buffer + hide terminal buffer
   { 'n', "<C-w>", function() require("nvchad.tabufline").close_buffer() end, "Close buffer" },
