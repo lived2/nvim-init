@@ -84,6 +84,24 @@ return {
       vim.fn.sign_define('DapBreakpointRejected', { text='', texthl='DapBreakpoint', linehl='DapBreakpoint', numhl= 'DapBreakpoint' })
       vim.fn.sign_define('DapLogPoint', { text='', texthl='DapLogPoint', linehl='DapLogPoint', numhl= 'DapLogPoint' })
       vim.fn.sign_define('DapStopped', { text='', texthl='DapStopped', linehl='DapStopped', numhl= 'DapStopped' })
+      return require "configs.dap_config"
+    end,
+  },
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    opts = {
+      handlers = {},
+      ensure_installed = {
+        "codelldb",
+      },
+    },
+    config = function()
+      return require "configs.mason-nvim-dap"
     end,
   },
   {
@@ -116,24 +134,7 @@ return {
       "nvim-neotest/nvim-nio",
     },
     init = function()
-      return require "configs.dap_config"
-    end,
-  },
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "mfussenegger/nvim-dap",
-    },
-    opts = {
-      handlers = {},
-      ensure_installed = {
-        "codelldb",
-      },
-    },
-    config = function()
-      return require "configs.mason-nvim-dap"
+      return require "configs.dapui_config"
     end,
   },
   --[[
