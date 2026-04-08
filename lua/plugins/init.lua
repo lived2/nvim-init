@@ -48,7 +48,6 @@ return {
       -- require("lspconfig").rust_analyzer.setup {}
     end,
   },
-  ]]
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -56,6 +55,7 @@ return {
       require "configs.lspconfig"
     end,
   },
+  ]]
   {
     "rust-lang/rust.vim",
     ft = "rust",
@@ -66,7 +66,7 @@ return {
   },
   {
     'mrcjkb/rustaceanvim',
-    version = '^8', -- Recommended
+    version = '^9', -- Recommended
     lazy = false, -- This plugin is already lazy
     ft = "rust",
     config = function()

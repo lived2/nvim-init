@@ -1,3 +1,4 @@
+--[[
 -- Update this path
 local extension_path = vim.env.HOME .. '/.vscode/extensions/vadimcn.vscode-lldb-1.11.1/'
 local codelldb_path = extension_path .. 'adapter/codelldb'
@@ -15,6 +16,7 @@ else
 end
 
 local cfg = require('rustaceanvim.config')
+]]
 
 vim.g.rustaceanvim = {
   -- Plugin configuration
@@ -51,7 +53,9 @@ vim.g.rustaceanvim = {
     },
   },
   -- DAP configuration
+  --[[
   dap = {
     adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path),
   },
+  ]]
 }
