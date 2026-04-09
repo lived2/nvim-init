@@ -1,11 +1,11 @@
-require "nvchad.mappings"
+require("nvchad.mappings")
 
 -- add yours here
 
 --local autocmd = vim.api.nvim_create_autocmd
 local map = vim.keymap.set
 
-map("n", ";", ":", { desc = "CMD enter command mode" })
+map('n', ';', ':', { desc = 'CMD enter command mode' })
 --map("i", "jk", "<ESC>")
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
@@ -17,37 +17,41 @@ map('n', '<C-j>', ':wincmd j<CR>')
 map('n', '<C-h>', ':wincmd h<CR>')
 map('n', '<C-l>', ':wincmd l<CR>')
 
+-- Home/End in command mode
+map({'i', 'c'}, '<Find>', '<C-B>', { noremap = true })
+map({'i', 'c'}, '<Select>', '<C-E>', { noremap = true })
+
 -- Fn keys
-map("n", "<F3>", '<cmd>:lua ReduceLSPDiag()<CR>')
-map("i", "<F3>", '<ESC><cmd>:lua ReduceLSPDiag()<CR>a')
+map('n', '<F3>', '<cmd>:lua ReduceLSPDiag()<CR>')
+map('i', '<F3>', '<ESC><cmd>:lua ReduceLSPDiag()<CR>a')
 
-map("n", "<F4>", ':Outline<CR>')
-map("i", "<F4>", '<ESC>:Outline<CR>')
+map('n', '<F4>', ':Outline<CR>')
+map('i', '<F4>', '<ESC>:Outline<CR>')
 
-map("n", "<F5>", '<cmd>:lua RunDebug()<CR>')
-map("i", "<F5>", '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
-map("n", "<F6>", '<cmd>:lua Run()<CR>')
-map("i", "<F6>", '<ESC>:w!<CR><cmd>:lua Run()<CR>')
-map("n", "<F7>", ':DapStepOver<CR>')
+map('n', '<F5>', '<cmd>:lua RunDebug()<CR>')
+map('i', '<F5>', '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
+map('n', '<F6>', '<cmd>:lua Run()<CR>')
+map('i', '<F6>', '<ESC>:w!<CR><cmd>:lua Run()<CR>')
+map('n', '<F7>', ':DapStepOver<CR>')
 if IsTerm == 1 and not vim.g.neovide then
-  map("n", "<F35>", ':DapStepInto<CR>')
-  map("n", "<F23>", ':DapStepOut<CR>')
-  map("n", "<F17>", ':DapTerminate<CR>')
+  map('n', '<F35>', ':DapStepInto<CR>')
+  map('n', '<F23>', ':DapStepOut<CR>')
+  map('n', '<F17>', ':DapTerminate<CR>')
   if IsMac == 0 then
-    map("n", "<F41>", '<cmd>:lua require("dap").restart()<CR>')
+    map('n', '<F41>', '<cmd>:lua require("dap").restart()<CR>')
   end
 else
-  map("n", "<C-F11>", ':DapStepInto<CR>')
-  map("n", "<S-F11>", ':DapStepOut<CR>')
-  map("n", "<S-F5>", ':DapTerminate<CR>')
+  map('n', '<C-F11>', ':DapStepInto<CR>')
+  map('n', '<S-F11>', ':DapStepOut<CR>')
+  map('n', '<S-F5>', ':DapTerminate<CR>')
   if IsMac == 1 then
-    map("n", "<D-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
+    map('n', '<D-S-F5>', '<cmd>:lua require("dap").restart()<CR>')
   else
     map("n", "<C-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
   end
 end
-map("n", "<F9>", ':DapToggleBreakpoint<CR>')
-map("i", "<F9>", '<ESC>:DapToggleBreakpoint<CR>')
+map('n', '<F9>', ':DapToggleBreakpoint<CR>')
+map('i', '<F9>', '<ESC>:DapToggleBreakpoint<CR>')
 
 map('n', '<F10>', ':w!<CR>')
 map('i', '<F10>', '<ESC>:w!<CR>')
