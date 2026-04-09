@@ -151,6 +151,7 @@ autocmd({'BufWinEnter', 'FileType'}, {
 autocmd('BufEnter', {
   callback = function()
     local ft = vim.bo.filetype
+    local bt = vim.bo.buftype
     --if ft == "rust" or ft == "cpp" then
     if ft == "rust" then
       opt.shiftwidth = 4
@@ -182,7 +183,9 @@ autocmd('BufEnter', {
       local opts = require "configs.dap_view_go_config"
       require("dap-view").setup(opts)
     end
-    print(vim.fn.expand('%:p'))
+    if bt == "" then
+      print(vim.fn.expand('%:p'))
+    end
   end
 })
 
