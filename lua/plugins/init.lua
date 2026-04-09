@@ -79,11 +79,11 @@ return {
   {
     "mfussenegger/nvim-dap",
     config = function(_, _)
-      vim.fn.sign_define('DapBreakpoint', { text='🛑', texthl='DapBreakpoint', linehl='DapBreakpoint', numhl='DapBreakpoint' })
-      vim.fn.sign_define('DapBreakpointCondition', { text='ﳁ', texthl='DapBreakpoint', linehl='DapBreakpoint', numhl='DapBreakpoint' })
-      vim.fn.sign_define('DapBreakpointRejected', { text='', texthl='DapBreakpoint', linehl='DapBreakpoint', numhl= 'DapBreakpoint' })
-      vim.fn.sign_define('DapLogPoint', { text='', texthl='DapLogPoint', linehl='DapLogPoint', numhl= 'DapLogPoint' })
-      vim.fn.sign_define('DapStopped', { text='', texthl='DapStopped', linehl='DapStopped', numhl= 'DapStopped' })
+      --vim.fn.sign_define('DapBreakpoint', { text='🛑', texthl='DapBreakpoint', linehl='DapBreakpoint', numhl='DapBreakpoint' })
+      --vim.fn.sign_define('DapBreakpointCondition', { text='ﳁ', texthl='DapBreakpoint', linehl='DapBreakpoint', numhl='DapBreakpoint' })
+      --vim.fn.sign_define('DapBreakpointRejected', { text='', texthl='DapBreakpoint', linehl='DapBreakpoint', numhl= 'DapBreakpoint' })
+      --vim.fn.sign_define('DapLogPoint', { text='', texthl='DapLogPoint', linehl='DapLogPoint', numhl= 'DapLogPoint' })
+      --vim.fn.sign_define('DapStopped', { text='', texthl='DapStopped', linehl='DapStopped', numhl= 'DapStopped' })
       return require "configs.dap_config"
     end,
   },
@@ -104,12 +104,24 @@ return {
       return require "configs.mason-nvim-dap"
     end,
   },
+  --[[
+  {
+    "rcarriga/nvim-dap-ui",
+    event = "VeryLazy",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "nvim-neotest/nvim-nio",
+    },
+    init = function()
+      return require "configs.dapui_config"
+    end,
+  },
+  ]]
   {
     "mfussenegger/nvim-dap-python",
     ft = "python",
     dependencies = {
       "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui",
     },
     --config = function(_, opts)
       --local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
@@ -127,14 +139,29 @@ return {
     end,
   },
   {
-    "rcarriga/nvim-dap-ui",
-    event = "VeryLazy",
+    "igorlfs/nvim-dap-view",
+    -- let the plugin lazy load itself
+    lazy = false,
+    version = "1.*",
+    ft = { "c", "cpp", "rust", "python" },
+    opts = function(_, opts)
+      opts = require "configs.dap_view_config"
+      return opts
+    end
+  },
+  {
+    "Jorenar/nvim-dap-disasm",
     dependencies = {
-      "mfussenegger/nvim-dap",
-      "nvim-neotest/nvim-nio",
+      "igorlfs/nvim-dap-view",
     },
     init = function()
-      return require "configs.dapui_config"
+      return require "configs.dap_disasm_config"
+    end,
+  },
+  {
+    "LiadOz/nvim-dap-repl-highlights",
+    init = function()
+      require('nvim-dap-repl-highlights').setup()
     end,
   },
   --[[
@@ -159,7 +186,7 @@ return {
   },
   {
     'saecki/crates.nvim',
-    ft = {"rust", "toml"},
+    ft = { "rust", "toml" },
     config = function(_, opts)
       local crates = require('crates')
       crates.setup(opts)

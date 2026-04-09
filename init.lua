@@ -52,11 +52,13 @@ end
 
 -- ---
 -- Customizing flags
+--[[
 IsTerm = 0
 local term = os.getenv("TERM")
 if term ~= nil then
   IsTerm = 1
 end
+]]
 
 IsMac = 0
 IsWin = 0
@@ -67,8 +69,10 @@ elseif os == "Windows_NT" then
   IsWin = 1
 end
 
+--[[
 local jit = require("jit")
-arch = jit.arch
+ARCH = jit.arch
+]]
 
 IsWork = 0
 local hostname = vim.fn.hostname()
@@ -142,8 +146,9 @@ autocmd({'BufWinEnter', 'FileType'}, {
 
 autocmd('BufEnter', {
   callback = function()
-    --if vim.bo.filetype == "rust" or vim.bo.filetype == "cpp" then
-    if vim.bo.filetype == "rust" then
+    local ft = vim.bo.filetype
+    --if ft == "rust" or ft == "cpp" then
+    if ft == "rust" then
       opt.shiftwidth = 4
       opt.tabstop = 4
       opt.softtabstop = 4
@@ -154,7 +159,7 @@ autocmd('BufEnter', {
     end
 
     local extension = vim.fn.expand('%:e')
-    if vim.bo.filetype == "text" or extension == "log" or extension == "dump" or extension == "lst" then
+    if ft == "text" or extension == "log" or extension == "dump" or extension == "lst" then
       require('cmp').setup.buffer { enabled = false }
     end
     -- Change tab size for specific path
@@ -166,6 +171,11 @@ autocmd('BufEnter', {
       opt.softtabstop = 2
     end
     --]]
+    if ft == "python" then
+      local opts = require "configs.dap_view_python_config"
+      require("dap-view").setup(opts)
+    end
+    print(vim.fn.expand('%:p'))
   end
 })
 
@@ -218,30 +228,101 @@ autocmd("BufWritePre", {
   end,
 })
 
+--[[
 autocmd('BufReadPost', {
-  --group = vim.g.user.event,
   callback = function()
-    --[[
-    if LspDiagReducedChanged == 1 then
-      LspDiagReducedChanged = 0
-      if LspDiagReduced == 0 then
-        vim.diagnostic.config({
-          virtual_text = {severity = {min = vim.diagnostic.severity.HINT}},
-          signs = {severity = {min = vim.diagnostic.severity.HINT}},
-          underline = {severity = {min = vim.diagnostic.severity.HINT}},
-        })
-      else
-        vim.diagnostic.config({
-          virtual_text = {severity = {min = vim.diagnostic.severity.ERROR}},
-          signs = {severity = {min = vim.diagnostic.severity.ERROR}},
-          underline = {severity = {min = vim.diagnostic.severity.ERROR}},
-        })
-      end
-    end
-    ]]
     print(vim.fn.expand('%:p'))
   end,
 })
+]]
+
+-- DAP View position
+autocmd("FileType", {
+  pattern = "dap-view",
+  callback = function()
+    vim.cmd("wincmd H")
+    vim.cmd("vertical resize 100")
+  end,
+})
+
+local function setup_dap()
+  local ok, base46 = pcall(require, "base46")
+  if not ok then return end
+  local C = base46.get_theme_tb("base_30")
+
+  local sign = vim.fn.sign_define
+  local set_hl = vim.api.nvim_set_hl
+
+  -- DAP
+  -- Breakpoints
+  --[[
+  sign("DapBreakpoint", {
+    text = "",
+    texthl = "DapBreakpoint",
+    linehl = "DapBreakpointLine",
+    numhl = "",
+  })
+  ]]
+  sign('DapBreakpoint', {
+    text='🛑',
+    texthl='DapBreakpoint',
+    linehl='DapBreakpointLine',
+    numhl='DapBreakpoint'
+  })
+
+  set_hl(0, "DapBreakpoint", { fg = C.red })
+  set_hl(0, "DapBreakpointLine", {
+    bg = C.light_grey
+  })
+
+  sign('DapBreakpointRejected', {
+    text='',
+    texthl='DapBreakpoint',
+    linehl='DapBreakpoint',
+    numhl= 'DapBreakpoint'
+  })
+
+  -- Stopped
+  sign("DapStopped", {
+    text = "",
+    texthl = "DapStopped",
+    linehl = "DapStoppedLine",
+    numhl = "DapStoppedLineNr",
+  })
+
+  set_hl(0, "DapStopped", { fg = C.green, bold = true })
+  set_hl(0, "DapStoppedLine", { bg = C.grey })
+  set_hl(0, "DapStoppedLineNr", { fg = C.green, bold = true })
+
+  -- DAP View
+  -- ✅ SELECTED tab (REPL, Watches, etc.)
+  set_hl(0, "NvimDapViewTabSelected", {
+    fg = C.green,
+    bg = C.base,
+    bold = true,
+  })
+
+  -- Inactive tabs
+  set_hl(0, "NvimDapViewTab", {
+    fg = C.text,
+    --fg = C.overlay1,
+    bg = "NONE",
+  })
+
+  -- Tab background filler
+  set_hl(0, "NvimDapViewTabFill", {
+    fg = C.base,
+    bg = C.base,
+  })
+end
+
+--vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, {
+vim.api.nvim_create_autocmd({ "VimEnter" }, {
+  callback = function()
+    vim.schedule(setup_dap)
+  end,
+})
+
 
 local function open_nvim_tree(data)
   -- buffer is a directory
