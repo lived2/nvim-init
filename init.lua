@@ -75,10 +75,8 @@ if is_wsl then
   IsWSL = 1
 end
 
---[[
 local jit = require("jit")
 ARCH = jit.arch
-]]
 
 IsWork = 0
 local hostname = vim.fn.hostname()

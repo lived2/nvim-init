@@ -161,7 +161,7 @@ end
 
 function RunDebugPython()
   local path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/"
-  if IsWin == 1 and arch ~= "arm64" then
+  if IsWin == 1 and ARCH ~= "arm64" then
     path = path .. "Scripts/python"
   else
     path = path .. "bin/python"
