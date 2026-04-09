@@ -128,6 +128,7 @@ return {
       --require("dap-python").setup(path)
     --end,
   },
+  --[[
   {
     "leoluz/nvim-dap-go",
     ft = "go",
@@ -138,12 +139,13 @@ return {
       return require "configs.dap_go_config"
     end,
   },
+  ]]
   {
     "igorlfs/nvim-dap-view",
     -- let the plugin lazy load itself
     lazy = false,
     version = "1.*",
-    ft = { "c", "cpp", "rust", "python" },
+    ft = { "c", "cpp", "rust", "python", "go" },
     opts = function(_, opts)
       opts = require "configs.dap_view_config"
       return opts

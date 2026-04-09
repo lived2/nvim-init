@@ -174,6 +174,9 @@ autocmd('BufEnter', {
     if ft == "python" then
       local opts = require "configs.dap_view_python_config"
       require("dap-view").setup(opts)
+    elseif ft == "go" then
+      local opts = require "configs.dap_view_go_config"
+      require("dap-view").setup(opts)
     end
     print(vim.fn.expand('%:p'))
   end

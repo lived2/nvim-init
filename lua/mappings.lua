@@ -29,25 +29,22 @@ map('i', '<F5>', '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
 map('n', '<F6>', '<cmd>:lua Run()<CR>')
 map('i', '<F6>', '<ESC>:w!<CR><cmd>:lua Run()<CR>')
 map('n', '<F7>', ':DapStepOver<CR>')
-map('n', '<C-F11>', ':DapStepInto<CR>')
-map('n', '<S-F11>', ':DapStepOut<CR>')
-map('n', '<S-F5>', ':DapTerminate<CR>')
-if IsMac == 1 then
-  map('n', '<D-S-F5>', '<cmd>:lua require("dap").restart()<CR>')
-else
-  map("n", "<C-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
-end
---[[
-if IsTerm == 1 and not vim.g.neovide then
+
+if IsMac == 1 and not vim.g.neovide then -- iTerm2 in Mac case
+  map('n', '<F17>', ':DapTerminate<CR>')
   map('n', '<F35>', ':DapStepInto<CR>')
   map('n', '<F23>', ':DapStepOut<CR>')
-  map('n', '<F17>', ':DapTerminate<CR>')
-  if IsMac == 0 then
-    map('n', '<F41>', '<cmd>:lua require("dap").restart()<CR>')
-  end
 else
+  map('n', '<S-F5>', ':DapTerminate<CR>')
+  if IsMac == 1 then
+    map('n', '<D-S-F5>', '<cmd>:lua require("dap").restart()<CR>')
+  else
+    map("n", "<C-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
+  end
+  map('n', '<C-F11>', ':DapStepInto<CR>')
+  map('n', '<S-F11>', ':DapStepOut<CR>')
 end
-]]
+
 map('n', '<F9>', ':DapToggleBreakpoint<CR>')
 map('i', '<F9>', '<ESC>:DapToggleBreakpoint<CR>')
 
