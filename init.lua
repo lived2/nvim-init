@@ -69,6 +69,12 @@ elseif os == "Windows_NT" then
   IsWin = 1
 end
 
+IsWSL = 0
+local is_wsl = vim.fn.getenv('WSL_DISTRO_NAME') ~= vim.NIL
+if is_wsl then
+  IsWSL = 1
+end
+
 --[[
 local jit = require("jit")
 ARCH = jit.arch

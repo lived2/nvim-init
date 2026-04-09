@@ -30,10 +30,13 @@ map('n', '<F6>', '<cmd>:lua Run()<CR>')
 map('i', '<F6>', '<ESC>:w!<CR><cmd>:lua Run()<CR>')
 map('n', '<F7>', ':DapStepOver<CR>')
 
-if IsMac == 1 and not vim.g.neovide then -- iTerm2 in Mac case
+if (IsMac == 1 or IsWSL == 1) and not vim.g.neovide then -- iTerm2 in Mac case
   map('n', '<F17>', ':DapTerminate<CR>')
   map('n', '<F35>', ':DapStepInto<CR>')
   map('n', '<F23>', ':DapStepOut<CR>')
+  if IsMac == 0 then
+    map('n', '<F41>', '<cmd>:lua require("dap").restart()<CR>')
+  end
 else
   map('n', '<S-F5>', ':DapTerminate<CR>')
   if IsMac == 1 then
