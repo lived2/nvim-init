@@ -17,10 +17,6 @@ map('n', '<C-j>', ':wincmd j<CR>')
 map('n', '<C-h>', ':wincmd h<CR>')
 map('n', '<C-l>', ':wincmd l<CR>')
 
--- Home/End in command mode
-map({'i', 'c'}, '<Find>', '<C-B>', { noremap = true })
-map({'i', 'c'}, '<Select>', '<C-E>', { noremap = true })
-
 -- Fn keys
 map('n', '<F3>', '<cmd>:lua ReduceLSPDiag()<CR>')
 map('i', '<F3>', '<ESC><cmd>:lua ReduceLSPDiag()<CR>a')
