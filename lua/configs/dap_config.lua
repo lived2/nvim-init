@@ -77,3 +77,28 @@ dap.configurations.go = {
     outputMode = "remote",
   }
 }
+
+local os = vim.loop.os_uname().sysname
+if os == "Windows_NT" then
+  dap.adapters.lldb = {
+    type = 'executable',
+    command = 'C:\\msys64\\clangarm64\\bin\\lldb-dap.exe', -- Adjust path
+    name = 'lldb'
+  }
+
+  dap.configurations.cpp = {
+    {
+      name = 'Launch',
+      type = 'lldb',
+      request = 'launch',
+      program = function()
+        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. '.exe', 'file')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = {}
+    },
+  }
+  dap.configurations.c = dap.configurations.cpp
+  dap.configurations.rust = dap.configurations.cpp
+end

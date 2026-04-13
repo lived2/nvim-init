@@ -182,6 +182,11 @@ autocmd('BufEnter', {
     elseif ft == "go" then
       local opts = require "configs.dap_view_go_config"
       require("dap-view").setup(opts)
+    elseif IsWin == 1 then
+      if ft == "c" or ft == "cpp" or ft == "rust" then
+        local opts = require "configs.dap_view_go_config"
+        require("dap-view").setup(opts)
+      end
     end
     if bt == "" then
       print(vim.fn.expand('%:p'))
