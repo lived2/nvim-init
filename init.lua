@@ -256,7 +256,7 @@ autocmd("FileType", {
   pattern = "dap-view",
   callback = function()
     vim.cmd("wincmd H")
-    vim.cmd("vertical resize 100")
+    vim.cmd("vertical resize 130")
   end,
 })
 
