@@ -81,19 +81,15 @@ dap.configurations.go = {
 local os = vim.loop.os_uname().sysname
 local jit = require("jit")
 if os == "Windows_NT" then
+  LLDB_PATH = 'C:\\msys64\\clang64\\bin\\lldb-dap.exe'
   if jit.arch == "arm64" then
-    dap.adapters.lldb = {
-      type = 'executable',
-      command = 'C:\\msys64\\clangarm64\\bin\\lldb-dap.exe', -- Adjust path
-      name = 'lldb'
-    }
-  else
-    dap.adapters.lldb = {
-      type = 'executable',
-      command = 'C:\\msys64\\clang64\\bin\\lldb-dap.exe', -- Adjust path
-      name = 'lldb'
-    }
+    LLDB_PATH = 'C:\\msys64\\clangarm64\\bin\\lldb-dap.exe'
   end
+  dap.adapters.lldb = {
+    type = 'executable',
+    command = LLDB_PATH,
+    name = 'lldb'
+  }
 
   dap.configurations.cpp = {
     {
@@ -122,6 +118,11 @@ if os == "Windows_NT" then
     },
   }
 else
+  dap.adapters.codelldb = {
+    type = "executable",
+    command = "codelldb",
+  }
+
   dap.configurations.cpp = {
     {
       name = 'LLDB: Launch',
