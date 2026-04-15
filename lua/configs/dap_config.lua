@@ -107,7 +107,49 @@ if os == "Windows_NT" then
       stopOnEntry = false,
       args = {}
     },
+    {
+      name = 'Launch (args)',
+      type = 'lldb',
+      request = 'launch',
+      program = function()
+        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. '.exe', 'file')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = function()
+        return vim.split(vim.fn.input('Args: '), ' +', { trimempty = true })
+      end,
+    },
   }
-  dap.configurations.c = dap.configurations.cpp
-  dap.configurations.rust = dap.configurations.cpp
+else
+  dap.configurations.cpp = {
+    {
+      name = 'LLDB: Launch',
+      type = 'codelldb',
+      request = 'launch',
+      program = function()
+        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t"), 'file')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = {},
+      console = 'integratedTerminal',
+    },
+    {
+      name = 'LLDB: Launch (args)',
+      type = 'codelldb',
+      request = 'launch',
+      program = function()
+        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t"), 'file')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = function()
+        return vim.split(vim.fn.input('Args: '), ' +', { trimempty = true })
+      end,
+      console = 'integratedTerminal',
+    },
+  }
 end
+dap.configurations.c = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp

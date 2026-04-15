@@ -1,4 +1,5 @@
 require ('mason-nvim-dap').setup({
+  --[[
   ensure_installed = {'stylua', 'jq'},
   handlers = {
     function(config)
@@ -39,4 +40,5 @@ require ('mason-nvim-dap').setup({
       require('mason-nvim-dap').default_setup(config) -- don't forget this!
     end,
   },
+  ]]
 })
