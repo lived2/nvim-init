@@ -28,6 +28,173 @@ end
 dap.listeners.after.event_terminated['me.dap.keys'] = reset_keys
 dap.listeners.after.disconnected['me.dap.keys'] = reset_keys
 
+local function file_exists(name)
+  local f = io.open(name, "r")
+  if f ~= nil then
+    io.close(f)
+    return true
+  else
+    return false
+  end
+end
+
+local function target_path(sub_path)
+  local target_program = vim.fn.getcwd() .. sub_path .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+  if file_exists(target_program) then
+    return target_program
+  else
+    return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. sub_path .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t"), 'file')
+  end
+end
+
+local launch_name = 'LLDB: Launch'
+local launch_args_name = 'LLDB: Launch (args)'
+
+-- C/C++/Rust/C3
+local os = vim.loop.os_uname().sysname
+local jit = require("jit")
+if os == "Windows_NT" then
+  LLDB_PATH = 'C:\\msys64\\clang64\\bin\\lldb-dap.exe'
+  if jit.arch == "arm64" then
+    LLDB_PATH = 'C:\\msys64\\clangarm64\\bin\\lldb-dap.exe'
+  end
+  dap.adapters.lldb = {
+    type = 'executable',
+    command = LLDB_PATH,
+    name = 'lldb'
+  }
+
+  dap.configurations.cpp = {
+    {
+      name = launch_name,
+      type = 'lldb',
+      request = 'launch',
+      program = function()
+        return target_path('/target/debug/')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = {}
+    },
+    {
+      name = launch_args_name,
+      type = 'lldb',
+      request = 'launch',
+      program = function()
+        return target_path('/target/debug/')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = function()
+        return vim.split(vim.fn.input('Args: '), ' +', { trimempty = true })
+      end,
+    },
+  }
+
+  dap.adapters.codelldb = {
+    type = "executable",
+    command = LLDB_PATH,
+  }
+
+  dap.configurations.c3 = {
+    {
+      name = launch_name,
+      type = 'lldb',
+      request = 'launch',
+      program = function()
+        return target_path('/build/')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = {}
+    },
+    {
+      name = launch_args_name,
+      type = 'lldb',
+      request = 'launch',
+      program = function()
+        return target_path('/build/')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = function()
+        return vim.split(vim.fn.input('Args: '), ' +', { trimempty = true })
+      end,
+    },
+  }
+else
+  -- MacOS/Linux
+  dap.adapters.codelldb = {
+    type = "executable",
+    command = "codelldb",
+  }
+
+  dap.configurations.cpp = {
+    {
+      name = launch_name,
+      type = 'codelldb',
+      request = 'launch',
+      program = function()
+        return target_path('/target/debug/')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = {},
+      console = 'integratedTerminal',
+    },
+    {
+      name = launch_args_name,
+      type = 'codelldb',
+      request = 'launch',
+      program = function()
+        return target_path('/target/debug/')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = function()
+        return vim.split(vim.fn.input('Args: '), ' +', { trimempty = true })
+      end,
+      console = 'integratedTerminal',
+    },
+  }
+
+  dap.adapters.c3 = {
+    type = 'executable',
+    command = "codelldb",
+  }
+
+  dap.configurations.c3 = {
+    {
+      name = launch_name,
+      type = 'c3',
+      request = 'launch',
+      program = function()
+        return target_path('/build/')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = {},
+      console = 'integratedTerminal',
+    },
+    {
+      name = launch_args_name,
+      type = 'c3',
+      request = 'launch',
+      program = function()
+        return target_path('/build/')
+      end,
+      cwd = '${workspaceFolder}',
+      stopOnEntry = false,
+      args = function()
+        return vim.split(vim.fn.input('Args: '), ' +', { trimempty = true })
+      end,
+      console = 'integratedTerminal',
+    }
+  }
+end
+dap.configurations.c = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp
+
 
 -- golang
 dap.adapters.delve = function(callback, config)
@@ -77,80 +244,3 @@ dap.configurations.go = {
     outputMode = "remote",
   }
 }
-
-local os = vim.loop.os_uname().sysname
-local jit = require("jit")
-if os == "Windows_NT" then
-  LLDB_PATH = 'C:\\msys64\\clang64\\bin\\lldb-dap.exe'
-  if jit.arch == "arm64" then
-    LLDB_PATH = 'C:\\msys64\\clangarm64\\bin\\lldb-dap.exe'
-  end
-  dap.adapters.lldb = {
-    type = 'executable',
-    command = LLDB_PATH,
-    name = 'lldb'
-  }
-
-  dap.configurations.cpp = {
-    {
-      name = 'Launch',
-      type = 'lldb',
-      request = 'launch',
-      program = function()
-        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. '.exe', 'file')
-      end,
-      cwd = '${workspaceFolder}',
-      stopOnEntry = false,
-      args = {}
-    },
-    {
-      name = 'Launch (args)',
-      type = 'lldb',
-      request = 'launch',
-      program = function()
-        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t") .. '.exe', 'file')
-      end,
-      cwd = '${workspaceFolder}',
-      stopOnEntry = false,
-      args = function()
-        return vim.split(vim.fn.input('Args: '), ' +', { trimempty = true })
-      end,
-    },
-  }
-else
-  dap.adapters.codelldb = {
-    type = "executable",
-    command = "codelldb",
-  }
-
-  dap.configurations.cpp = {
-    {
-      name = 'LLDB: Launch',
-      type = 'codelldb',
-      request = 'launch',
-      program = function()
-        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t"), 'file')
-      end,
-      cwd = '${workspaceFolder}',
-      stopOnEntry = false,
-      args = {},
-      console = 'integratedTerminal',
-    },
-    {
-      name = 'LLDB: Launch (args)',
-      type = 'codelldb',
-      request = 'launch',
-      program = function()
-        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t"), 'file')
-      end,
-      cwd = '${workspaceFolder}',
-      stopOnEntry = false,
-      args = function()
-        return vim.split(vim.fn.input('Args: '), ' +', { trimempty = true })
-      end,
-      console = 'integratedTerminal',
-    },
-  }
-end
-dap.configurations.c = dap.configurations.cpp
-dap.configurations.rust = dap.configurations.cpp

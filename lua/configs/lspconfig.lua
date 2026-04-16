@@ -6,7 +6,7 @@ vim.diagnostic.config({ update_in_insert = true })
 --local servers = { "html", "cssls" }
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 --local servers = { 'clangd', 'rust-analyzer', 'gopls', 'pyright' }
-local servers = { 'clangd', 'rust-analyzer', 'pyright' }
+local servers = { 'clangd', 'rust-analyzer', 'pyright', 'c3_lsp' }
 for _, lsp in ipairs(servers) do
   vim.lsp.config(lsp, {
     -- Server-specific settings. See `:help lsp-quickstart`
@@ -19,6 +19,7 @@ for _, lsp in ipairs(servers) do
 end
 vim.lsp.enable(servers)
 vim.lsp.enable('gopls')
+
 if IsWorkSource == 1 then
   vim.diagnostic.config({
     virtual_text = false,

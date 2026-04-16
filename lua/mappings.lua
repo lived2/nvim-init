@@ -156,6 +156,8 @@ function Run()
     vim.cmd('!go run % ' .. args)
   elseif vim.bo.filetype == 'python' then
     vim.cmd('!python3 % ' .. args)
+  elseif vim.bo.filetype == 'c3' then
+    vim.cmd('!c3c run ' .. args)
   end
 end
 
@@ -187,6 +189,11 @@ function RunDebug()
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     if not dap_session then
       vim.cmd('!cmake --build target/debug -j' .. core_count)
+    end
+    vim.cmd('DapContinue')
+  elseif vim.bo.filetype == 'c3' then
+    if not dap_session then
+      vim.cmd('!c3c build')
     end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'python' then
