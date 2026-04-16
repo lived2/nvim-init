@@ -30,7 +30,7 @@ require("dap-disasm").setup({
   sign = "DapStopped",
 
   -- Number of instructions to show before the memory reference
-  ins_before_memref = 64,
+  ins_before_memref = 32,
 
   -- Number of instructions to show after the memory reference
   ins_after_memref = 64,
