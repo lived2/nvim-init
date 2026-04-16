@@ -183,7 +183,7 @@ autocmd('BufEnter', {
       local opts = require "configs.dap_view_go_config"
       require("dap-view").setup(opts)
     elseif IsWin == 1 then
-      if ft == "c" or ft == "cpp" or ft == "rust" then
+      if ft == "c" or ft == "cpp" or ft == "rust" or ft == "c3" then
         local opts = require "configs.dap_view_go_config"
         require("dap-view").setup(opts)
       end
