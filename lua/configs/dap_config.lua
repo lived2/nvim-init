@@ -38,12 +38,22 @@ local function file_exists(name)
   end
 end
 
+local os = vim.loop.os_uname().sysname
+local jit = require("jit")
+
 local function target_path(sub_path)
   local target_program = vim.fn.getcwd() .. sub_path .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+  if os == "Windows_NT" then
+    target_program = target_program .. '.exe'
+  end
   if file_exists(target_program) then
     return target_program
   else
-    return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. sub_path .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t"), 'file')
+    target_program = vim.fn.getcwd() .. sub_path .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+    if os == "Windows_NT" then
+      target_program = target_program .. '.exe'
+    end
+    return vim.fn.input('Path to executable: ', target_program, 'file')
   end
 end
 
@@ -51,8 +61,6 @@ local launch_name = 'LLDB: Launch'
 local launch_args_name = 'LLDB: Launch (args)'
 
 -- C/C++/Rust/C3
-local os = vim.loop.os_uname().sysname
-local jit = require("jit")
 if os == "Windows_NT" then
   LLDB_PATH = 'C:\\msys64\\clang64\\bin\\lldb-dap.exe'
   if jit.arch == "arm64" then
