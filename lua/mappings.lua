@@ -149,7 +149,8 @@ function Run()
   local args = vim.fn.input("Arguments: ")
   print('\n')
   if vim.bo.filetype == 'rust' then
-    vim.cmd('RustLsp runnables ' .. args)
+    --vim.cmd('RustLsp runnables ' .. args)
+    vim.cmd('!cargo run ' .. args)
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     vim.cmd('!cmake --build target/debug -j' .. core_count .. ' ; cd target/debug ; ./run.sh ' .. args)
   elseif vim.bo.filetype == 'go' then
