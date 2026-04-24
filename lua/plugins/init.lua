@@ -180,12 +180,14 @@ return {
     end,
   },
   ]]
+  --[[
   {
     "nvim-treesitter/nvim-treesitter-context",
     init = function()
       return require "configs.treesitter-context"
     end,
   },
+  ]]
   {
     'saecki/crates.nvim',
     ft = { "rust", "toml" },
