@@ -54,10 +54,12 @@ map('i', '<F9>', '<ESC>:DapToggleBreakpoint<CR>')
 map('n', '<F10>', ':w!<CR>')
 map('i', '<F10>', '<ESC>:w!<CR>')
 
+--[[
 if IsWork == 1 then
   map('n', '<F11>', ':lua ToggleLSPDiag()<CR>')
   map('i', '<F11>', '<ESC>:lua ToggleLSPDiag()<CR>')
 end
+]]
 
 map('n', '<F12>', ':qall<CR>')
 map('i', '<F12>', '<ESC>:qall<CR>')
