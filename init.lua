@@ -200,8 +200,11 @@ end
 
 local workspace_paths = {
   "/Users/lived/project/",
-  "/home/lived/project",
+  "/home/lived/project/",
   "/usr2/seonggoo/build/project/",
+  "/Users/lived/gh/",
+  "/home/lived/gh/",
+  "/usr2/seonggoo/gh/",
 }
 
 local ctags_paths = {

@@ -1,7 +1,7 @@
-local options = {
+require("conform").setup({
   -- Map of filetype to formatters
   formatters_by_ft = {
-    --lua = { "stylua" },
+    lua = { "stylua" },
     cpp = { "clang-format" },
     -- Conform will run multiple formatters sequentially
     go = { "goimports", "gofmt" },
@@ -46,6 +46,4 @@ local options = {
   notify_on_error = true,
   -- Conform will notify you when no formatters are available for the buffer
   notify_no_formatters = true,
-}
-
-return options
+})
