@@ -15,16 +15,6 @@ return {
       require "configs.lspconfig"
     end,
   },
-
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
   {
     "williamboman/mason.nvim",
     opts = {
@@ -168,6 +158,21 @@ return {
     init = function()
       require('nvim-dap-repl-highlights').setup()
     end,
+  },
+  --[[
+  {
+    "nvim-neorg/neorg",
+    build = ":Neorg sync-parsers", -- This helper command installs the parser for you
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("neorg").setup {
+        -- your neorg config
+      }
+    end,
+  },
+  ]]
+  {
+    require "configs.treesitter"
   },
   --[[
   {
