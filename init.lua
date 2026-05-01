@@ -205,6 +205,7 @@ local workspace_paths = {
   "/Users/lived/gh/",
   "/home/lived/gh/",
   "/usr2/seonggoo/gh/",
+  "D:\\workspace",
 }
 
 local ctags_paths = {

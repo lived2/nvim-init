@@ -99,6 +99,7 @@ return {
     local group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true })
 
     local ignore_filetypes = {
+      'text',
       'checkhealth',
       'lazy',
       'lazy_backdrop',
@@ -110,6 +111,7 @@ return {
       'dap-repl',
       'dap-view',
       'dap-view-term',
+      'NvimTree',
       'NvTerm_sp',
       'TelescopePrompt',
       'TelescopeResults',
