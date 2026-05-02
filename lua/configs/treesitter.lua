@@ -115,6 +115,8 @@ return {
       'NvTerm_sp',
       'TelescopePrompt',
       'TelescopeResults',
+      'cmp_menu',
+      'cmp_docs',
     }
 
     -- Auto-install parsers and enable highlighting on FileType
