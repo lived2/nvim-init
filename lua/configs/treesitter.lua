@@ -46,7 +46,7 @@ return {
           'fish',
           'git_config',
           'git_rebase',
-          'gitcommit',
+          --'gitcommit',
           'gitignore',
           'html',
           'javascript',
