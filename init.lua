@@ -43,6 +43,7 @@ local opt = vim.opt
 opt.clipboard = ""
 opt.wrapscan = false
 opt.scrolloff = 10
+opt.jumpoptions = 'view'
 opt.expandtab = true
 opt.cinoptions = "l1,g0,:0,N-s"
 
