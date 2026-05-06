@@ -235,7 +235,8 @@ local mappings = {
   { 'n', "<Leader>rcu", function() require('crates').upgrade_all_crates() end, "Update crates" },
 
   -- Term
-  { toggle_modes, "<F2>", function() require("nvchad.term").toggle { pos = "sp", id = "bottom term" } end, "Toggle Terminal" },
+  { toggle_modes, "<F2>", function() require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" } end, "Toggle Terminal" },
+  { toggle_modes, "<leader>h", function() require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" } end, "Toggle Terminal" },
 
   -- NvimTree
   { 'n', "<Leader>fe", "<cmd> NvimTreeToggle <CR>", "NvimTreeToggle" },
