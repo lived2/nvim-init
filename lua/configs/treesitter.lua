@@ -131,6 +131,9 @@ return {
         local lang = vim.treesitter.language.get_lang(event.match) or event.match
         local buf = event.buf
 
+        if lang == '' then
+          return
+        end
         if parsers_failed[lang] then
           return
         end
