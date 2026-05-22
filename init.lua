@@ -369,26 +369,38 @@ local function open_nvim_tree(data)
 end
 autocmd('VimEnter', { callback = open_nvim_tree })
 
-if vim.g.neovide then
+if vim.g.neovide or vim.g.zonvie_channel then
   -- Put anything you want to happen only in Neovide here
   if IsWin == 1 then
-    local width = 0
-    local handle = io.popen("wmic path Win32_VideoController get CurrentHorizontalResolution")
-    if handle ~= nil then
-      width = handle:read()
-      width = handle:read("*n")
-      handle:close()
-    end
+    local result = vim.system({
+      "powershell",
+      "-Command",
+      "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Screen]::PrimaryScreen.Bounds.Width"
+    }, { text = true }):wait()
 
-    if width == 1920 then
-      vim.o.guifont = "JetBrainsMono Nerd Font:h10"
-    elseif width == 2560 then
-      vim.o.guifont = "JetBrainsMono Nerd Font:h11"
-    else
-      vim.o.guifont = "JetBrainsMono Nerd Font:h11"
+    local width = tonumber(result.stdout)
+
+    if vim.g.neovide then
+      if width == 1920 then
+        vim.o.guifont = "JetBrainsMono Nerd Font:h10"
+      elseif width == 2560 then
+        vim.o.guifont = "JetBrainsMono Nerd Font:h11"
+      else
+        vim.o.guifont = "JetBrainsMono Nerd Font:h11"
+      end
+      vim.o.linespace = -2
+    elseif vim.g.zonvie_channel then
+      if width == 1920 then
+        vim.o.guifont = "JetBrainsMono Nerd Font:h12"
+      elseif width == 2560 then
+        vim.o.guifont = "JetBrainsMono Nerd Font:h14"
+      else
+        vim.o.guifont = "JetBrainsMono Nerd Font:h14"
+      end
+      vim.o.linespace = -2
     end
-    vim.o.linespace = -2
   else
+    -- Not Windows
     vim.o.guifont = "JetBrainsMono Nerd Font:h13"
   end
   -- Additional neovide
