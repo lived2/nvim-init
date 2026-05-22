@@ -117,6 +117,7 @@ return {
       'TelescopeResults',
       'cmp_menu',
       'cmp_docs',
+      'dosbatch',
     }
 
     -- Auto-install parsers and enable highlighting on FileType
