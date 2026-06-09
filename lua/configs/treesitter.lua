@@ -118,6 +118,7 @@ return {
       'cmp_menu',
       'cmp_docs',
       'dosbatch',
+      'conform-info',
     }
 
     -- Auto-install parsers and enable highlighting on FileType
