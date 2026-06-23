@@ -119,6 +119,7 @@ return {
       'cmp_docs',
       'dosbatch',
       'conform-info',
+      'gitsendemail',
     }
 
     -- Auto-install parsers and enable highlighting on FileType
