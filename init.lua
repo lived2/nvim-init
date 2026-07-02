@@ -177,7 +177,8 @@ autocmd('BufEnter', {
       require('cmp').setup.buffer { enabled = false }
     end
     -- Change tab size for specific path
-    local cur_path = vim.fn.getcwd()
+    --local cur_path = vim.fn.getcwd()
+    local cur_path = vim.fn.expand('%:p')
     for _, path in ipairs(qc_kernel_paths) do
       local start_pos, _ = string.find(cur_path, path, 1, true)
       if start_pos ~= nil then
