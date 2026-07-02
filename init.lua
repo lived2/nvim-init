@@ -149,6 +149,14 @@ autocmd({'BufWinEnter', 'FileType'}, {
   callback = run
 })
 
+local qc_kernel_paths = {
+  "/vendor/qcom/opensource/display-drivers/",
+}
+
+local qc_cpp_four_tab_paths = {
+  "/frameworks/native/services/",
+}
+
 autocmd('BufEnter', {
   callback = function()
     local ft = vim.bo.filetype
@@ -169,14 +177,25 @@ autocmd('BufEnter', {
       require('cmp').setup.buffer { enabled = false }
     end
     -- Change tab size for specific path
-    --[[
-    local path = vim.fn.getcwd()
-    if string.find(path, "qcom") then
-      opt.shiftwidth = 2
-      opt.tabstop = 2
-      opt.softtabstop = 2
+    local cur_path = vim.fn.getcwd()
+    for _, path in ipairs(qc_kernel_paths) do
+      local start_pos, _ = string.find(cur_path, path, 1, true)
+      if start_pos ~= nil then
+        opt.shiftwidth = 2
+        opt.tabstop = 2
+        opt.softtabstop = 2
+        opt.expandtab = false
+      end
     end
-    --]]
+    for _, path in ipairs(qc_cpp_four_tab_paths) do
+      local start_pos, _ = string.find(cur_path, path, 1, true)
+      if start_pos ~= nil then
+        opt.shiftwidth = 4
+        opt.tabstop = 4
+        opt.softtabstop = 4
+        opt.expandtab = true
+      end
+    end
     if ft == "python" then
       local opts = require "configs.dap_view_python_config"
       require("dap-view").setup(opts)
