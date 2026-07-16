@@ -6,5 +6,7 @@ mkdir nvim
 
 cd nvim
 
-git clone --depth=1 https://github.com/lived2/nvim-init .
+#git clone --depth=1 https://github.com/lived2/nvim-init .
+
+gh repo clone lived2/nvim-init .
 
