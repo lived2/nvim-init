@@ -1,7 +1,8 @@
 local opts = {
   auto_toggle = true,
   winbar = {
-    sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "disassembly", "repl" },
+    --sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "disassembly", "repl" },
+    sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "disassembly", "repl", "console" },
     default_section = "disassembly",
     show_keymap_hints = false,
     -- Add your own sections
@@ -23,13 +24,14 @@ local opts = {
     }
   },
   windows = {
-    size = 0.25,
-    position = "below",
+    size = 0.5,
+    position = "left",
     terminal = {
-      size = 0.5,
+      size = 0.3,
       position = "right",
       -- List of debug adapters for which the terminal should be ALWAYS hidden
-      hide = {},
+      --hide = {},
+      hide = true,
     },
   },
 }
