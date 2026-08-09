@@ -3,7 +3,8 @@ local opts = {
   winbar = {
     --sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "disassembly", "repl" },
     sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "disassembly", "repl", "console" },
-    default_section = "disassembly",
+    --default_section = "disassembly",
+    default_section = "console",
     show_keymap_hints = false,
     -- Add your own sections
     custom_sections = {},
