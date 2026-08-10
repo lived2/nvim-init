@@ -1,8 +1,7 @@
 local opts = {
   auto_toggle = true,
   winbar = {
-    --sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "disassembly", "repl" },
-    sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "disassembly", "repl", "console" },
+    sections = { "watches", "scopes", "exceptions", "repl", "sessions", "breakpoints", "threads", "disassembly", "console" },
     --default_section = "disassembly",
     default_section = "console",
     show_keymap_hints = false,

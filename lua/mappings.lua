@@ -31,9 +31,9 @@ map('i', '<F6>', '<ESC>:w!<CR><cmd>:lua Run()<CR>')
 map('n', '<F7>', ':DapStepOver<CR>')
 
 if (IsMac == 1 or IsWSL == 1) and not vim.g.neovide then -- iTerm2 in Mac case
-  map('n', '<F17>', ':DapTerminate<CR>')
-  map('n', '<F35>', ':DapStepInto<CR>')
-  map('n', '<F23>', ':DapStepOut<CR>')
+  map('n', '<F17>', ':DapTerminate<CR>') -- Shift+F5
+  map('n', '<F35>', ':DapStepInto<CR>')  -- Ctrl+F11
+  map('n', '<F23>', ':DapStepOut<CR>')   -- Shift+F11
   if IsMac == 0 then
     map('n', '<F41>', '<cmd>:lua require("dap").restart()<CR>')
   end
@@ -248,6 +248,7 @@ local mappings = {
   { 'n', "<Leader>do", "<cmd> DapStepOver <CR>", "Step Over" },
   { 'n', "<Leader>di", "<cmd> DapStepInto <CR>", "Step Into" },
   { 'n', "<Leader>du", "<cmd> DapStepOut <CR>", "Step Out" },
+  { 'n', "<Leader>dh", "<cmd> DapViewHover <CR>", "Dap View Hover" },
 
   -- DAP python
   { 'n', "<Leader>dpr", function() require('dap-python').test_method() end, "DAP Python" },

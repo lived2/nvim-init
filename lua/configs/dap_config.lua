@@ -13,16 +13,16 @@ end
 
 
 dap.listeners.after.event_initialized['me.dap.keys'] = function()
-  set("n", "<down>", dap.step_over)
-  set("n", "<left>", dap.step_out)
-  set("n", "<right>", dap.step_into)
+  --set("n", "<down>", dap.step_over)
+  --set("n", "<left>", dap.step_out)
+  --set("n", "<right>", dap.step_into)
   --set("n", "<F12>", dap.terminate)
   set("n", "<F12>", ':DapTerminate<CR>')
 end
 local reset_keys = function()
-  set("n", "<down>", 'j')
-  set("n", "<left>", 'h')
-  set("n", "<right>", 'l')
+  --set("n", "<down>", 'j')
+  --set("n", "<left>", 'h')
+  --set("n", "<right>", 'l')
   set('n', '<F12>', ':qall<CR>')
 end
 dap.listeners.after.event_terminated['me.dap.keys'] = reset_keys
