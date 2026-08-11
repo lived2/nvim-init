@@ -248,7 +248,7 @@ local mappings = {
   { 'n', "<Leader>do", "<cmd> DapStepOver <CR>", "Step Over" },
   { 'n', "<Leader>di", "<cmd> DapStepInto <CR>", "Step Into" },
   { 'n', "<Leader>du", "<cmd> DapStepOut <CR>", "Step Out" },
-  { 'n', "<Leader>dh", "<cmd> DapViewHover <CR>", "Dap View Hover" },
+  --{ 'n', "<Leader>dh", "<cmd> DapViewHover <CR>", "Dap View Hover" },
 
   -- DAP python
   { 'n', "<Leader>dpr", function() require('dap-python').test_method() end, "DAP Python" },

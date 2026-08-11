@@ -17,13 +17,17 @@ dap.listeners.after.event_initialized['me.dap.keys'] = function()
   --set("n", "<left>", dap.step_out)
   --set("n", "<right>", dap.step_into)
   --set("n", "<F12>", dap.terminate)
-  set("n", "<F12>", ':DapTerminate<CR>')
+  set('n', "<F12>", ":DapTerminate<CR>")
+  local ft = vim.bo.filetype
+  if ft == "c" or ft == "cpp" then
+    set('n', "<Leader>dh", ":DapViewHover <CR>")
+  end
 end
 local reset_keys = function()
   --set("n", "<down>", 'j')
   --set("n", "<left>", 'h')
   --set("n", "<right>", 'l')
-  set('n', '<F12>', ':qall<CR>')
+  set('n', "<F12>", ":qall<CR>")
 end
 dap.listeners.after.event_terminated['me.dap.keys'] = reset_keys
 dap.listeners.after.disconnected['me.dap.keys'] = reset_keys
