@@ -20,7 +20,8 @@ dap.listeners.after.event_initialized['me.dap.keys'] = function()
   set('n', "<F12>", ":DapTerminate<CR>")
   local ft = vim.bo.filetype
   if ft == "c" or ft == "cpp" then
-    set('n', "<Leader>dh", ":DapViewHover <CR>")
+    set('n', "<Leader>dh", ":DapViewHover!<CR>")
+    set('n', "<Leader>dw", ":DapViewWatch<CR>")
   end
 end
 local reset_keys = function()
@@ -28,6 +29,11 @@ local reset_keys = function()
   --set("n", "<left>", 'h')
   --set("n", "<right>", 'l')
   set('n', "<F12>", ":qall<CR>")
+  local ft = vim.bo.filetype
+  if ft == "c" or ft == "cpp" then
+    pcall(keymap.del, 'n', "<Leader>dh")
+    pcall(keymap.del, 'n', "<Leader>dw")
+  end
 end
 dap.listeners.after.event_terminated['me.dap.keys'] = reset_keys
 dap.listeners.after.disconnected['me.dap.keys'] = reset_keys
