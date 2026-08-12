@@ -111,6 +111,7 @@ return {
       'dap-repl',
       'dap-view',
       'dap-view-term',
+      'dap-view-hover',
       'NvimTree',
       'NvTerm_sp',
       'TelescopePrompt',

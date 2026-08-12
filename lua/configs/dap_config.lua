@@ -17,7 +17,7 @@ dap.listeners.after.event_initialized['me.dap.keys'] = function()
   --set("n", "<left>", dap.step_out)
   --set("n", "<right>", dap.step_into)
   --set("n", "<F12>", dap.terminate)
-  set('n', "<F12>", ":DapTerminate<CR>")
+  set('n', "<F12>", ":DapTerminate<CR>:close!<CR>")
   local ft = vim.bo.filetype
   if ft == "c" or ft == "cpp" then
     set('n', "<Leader>dh", ":DapViewHover!<CR>")
