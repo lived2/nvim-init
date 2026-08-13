@@ -8,6 +8,7 @@ local M = {}
 M.base46 = {
 	--theme = "onedark",
   theme = 'catppuccin',
+  hl_override = require("highlights").override,
 
 	-- hl_override = {
 	-- 	Comment = { italic = true },
@@ -19,7 +20,10 @@ M.base46 = {
 M.ui = {
   tabufline = {
     lazyload = false
-  }
+  },
+  telescope = {
+    style = "bordered",
+  },
 }
 
 return M
