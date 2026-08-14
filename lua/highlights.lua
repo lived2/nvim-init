@@ -16,6 +16,11 @@ M.override = {
     fg = "#F38BA8",
     bold = true,
   },
+  CursorLine = {
+    bg = "#89b4fa",
+    fg = "#11111b",
+    bold = true,
+  },
 }
 
 return M

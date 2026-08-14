@@ -20,7 +20,10 @@ cmp.setup({
     end,
   },
   window = {
-    completion = cmp.config.window.bordered(),
+    completion = cmp.config.window.bordered({
+      winhighlight =
+        "Normal:Normal,FloatBorder:FloatBorder,CursorLine:CursorLine,Search:None",
+    }),
     documentation = cmp.config.window.bordered(),
   },
   mapping = cmp.mapping.preset.insert({
