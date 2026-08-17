@@ -8,6 +8,8 @@ return {
 
       local actions = require "telescope.actions"
       opts.defaults.mappings.i["<esc>"] = actions.close
+
+      vim.api.nvim_set_hl(0, "TelescopePromptCounter", { fg = "#cba6f7" })
     end,
   },
 }
