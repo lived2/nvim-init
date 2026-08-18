@@ -121,6 +121,7 @@ return {
       'dosbatch',
       'conform-info',
       'gitsendemail',
+      'qf',
     }
 
     -- Auto-install parsers and enable highlighting on FileType
