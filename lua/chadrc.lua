@@ -9,6 +9,7 @@ M.base46 = {
 	--theme = "onedark",
   theme = 'catppuccin',
   hl_override = require("highlights").override,
+  hl_add = require("highlights").add,
 
 	-- hl_override = {
 	-- 	Comment = { italic = true },

@@ -47,6 +47,7 @@ opt.jumpoptions = 'view'
 opt.expandtab = true
 opt.cinoptions = "l1,g0,:0,N-s"
 opt.winborder = "rounded"
+opt.pumborder = "rounded"
 
 if vim.g.neovide then
   opt.clipboard = "unnamedplus"
