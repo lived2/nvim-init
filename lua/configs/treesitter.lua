@@ -122,6 +122,7 @@ return {
       'conform-info',
       'gitsendemail',
       'qf',
+      'conf',
     }
 
     -- Auto-install parsers and enable highlighting on FileType
