@@ -106,7 +106,10 @@ set_hl(0, "NeoTreeGitAdded", {
 local nt = require("neo-tree.command")
 local map = vim.keymap.set
 
-map("n", "<leader>ee", "<Cmd>Neotree toggle last<CR>")
+map("n", "<leader>ee", function()
+  vim.cmd("Neotree toggle last")
+  vim.api.nvim_set_current_win(Win_code)
+end)
 
 map("n", "<leader>ef", function()
   nt.execute({
