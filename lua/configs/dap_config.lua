@@ -6,11 +6,26 @@
 
 local dap = require("dap")
 
-local keymap = vim.keymap
+local map = vim.keymap
 local function set(mode, lhs, rhs)
-  keymap.set(mode, lhs, rhs, { silent = true })
+  map.set(mode, lhs, rhs, { silent = true })
 end
 
+-- Close neo-tree at DAP starts
+dap.listeners.before.attach.dapui_config = function()
+  vim.cmd("Neotree close")
+end
+dap.listeners.before.event_initialized.dapui_config = function()
+  vim.cmd("Neotree close")
+end
+
+-- Re-open neo-tree at DAP ends
+dap.listeners.before.event_terminated.dapui_config = function()
+  vim.cmd("Neotree show last")
+end
+dap.listeners.before.event_exited.dapui_config = function()
+  vim.cmd("Neotree show last")
+end
 
 dap.listeners.after.event_initialized['me.dap.keys'] = function()
   --set("n", "<down>", dap.step_over)
@@ -31,8 +46,8 @@ local reset_keys = function()
   set('n', "<F12>", ":qall<CR>")
   local ft = vim.bo.filetype
   if ft == "c" or ft == "cpp" then
-    pcall(keymap.del, 'n', "<Leader>dh")
-    pcall(keymap.del, 'n', "<Leader>dw")
+    pcall(map.del, 'n', "<Leader>dh")
+    pcall(map.del, 'n', "<Leader>dw")
   end
 end
 dap.listeners.after.event_terminated['me.dap.keys'] = reset_keys

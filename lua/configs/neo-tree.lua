@@ -106,6 +106,8 @@ set_hl(0, "NeoTreeGitAdded", {
 local nt = require("neo-tree.command")
 local map = vim.keymap.set
 
+map("n", "<leader>ee", "<Cmd>Neotree toggle last<CR>")
+
 map("n", "<leader>ef", function()
   nt.execute({
     source = "filesystem",
