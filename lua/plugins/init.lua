@@ -241,6 +241,7 @@ return {
     -- or use config
     -- config = function(_, opts) require'lsp_signature'.setup({you options}) end
   },
+  --[[
   {
     "hedyhli/outline.nvim",
     lazy = true,
@@ -255,6 +256,7 @@ return {
       },
     },
   },
+  ]]
   {
     "folke/tokyonight.nvim",
     lazy = false,
@@ -297,6 +299,67 @@ return {
     end,
     ]]
   },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-tree/nvim-web-devicons", -- optional, but recommended
+    },
+    lazy = false, -- neo-tree will lazily load itself
+    config = function()
+      require "configs.neo-tree"
+    end,
+  },
+  --[[
+  {
+    "hedyhli/outline.nvim",
+    lazy = false,
+    config = function()
+      require "configs.outline"
+    end,
+  },
+  ]]
+  --[[
+  {
+    'stevearc/aerial.nvim',
+    lazy = false,
+    --opts = {},
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons"
+    },
+    opts = function()
+      require "configs.aerial"
+    end,
+  },
+  ]]
+  --[[
+  {
+    "folke/edgy.nvim",
+    event = "VeryLazy",
+    opts = {
+      left = {
+        {
+          title = "Explorer",
+          ft = "neo-tree",
+          size = {
+            width = 40,
+            height = 0.50,
+          },
+        },
+        {
+          title = "Symbols",
+          ft = "aerial",
+          size = {
+            height = 0.50,
+          },
+        },
+      },
+    },
+  },
+  ]]
   --[[
   {
     'dgagn/diagflow.nvim',

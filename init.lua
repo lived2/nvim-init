@@ -211,7 +211,7 @@ autocmd('BufEnter', {
         require("dap-view").setup(opts)
       end
     end
-    if bt == "" then
+    if bt == "" and ft ~= "neo-tree" then
       print(vim.fn.expand('%:p'))
     end
   end
@@ -361,14 +361,34 @@ local function setup_dap()
   })
 end
 
+--[[
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+    if client and client.name == "clangd" then
+      print("clangd attached")
+    end
+  end,
+})
+]]
+
+local function open_layout()
+  local code_win = vim.api.nvim_get_current_win()
+  vim.cmd("Neotree reveal left")
+  vim.api.nvim_set_current_win(code_win)
+end
+
 --vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, {
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
   callback = function()
     vim.schedule(setup_dap)
+    vim.schedule(open_layout)
   end,
 })
 
 
+--[[
 local function open_nvim_tree(data)
   -- buffer is a directory
   local directory = vim.fn.isdirectory(data.file) == 1
@@ -393,6 +413,7 @@ local function open_nvim_tree(data)
   require("nvim-tree.api").tree.open()
 end
 autocmd('VimEnter', { callback = open_nvim_tree })
+]]
 
 if vim.g.neovide or vim.g.zonvie_channel then
   -- Put anything you want to happen only in Neovide here

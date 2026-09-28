@@ -239,7 +239,7 @@ local mappings = {
   { toggle_modes, "<leader>h", function() require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" } end, "Toggle Terminal" },
 
   -- NvimTree
-  { 'n', "<Leader>fe", "<cmd> NvimTreeToggle <CR>", "NvimTreeToggle" },
+  --{ 'n', "<Leader>fe", "<cmd> NvimTreeToggle <CR>", "NvimTreeToggle" },
 
   -- DAP
   { 'n', "<Leader>dt", "<cmd> DapToggleBreakpoint <CR>", "Add breakpoint at line" },
@@ -254,6 +254,7 @@ local mappings = {
   { 'n', "<Leader>dpr", function() require('dap-python').test_method() end, "DAP Python" },
 }
 
+vim.keymap.del("n", "<leader>e")
 for _, mapping in ipairs(mappings) do
   local opts = { noremap = true, silent = true, desc = mapping[4] }
   map(mapping[1], mapping[2], mapping[3], opts)

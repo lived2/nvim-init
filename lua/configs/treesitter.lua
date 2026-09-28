@@ -123,6 +123,11 @@ return {
       'gitsendemail',
       'qf',
       'conf',
+      'lex',
+      'neo-tree',
+      --'aerial',
+      --'aerial-nav',
+      --'Outline',
     }
 
     -- Auto-install parsers and enable highlighting on FileType
