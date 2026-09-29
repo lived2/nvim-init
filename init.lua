@@ -234,6 +234,8 @@ local workspace_paths = {
   "d:\\workspace",
   "D:\\GitHub",
   "d:\\GitHub",
+  "C:\\D_Drive\\GitHub",
+  "c:\\D_Drive\\GitHub",
 }
 
 local ctags_paths = {
