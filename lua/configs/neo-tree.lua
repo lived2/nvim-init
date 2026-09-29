@@ -32,6 +32,7 @@ require("neo-tree").setup({
     },
   },
   window = {
+    width = 60,
     mappings = {
       ["<Tab>"] = "next_source",
       ["<S-Tab>"] = "prev_source",
