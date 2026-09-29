@@ -63,6 +63,7 @@ if term ~= nil then
 end
 ]]
 
+local back_from_neotree = 0
 Win_code = -1
 IsMac = 0
 IsWin = 0
@@ -213,8 +214,12 @@ autocmd('BufEnter', {
       end
     end
     if bt == "" and ft ~= "neo-tree" then
-      Win_code = vim.api.nvim_get_current_win()
-      print(vim.fn.expand('%:p'))
+      --Win_code = vim.api.nvim_get_current_win()
+      if back_from_neotree == 0 then
+        print(vim.fn.expand('%:p'))
+      else
+        back_from_neotree = 0
+      end
     end
   end
 })
@@ -378,7 +383,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 ]]
 
 local function open_layout()
+  Win_code = vim.api.nvim_get_current_win()
   vim.cmd("Neotree reveal left")
+  back_from_neotree = 1
   vim.api.nvim_set_current_win(Win_code)
 end
 
