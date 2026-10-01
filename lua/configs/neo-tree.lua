@@ -1,17 +1,20 @@
 require("neo-tree").setup({
   close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
   popup_border_style = "", -- "NC"(default) or "" to use 'winborder' on Neovim v0.11+
-  --[[
-  source_selector = {
-    winbar = true,
-    statusline = false,
-  },
-  ]]
   sources = {
     "filesystem",
     "buffers",
     "git_status",
     "document_symbols",
+  },
+  filesystem = {
+    follow_current_file = {
+      enabled = true,
+      leave_dirs_open = true,
+    },
+
+    hijack_netrw_behavior = "open_default",
+    --hijack_netrw_behavior = "disabled",
   },
   document_symbols = {
     follow_cursor = true, -- Automatically highlights and tracks the symbol under the cursor in the current buffer
@@ -36,6 +39,7 @@ require("neo-tree").setup({
     mappings = {
       ["<Tab>"] = "next_source",
       ["<S-Tab>"] = "prev_source",
+      ["<RightMouse>"] = "none",
     },
   },
   default_component_configs = {
@@ -57,13 +61,6 @@ require("neo-tree").setup({
   },
 })
 
-
---[[
-local map = vim.keymap.set
-map("n", "<leader>o", function()
-  vim.cmd("Neotree reveal toggle")
-end)
-]]
 
 local set_hl = vim.api.nvim_set_hl
 

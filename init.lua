@@ -299,6 +299,17 @@ autocmd("FileType", {
   end,
 })
 
+autocmd("FileType", {
+  pattern = "dap-view-hover",
+  callback = function(args)
+    vim.keymap.set("n", "<Esc>", "q", {
+      buffer = args.buf,
+      remap = true,
+      silent = true,
+    })
+  end,
+})
+
 local function setup_dap()
   local ok, base46 = pcall(require, "base46")
   if not ok then return end
@@ -396,7 +407,6 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
     vim.schedule(open_layout)
   end,
 })
-
 
 --[[
 local function open_nvim_tree(data)

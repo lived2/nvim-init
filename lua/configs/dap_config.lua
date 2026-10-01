@@ -11,28 +11,43 @@ local function set(mode, lhs, rhs)
   map.set(mode, lhs, rhs, { silent = true })
 end
 
--- Close neo-tree at DAP starts
-dap.listeners.before.attach.dapui_config = function()
-  vim.cmd("Neotree close")
-end
-dap.listeners.before.event_initialized.dapui_config = function()
-  vim.cmd("Neotree close")
+local editor_popup = require("configs.editor_popup")
+
+dap.listeners.after.event_initialized["editor_popup"] = function()
+  editor_popup.set_dap_mode(true)
 end
 
+local function leave_dap_mode()
+  editor_popup.set_dap_mode(false)
+end
+
+dap.listeners.after.event_terminated["editor_popup"] = leave_dap_mode
+dap.listeners.after.event_exited["editor_popup"] = leave_dap_mode
+dap.listeners.after.disconnect["editor_popup"] = function()
+  editor_popup.set_dap_mode(false)
+end
+
+-- Close neo-tree at DAP starts
+local function neotree_close()
+  vim.cmd("Neotree close")
+end
+dap.listeners.before.attach.dapui_config = neotree_close
+dap.listeners.before.event_initialized.dapui_config = neotree_close
+
 -- Re-open neo-tree at DAP ends
-dap.listeners.before.event_terminated.dapui_config = function()
+local function neotree_open()
   vim.cmd("Neotree show last")
 end
-dap.listeners.before.event_exited.dapui_config = function()
-  vim.cmd("Neotree show last")
-end
+dap.listeners.before.event_terminated.dapui_config = neotree_open
+dap.listeners.before.event_exited.dapui_config = neotree_open
 
 dap.listeners.after.event_initialized['me.dap.keys'] = function()
   --set("n", "<down>", dap.step_over)
   --set("n", "<left>", dap.step_out)
   --set("n", "<right>", dap.step_into)
   --set("n", "<F12>", dap.terminate)
-  set('n', "<F12>", ":DapTerminate<CR>:close!<CR>")
+  --set('n', "<F12>", ":DapTerminate<CR>:close!<CR>")
+  set('n', "<F12>", ":DapTerminate<CR>")
   local ft = vim.bo.filetype
   if ft == "c" or ft == "cpp" then
     set('n', "<Leader>dh", ":DapViewHover!<CR>")
