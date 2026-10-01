@@ -1,19 +1,10 @@
 local M = {}
 
-local common_commands =
-  require("neo-tree.sources.common.commands")
-
-local filesystem_commands =
-  require("neo-tree.sources.filesystem.commands")
-
-local buffer_commands =
-  require("neo-tree.sources.buffers.commands")
-
-local git_commands =
-  require("neo-tree.sources.git_status.commands")
-
-local symbol_commands =
-  require("neo-tree.sources.document_symbols.commands")
+local common_commands = require("neo-tree.sources.common.commands")
+local filesystem_commands = require("neo-tree.sources.filesystem.commands")
+--local buffer_commands = require("neo-tree.sources.buffers.commands")
+local git_commands = require("neo-tree.sources.git_status.commands")
+local symbol_commands = require("neo-tree.sources.document_symbols.commands")
 
 local popup_context = {
   state = nil,
@@ -192,7 +183,9 @@ local function add_filesystem_menu(node)
   end
 
   if node.type == "directory" then
-    add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", common_commands.open)
+    --add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", common_commands.open)
+    --add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", require("configs.neo-tree_popup").toggle_dir)
+    add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", filesystem_commands.toggle_node)
     add_menu("10.20", "📂 Set as Root", "filesystem_set_root", filesystem_commands.set_root)
     add_menu("10.30", "📄 New File", "filesystem_add_file", filesystem_commands.add)
     add_menu("10.40", "📁 New Directory", "filesystem_add_directory", filesystem_commands.add_directory)
@@ -361,5 +354,30 @@ M.close_nvchad_buffer = function(state)
     end
   end
 end
+
+--[[
+M.toggle_dir = function()
+  local manager = require("neo-tree.sources.manager")
+  -- 1. Fetch the active state of the filesystem source
+  local real_state = manager.get_state("filesystem")
+  if not real_state or not real_state.tree then
+    real_state = manager.get_state("buffers")
+  end
+
+  if not real_state or not real_state.tree then
+    vim.notify("Neo-tree active state not found.", vim.log.levels.ERROR)
+    return
+  end
+
+  -- 2. Retrieve the currently targeted node from the core tree
+  local real_node = real_state.tree:get_node()
+  if not real_node then return end
+
+  -- 3. Execute the official core filesystem toggle command
+  -- This ensures the 'loaded' status is correctly set, preventing follow_current_file from collapsing it.
+  local fs_commands = require("neo-tree.sources.filesystem.commands")
+  fs_commands.toggle_node(real_state)
+end
+]]
 
 return M
