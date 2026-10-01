@@ -231,7 +231,8 @@ local function add_buffers_menu(node)
   end
 
   add_menu("10.10", "📄 Open Buffer", "buffer_open", common_commands.open)
-  add_menu("10.20", "❌ Delete Buffer", "buffer_delete", buffer_commands.buffer_delete)
+  --add_menu("10.20", "❌ Delete Buffer", "buffer_delete", buffer_commands.buffer_delete)
+  add_menu("10.20", "❌ Close Buffer", "buffer_delete", require("configs.neo-tree_popup").close_nvchad_buffer)
   add_separator("10.99")
 end
 
@@ -344,6 +345,21 @@ function M.execute(id)
   vim.schedule(function()
     action(state)
   end)
+end
+
+M.close_nvchad_buffer = function(state)
+  if not state or not state.tree then
+    vim.notify("Cannot find Neo-tree state.", vim.log.levels.ERROR)
+    return
+  end
+
+  local node = state.tree:get_node()
+  if node and node.type == "file" then
+    local bufnr = node.extra.bufnr
+    if bufnr then
+      require("nvchad.tabufline").close_buffer(bufnr)
+    end
+  end
 end
 
 return M

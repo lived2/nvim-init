@@ -16,6 +16,13 @@ require("neo-tree").setup({
     hijack_netrw_behavior = "open_default",
     --hijack_netrw_behavior = "disabled",
   },
+  buffers = {
+    window = {
+      mappings = {
+        ["d"] = require("configs.neo-tree_popup").close_nvchad_buffer,
+      }
+    }
+  },
   document_symbols = {
     follow_cursor = true, -- Automatically highlights and tracks the symbol under the cursor in the current buffer
   },
