@@ -13,43 +13,6 @@ local popup_context = {
 
 local separator_name = "────────────────────────"
 
---[[
--- Menu entries managed by this module.
-local all_menu_names = {
-  -- Filesystem
-  "📂 Open",
-  "📁 Expand or Collapse",
-  "📂 Set as Root",
-  "📄 New File",
-  "📁 New Directory",
-  "📄 New File in Root",
-  "📁 New Directory in Root",
-  "✏ Rename",
-  "🗑 Delete",
-  "🔄 Refresh",
-
-  -- Buffers
-  "📄 Open Buffer",
-  "❌ Delete Buffer",
-
-  -- Git status
-  "➕ Stage",
-  "↩ Unstage",
-  "⚠ Revert",
-  "✓ Commit",
-
-  -- Document symbols
-  "📍 Jump to Symbol",
-  "🔍 Preview Symbol",
-  "✏ Rename Symbol",
-  "↔ Open in Split",
-  "↕ Open in VSplit",
-
-  -- Visual separator
-  separator_name,
-}
-]]
-
 -- Escape characters used by the :menu command.
 local function escape_menu_name(name)
   return name
@@ -187,7 +150,13 @@ local function add_filesystem_menu(node)
     --add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", require("configs.neo-tree_popup").toggle_dir)
     add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", filesystem_commands.toggle_node)
     add_menu("10.20", "📂 Set as Root", "filesystem_set_root", filesystem_commands.set_root)
-    add_menu("10.30", "📄 New File", "filesystem_add_file", filesystem_commands.add)
+    --add_menu("10.30", "📄 New File", "filesystem_add_file", filesystem_commands.add)
+    add_menu("10.30", "📄 New File", "filesystem_add_file",
+      function(state)
+        state.config = state.config or {}
+        filesystem_commands.add(state)
+      end
+    )
     add_menu("10.40", "📁 New Directory", "filesystem_add_directory", filesystem_commands.add_directory)
     add_menu("10.50", "✏ Rename", "filesystem_rename", filesystem_commands.rename)
     add_menu("10.60", "🗑 Delete", "filesystem_delete", filesystem_commands.delete)
@@ -197,7 +166,13 @@ local function add_filesystem_menu(node)
   end
 
   -- Fallback for root, message, or unknown node types.
-  add_menu("10.10", "📄 New File", "filesystem_add_file", filesystem_commands.add)
+  --add_menu("10.10", "📄 New File", "filesystem_add_file", filesystem_commands.add)
+  add_menu("10.10", "📄 New File", "filesystem_add_file",
+    function(state)
+      state.config = state.config or {}
+      filesystem_commands.add(state)
+    end
+  )
   add_menu("10.20", "📁 New Directory", "filesystem_add_directory", filesystem_commands.add_directory)
   add_menu("10.30", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
   add_separator("10.99")
