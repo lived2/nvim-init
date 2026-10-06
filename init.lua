@@ -63,7 +63,7 @@ if term ~= nil then
 end
 ]]
 
-local back_from_neotree = 0
+--local back_from_neotree = 0
 Win_code = -1
 IsMac = 0
 IsWin = 0
@@ -215,11 +215,13 @@ autocmd('BufEnter', {
     end
     if bt == "" and ft ~= "neo-tree" then
       --Win_code = vim.api.nvim_get_current_win()
+      --[[
       if back_from_neotree == 0 then
         print(vim.fn.expand('%:p'))
       else
         back_from_neotree = 0
       end
+      ]]
     end
   end
 })
@@ -289,6 +291,17 @@ autocmd('BufReadPost', {
   end,
 })
 ]]
+
+autocmd("FileType", {
+  pattern = "lazy",
+  callback = function(event)
+    vim.keymap.set("n", "<Esc>", "<Cmd>close<CR>", {
+      buffer = event.buf,
+      silent = true,
+      desc = "Close Lazy",
+    })
+  end,
+})
 
 -- DAP View position
 autocmd("FileType", {
