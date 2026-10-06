@@ -214,6 +214,11 @@ end
 
 
 local function smart_quit()
+  if vim.fn.getcmdwintype() ~= "" then
+    vim.cmd("quit")
+    return
+  end
+
   local real_buffers = {}
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
