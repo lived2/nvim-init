@@ -21,25 +21,6 @@ local function escape_menu_name(name)
     :gsub("%.", "\\.")
 end
 
---[[
--- Remove a menu without reporting an error when it does not exist.
-local function safe_unmenu(name)
-  pcall(function()
-    vim.cmd(
-      "silent! aunmenu PopUp."
-        .. escape_menu_name(name)
-    )
-  end)
-end
-
--- Remove every menu item created by this module.
-local function clear_popup()
-  for _, name in ipairs(all_menu_names) do
-    safe_unmenu(name)
-  end
-end
-]]
-
 local registry = require("configs.popup_registry")
 
 local function clear_popup()
@@ -48,7 +29,11 @@ end
 
 -- Register an action and create the corresponding PopUp entry.
 local function add_menu(priority, name, id, action)
-  popup_context.actions[id] = action
+  --popup_context.actions[id] = action
+  popup_context.actions[id] = function(state)
+    state.config = state.config or {}
+    return action(state)
+  end
 
   local command = (
     "amenu %s PopUp.%s "
@@ -68,42 +53,6 @@ end
 local function add_separator(priority)
   add_menu(priority, separator_name, "separator", function() end)
 end
-
--- Execute the selected action after the Vim PopUp menu has closed.
---[[
-_G.NeoTreePopupAction = function(id)
-  -- Ignore clicks on the visual separator.
-  if id == "separator" then
-    return
-  end
-
-  local action = popup_context.actions[id]
-  local state = popup_context.state
-
-  if not action then
-    vim.notify(
-      "Neo-tree popup action not found: "
-        .. tostring(id),
-      vim.log.levels.ERROR
-    )
-    return
-  end
-
-  if not state then
-    vim.notify(
-      "Neo-tree popup state is not available",
-      vim.log.levels.ERROR
-    )
-    return
-  end
-
-  -- Commands such as rename and add open another window.
-  -- Delay execution until the Vim PopUp menu is closed.
-  vim.schedule(function()
-    action(state)
-  end)
-end
-]]
 
 -- Temporarily select the root line before invoking an action.
 local function run_on_root(state, action)
@@ -136,6 +85,8 @@ end
 
 -- Build filesystem menus according to the selected node type.
 local function add_filesystem_menu(node)
+  --vim.notify(("MENU BUILD : %s (%s)"):format(node.name, node.type))
+
   if node.type == "file" then
     add_menu("10.10", "📂 Open", "filesystem_open", common_commands.open)
     add_menu("10.20", "✏ Rename", "filesystem_rename", filesystem_commands.rename)
@@ -150,13 +101,7 @@ local function add_filesystem_menu(node)
     --add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", require("configs.neo-tree_popup").toggle_dir)
     add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", filesystem_commands.toggle_node)
     add_menu("10.20", "📂 Set as Root", "filesystem_set_root", filesystem_commands.set_root)
-    --add_menu("10.30", "📄 New File", "filesystem_add_file", filesystem_commands.add)
-    add_menu("10.30", "📄 New File", "filesystem_add_file",
-      function(state)
-        state.config = state.config or {}
-        filesystem_commands.add(state)
-      end
-    )
+    add_menu("10.30", "📄 New File", "filesystem_add_file", filesystem_commands.add)
     add_menu("10.40", "📁 New Directory", "filesystem_add_directory", filesystem_commands.add_directory)
     add_menu("10.50", "✏ Rename", "filesystem_rename", filesystem_commands.rename)
     add_menu("10.60", "🗑 Delete", "filesystem_delete", filesystem_commands.delete)
@@ -166,13 +111,7 @@ local function add_filesystem_menu(node)
   end
 
   -- Fallback for root, message, or unknown node types.
-  --add_menu("10.10", "📄 New File", "filesystem_add_file", filesystem_commands.add)
-  add_menu("10.10", "📄 New File", "filesystem_add_file",
-    function(state)
-      state.config = state.config or {}
-      filesystem_commands.add(state)
-    end
-  )
+  add_menu("10.10", "📄 New File", "filesystem_add_file", filesystem_commands.add)
   add_menu("10.20", "📁 New Directory", "filesystem_add_directory", filesystem_commands.add_directory)
   add_menu("10.30", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
   add_separator("10.99")
@@ -247,25 +186,24 @@ local function add_symbols_menu(node)
 end
 
 -- Build and display the appropriate menu.
-function M.open(state)
+function M.prepare(state, node)
   M.clear()
+
+  if not state or not state.tree then
+    return false
+  end
 
   popup_context.state = state
   popup_context.actions = {}
 
   local source = state.name or vim.b[state.bufnr].neo_tree_source or vim.b[state.bufnr].source
-  local node = state.tree:get_node()
 
   if not node then
-    if source == "filesystem" then
-      add_filesystem_empty_menu()
-      vim.cmd("popup PopUp")
+    if source ~= "filesystem" then
+      return false
     end
-
-    return
-  end
-
-  if source == "filesystem" then
+    add_filesystem_empty_menu()
+  elseif source == "filesystem" then
     add_filesystem_menu(node)
   elseif source == "buffers" then
     add_buffers_menu(node)
@@ -273,9 +211,17 @@ function M.open(state)
     add_git_menu(node)
   elseif source == "document_symbols" then
     add_symbols_menu(node)
+  else
+    return false
   end
 
-  vim.cmd("popup PopUp")
+  return true
+end
+
+function M.open(state, node)
+  if M.prepare(state, node) then
+    vim.cmd("popup PopUp")
+  end
 end
 
 -- Remove every menu entry managed by this module.
@@ -329,30 +275,5 @@ M.close_nvchad_buffer = function(state)
     end
   end
 end
-
---[[
-M.toggle_dir = function()
-  local manager = require("neo-tree.sources.manager")
-  -- 1. Fetch the active state of the filesystem source
-  local real_state = manager.get_state("filesystem")
-  if not real_state or not real_state.tree then
-    real_state = manager.get_state("buffers")
-  end
-
-  if not real_state or not real_state.tree then
-    vim.notify("Neo-tree active state not found.", vim.log.levels.ERROR)
-    return
-  end
-
-  -- 2. Retrieve the currently targeted node from the core tree
-  local real_node = real_state.tree:get_node()
-  if not real_node then return end
-
-  -- 3. Execute the official core filesystem toggle command
-  -- This ensures the 'loaded' status is correctly set, preventing follow_current_file from collapsing it.
-  local fs_commands = require("neo-tree.sources.filesystem.commands")
-  fs_commands.toggle_node(real_state)
-end
-]]
 
 return M

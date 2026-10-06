@@ -83,64 +83,73 @@ function M.is_dap_mode()
 end
 
 local function enable_mouse_selection(win)
-  if not win or not vim.api.nvim_win_is_valid(win) then
-    return
-  end
+  if not win or not vim.api.nvim_win_is_valid(win) then return end
 
   local buf = vim.api.nvim_win_get_buf(win)
 
-  local function move_cursor_to_mouse()
-    local mouse = vim.fn.getmousepos()
+  local function close_float()
+    if vim.api.nvim_win_is_valid(win) then pcall(vim.api.nvim_win_close, win, true) end
+  end
 
-    if mouse.winid ~= win then
+  local function move_cursor_to_mouse(mouse)
+    if not mouse or mouse.winid == 0 or not vim.api.nvim_win_is_valid(mouse.winid) then return false end
+
+    local target_win = mouse.winid
+    local target_buf = vim.api.nvim_win_get_buf(target_win)
+    local line_count = vim.api.nvim_buf_line_count(target_buf)
+
+    if line_count == 0 then
       return false
     end
 
-    if mouse.line <= 0 then
-      return false
-    end
-
-    vim.api.nvim_set_current_win(win)
-
-    local line_count = vim.api.nvim_buf_line_count(buf)
-    local row = math.min(mouse.line, line_count)
-    local line = vim.api.nvim_buf_get_lines(buf, row - 1, row, false)[1] or ""
+    local row = math.max(1, math.min(mouse.line, line_count))
+    local line = vim.api.nvim_buf_get_lines(target_buf, row - 1, row, false)[1] or ""
     local col = math.max(0, math.min(mouse.column - 1, #line))
-    vim.api.nvim_win_set_cursor(win, {row, col})
+
+    vim.api.nvim_set_current_win(target_win)
+    vim.api.nvim_win_set_cursor(target_win, { row, col })
 
     return true
   end
 
-  -- Single click: select only.
+  -- Single left click:
+  -- Select inside the float, or close and focus the clicked window outside.
   vim.keymap.set("n", "<LeftMouse>", function()
-    move_cursor_to_mouse()
+    local mouse = vim.fn.getmousepos()
+
+    if mouse.winid == win then
+      move_cursor_to_mouse(mouse)
+      return
+    end
+
+    close_float()
+    vim.schedule(function() move_cursor_to_mouse(mouse) end)
   end, {
       buffer = buf,
       silent = true,
       nowait = true,
-      desc = "Select Rust action",
+      desc = "Select Rust action or close popup",
     })
 
-  -- Double click: select and execute the existing <CR> action.
+  -- Double left click:
+  -- Select and execute inside the float.
   vim.keymap.set("n", "<2-LeftMouse>", function()
-    if not move_cursor_to_mouse() then
+    local mouse = vim.fn.getmousepos()
+
+    if mouse.winid ~= win then
+      close_float()
+      vim.schedule(function() move_cursor_to_mouse(mouse) end)
       return
     end
 
-    vim.schedule(function()
-      if not vim.api.nvim_win_is_valid(win) then
-        return
-      end
+    if not move_cursor_to_mouse(mouse) then return end
 
-      if not vim.api.nvim_buf_is_valid(buf) then
-        return
-      end
+    vim.schedule(function()
+      if not vim.api.nvim_win_is_valid(win) or not vim.api.nvim_buf_is_valid(buf) then return end
 
       vim.api.nvim_set_current_win(win)
 
       local enter = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
-
-      -- "m" resolves Rustaceanvim's existing buffer-local <CR> mapping.
       vim.api.nvim_feedkeys(enter, "m", false)
     end)
   end, {
@@ -150,36 +159,149 @@ local function enable_mouse_selection(win)
       desc = "Execute Rust action",
     })
 
-  vim.keymap.set("n", "<Esc>", "<Cmd>close<CR>", {
+  -- Right click:
+  -- Keep the Rust float open when clicking inside it.
+  -- Close it and open the corresponding context menu when clicking outside.
+  vim.keymap.set("n", "<RightMouse>", function()
+    local mouse = vim.fn.getmousepos()
+
+    if mouse.winid == win then
+      return
+    end
+
+    close_float()
+
+    vim.schedule(function()
+      require("configs.context_menu").open_at_mouse(mouse)
+    end)
+  end, {
+      buffer = buf,
+      silent = true,
+      nowait = true,
+      desc = "Close Rust popup and open context menu",
+    })
+
+  vim.keymap.set("n", "<Esc>", close_float, {
     buffer = buf,
     silent = true,
     nowait = true,
-    desc = "Close Rust action window",
+    desc = "Close Rust action popup",
   })
 
-  vim.keymap.set("n", "q", "<Cmd>close<CR>", {
+  vim.keymap.set("n", "q", close_float, {
     buffer = buf,
     silent = true,
     nowait = true,
-    desc = "Close Rust action window",
+    desc = "Close Rust action popup",
   })
 end
 
+local function is_rust_hover_float(win)
+  if not vim.api.nvim_win_is_valid(win) then
+    return false
+  end
+
+  if vim.api.nvim_win_get_config(win).relative == "" then
+    return false
+  end
+
+  local ok, source_buf = pcall(
+    vim.api.nvim_win_get_var,
+    win,
+    "rust-analyzer-hover-actions"
+  )
+
+  return ok and type(source_buf) == "number"
+end
+
+local function is_rust_action_float(win)
+  if not vim.api.nvim_win_is_valid(win) then
+    return false
+  end
+
+  if is_rust_hover_float(win) then
+    return true
+  end
+
+  local config = vim.api.nvim_win_get_config(win)
+  if config.relative == "" then
+    return false
+  end
+
+  local buf = vim.api.nvim_win_get_buf(win)
+  if vim.bo[buf].buftype ~= "nofile" or vim.bo[buf].filetype ~= "markdown" then
+    return false
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(buf, 0, math.min(20, vim.api.nvim_buf_line_count(buf)), false)
+  if vim.tbl_isempty(lines) then
+    return false
+  end
+
+  local enter_map = vim.api.nvim_buf_call(buf, function()
+    return vim.fn.maparg("<CR>", "n", false, true)
+  end)
+
+  return type(enter_map) == "table"
+    and enter_map.buffer == 1
+    and enter_map.callback ~= nil
+end
+
+--[[
 local function configure_rust_float()
-  vim.defer_fn(function()
+  local attempts = 0
+
+  local function find_float()
+    attempts = attempts + 1
+
     local current_tab = vim.api.nvim_get_current_tabpage()
 
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(current_tab)) do
-      local config = vim.api.nvim_win_get_config(win)
-
-      if config.relative ~= ""
-        and vim.api.nvim_win_is_valid(win) then
+      if is_rust_action_float(win) then
         vim.api.nvim_set_current_win(win)
         enable_mouse_selection(win)
         return
       end
     end
-  end, 100)
+
+    if attempts < 20 then vim.defer_fn(find_float, 25) end
+  end
+
+  vim.defer_fn(find_float, 25)
+end
+]]
+
+local function configure_rust_float(kind)
+  local attempts = 0
+
+  local function matches(win)
+    if kind == "hover" then
+      return is_rust_hover_float(win)
+    end
+
+    -- Code Actions를 찾을 때 기존 Hover는 제외
+    return not is_rust_hover_float(win)
+      and is_rust_action_float(win)
+  end
+
+  local function find_float()
+    attempts = attempts + 1
+
+    local current_tab = vim.api.nvim_get_current_tabpage()
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(current_tab)) do
+      if matches(win) then
+        vim.api.nvim_set_current_win(win)
+        enable_mouse_selection(win)
+        return
+      end
+    end
+
+    if attempts < 20 then
+      vim.defer_fn(find_float, 25)
+    end
+  end
+
+  vim.defer_fn(find_float, 25)
 end
 
 local function rust_hover_actions()
@@ -189,13 +311,13 @@ local function rust_hover_actions()
   -- Second call focuses the existing Hover Actions window.
   vim.defer_fn(function()
     vim.cmd.RustLsp({'hover', 'actions'})
-    configure_rust_float()
+    configure_rust_float("hover")
   end, 50)
 end
 
 local function rust_code_action()
   vim.cmd.RustLsp('codeAction')
-  configure_rust_float()
+  configure_rust_float("code_action")
 end
 
 local function add_rust_menu()
@@ -246,7 +368,7 @@ local function add_debug_menu()
   add_separator("10.99")
 end
 
-function M.show()
+function M.prepare()
   clear_popup()
 
   if dap_mode then
@@ -254,7 +376,10 @@ function M.show()
   else
     add_normal_menu()
   end
+end
 
+function M.show()
+  M.prepare()
   vim.cmd("popup PopUp")
 end
 

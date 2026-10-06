@@ -14,6 +14,8 @@ function M.clear()
   end
 
   menus = {}
+
+  --vim.cmd("redraw!")
 end
 
 return M
