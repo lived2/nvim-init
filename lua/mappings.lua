@@ -294,6 +294,13 @@ for _, mapping in ipairs(mappings) do
   map(mapping[1], mapping[2], mapping[3], opts)
 end
 
+map("x", "<RightMouse>", function()
+  require("configs.selection_popup").open_at_mouse()
+end, {
+  desc = "Selection Context Menu",
+  silent = true,
+})
+
 map("n", "<RightMouse>", function()
   require("configs.context_menu").open_at_mouse()
 end, {
