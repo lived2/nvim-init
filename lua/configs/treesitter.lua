@@ -127,6 +127,8 @@ return {
       'cfg',
       'neo-tree',
       'neo-tree-popup',
+      'noice',
+      'notify',
       --'aerial',
       --'aerial-nav',
       --'Outline',
