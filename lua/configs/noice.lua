@@ -45,6 +45,18 @@ require("noice").setup({
         col = "50%",
       },
     },
+    split = {
+      -- :Noice history/all use split directly, rather than the messages view.
+      relative = "win",
+      close = {
+        keys = { "q", "<Esc>" },
+      },
+    },
+    popup = {
+      close = {
+        keys = { "q", "<Esc>" },
+      },
+    },
   },
   lsp = {
     message = {
