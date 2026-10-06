@@ -165,7 +165,7 @@ local qc_cpp_four_tab_paths = {
 autocmd('BufEnter', {
   callback = function()
     local ft = vim.bo.filetype
-    local bt = vim.bo.buftype
+    --local bt = vim.bo.buftype
     --if ft == "rust" or ft == "cpp" then
     if ft == "rust" then
       opt.shiftwidth = 4
@@ -410,7 +410,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 local function open_layout()
   Win_code = vim.api.nvim_get_current_win()
   vim.cmd("Neotree reveal left")
-  back_from_neotree = 1
+  --back_from_neotree = 1
   vim.api.nvim_set_current_win(Win_code)
 end
 
