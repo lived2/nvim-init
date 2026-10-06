@@ -20,11 +20,18 @@ local function format_range(saved)
     first, last = last, first
   end
   local start_col, end_col = first[3] - 1, last[3] - 1
+  local line = vim.api.nvim_buf_get_lines(saved.buf, last[2] - 1, last[2], false)[1]
   -- Formatters accept contiguous ranges, not rectangular selections.
   if saved.mode ~= "v" then
     start_col = 0
-    local line = vim.api.nvim_buf_get_lines(saved.buf, last[2] - 1, last[2], false)[1]
-    end_col = math.max(0, #line - 1)
+    end_col = #line
+  else
+    end_col = math.min(end_col, #line)
+    -- Conform's range end is exclusive. Include the entire final UTF-8
+    -- character when Visual selection includes its endpoint.
+    if saved.selection ~= "exclusive" then
+      end_col = end_col + #vim.fn.strcharpart(line:sub(end_col + 1), 0, 1)
+    end
   end
   return { start = { first[2], start_col }, ["end"] = { last[2], end_col } }
 end
@@ -50,7 +57,12 @@ function M.execute(action)
 
     if action == "format" then
       normal(esc)
-      require("conform").format({ bufnr = saved.buf, range = format_range(saved) })
+      local range = format_range(saved)
+      if vim.bo[saved.buf].filetype == "lua" then
+        require("configs.selection_format").lua(saved.buf, range)
+      else
+        require("conform").format({ bufnr = saved.buf, range = range })
+      end
     elseif action == "copy" or action == "delete" then
       restore(saved)
       if action == "delete" then
@@ -78,6 +90,7 @@ function M.prepare()
   selection = {
     buf = vim.api.nvim_get_current_buf(), win = win, mode = mode,
     anchor = vim.fn.getpos("v"), cursor = vim.fn.getpos("."),
+    selection = vim.o.selection,
     tick = vim.api.nvim_buf_get_changedtick(0),
   }
   require("configs.popup_registry").clear()
