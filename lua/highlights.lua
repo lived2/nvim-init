@@ -38,6 +38,10 @@ M.override = {
 }
 
 M.add = {
+  St_gitBranch = { fg = "#cba6f7", bg = "statusline_bg", bold = true },
+  St_gitAdded = { fg = "#a6e3a1", bg = "statusline_bg", bold = true },
+  St_gitChanged = { fg = "#f9e2af", bg = "statusline_bg", bold = true },
+  St_gitRemoved = { fg = "#f38ba8", bg = "statusline_bg", bold = true },
   CurSearch = {
     fg = "#11111b",
     bg = "#f38ba8",
