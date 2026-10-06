@@ -214,16 +214,16 @@ autocmd('BufEnter', {
         require("dap-view").setup(opts)
       end
     end
+    --[[
     if bt == "" and ft ~= "neo-tree" then
       --Win_code = vim.api.nvim_get_current_win()
-      --[[
       if back_from_neotree == 0 then
         print(vim.fn.expand('%:p'))
       else
         back_from_neotree = 0
       end
-      ]]
     end
+    ]]
   end
 })
 
