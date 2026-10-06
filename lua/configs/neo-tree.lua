@@ -8,6 +8,10 @@ require("neo-tree").setup({
     "document_symbols",
   },
   filesystem = {
+    commands = {
+      add = require("configs.neo-tree_create").add,
+      add_directory = require("configs.neo-tree_create").add_directory,
+    },
     follow_current_file = {
       enabled = true,
       leave_dirs_open = true,

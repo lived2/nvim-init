@@ -2,6 +2,7 @@ local M = {}
 
 local common_commands = require("neo-tree.sources.common.commands")
 local filesystem_commands = require("neo-tree.sources.filesystem.commands")
+local create_commands = require("configs.neo-tree_create")
 --local buffer_commands = require("neo-tree.sources.buffers.commands")
 local git_commands = require("neo-tree.sources.git_status.commands")
 local symbol_commands = require("neo-tree.sources.document_symbols.commands")
@@ -103,8 +104,8 @@ local function add_filesystem_menu(node)
     --add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", require("configs.neo-tree_popup").toggle_dir)
     add_menu("10.10", "📁 Expand or Collapse", "filesystem_toggle_directory", filesystem_commands.toggle_node)
     add_menu("10.20", "📂 Set as Root", "filesystem_set_root", filesystem_commands.set_root)
-    add_menu("10.30", "📄 New File", "filesystem_add_file", filesystem_commands.add)
-    add_menu("10.40", "📁 New Directory", "filesystem_add_directory", filesystem_commands.add_directory)
+    add_menu("10.30", "📄 New File", "filesystem_add_file", create_commands.add)
+    add_menu("10.40", "📁 New Directory", "filesystem_add_directory", create_commands.add_directory)
     add_menu("10.50", "✏ Rename", "filesystem_rename", filesystem_commands.rename)
     add_menu("10.60", "🗑 Delete", "filesystem_delete", filesystem_commands.delete)
     add_menu("10.70", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
@@ -113,8 +114,8 @@ local function add_filesystem_menu(node)
   end
 
   -- Fallback for root, message, or unknown node types.
-  add_menu("10.10", "📄 New File", "filesystem_add_file", filesystem_commands.add)
-  add_menu("10.20", "📁 New Directory", "filesystem_add_directory", filesystem_commands.add_directory)
+  add_menu("10.10", "📄 New File", "filesystem_add_file", create_commands.add)
+  add_menu("10.20", "📁 New Directory", "filesystem_add_directory", create_commands.add_directory)
   add_menu("10.30", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
   --add_separator("10.99")
 end
@@ -122,11 +123,11 @@ end
 -- Build the filesystem menu for a right-click on empty space.
 local function add_filesystem_empty_menu()
   add_menu("10.10", "📄 New File in Root", "filesystem_add_file_root", function(state)
-    run_on_root(state, filesystem_commands.add)
+    run_on_root(state, create_commands.add)
   end)
 
   add_menu("10.20", "📁 New Directory in Root", "filesystem_add_directory_root", function(state)
-    run_on_root(state, filesystem_commands.add_directory)
+    run_on_root(state, create_commands.add_directory)
   end)
 
   add_menu("10.30", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
