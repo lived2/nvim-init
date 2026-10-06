@@ -24,6 +24,7 @@ require("conform").setup({
   -- Set this to change the default values when calling conform.format()
   default_format_opts = {
     lsp_format = "fallback",
+    timeout_ms = 5000,
   },
   -- init.lua owns format-on-save and restricts it to workspace_paths.
   -- Loading Conform for manual formatting must not enable global save hooks.
