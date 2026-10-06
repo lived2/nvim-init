@@ -2,6 +2,11 @@
 local M = {}
 
 M.override = {
+  IncSearch = {
+    fg = "#11111b",
+    bg = "#f38ba8",
+    bold = true,
+  },
   TelescopePromptBorder = {
     fg = "#f38ba8", -- Pink
   },
@@ -33,6 +38,11 @@ M.override = {
 }
 
 M.add = {
+  CurSearch = {
+    fg = "#11111b",
+    bg = "#f38ba8",
+    bold = true,
+  },
   PmenuBorder = {
     fg = "#89b4fa",
     bg = "#1e1e2e",
