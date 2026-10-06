@@ -370,6 +370,7 @@ end
 
 function M.prepare()
   clear_popup()
+  registry.restore_normal_defaults()
 
   if dap_mode then
     add_debug_menu()

@@ -1,6 +1,6 @@
 local M = {}
 local selection
-local menu = "SelectionPopUp"
+local menu = "PopUp"
 local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
 
 local function normal(keys)
@@ -65,14 +65,14 @@ function M.execute(action)
   end)
 end
 
-function M.open_at_mouse()
+function M.prepare()
   local mode = vim.fn.mode()
   local win = vim.api.nvim_get_current_win()
   local mouse = vim.fn.getmousepos()
   if vim.bo.buftype ~= "" or mouse.winid ~= win
     or (mode ~= "v" and mode ~= "V" and mode ~= "\22")
   then
-    return
+    return false
   end
 
   selection = {
@@ -80,16 +80,26 @@ function M.open_at_mouse()
     anchor = vim.fn.getpos("v"), cursor = vim.fn.getpos("."),
     tick = vim.api.nvim_buf_get_changedtick(0),
   }
-  pcall(vim.cmd, "aunmenu " .. menu)
+  require("configs.popup_registry").clear()
   for i, item in ipairs({
     { "Format Selection", "format" },
     { "Delete Selection", "delete" },
     { "Copy Selection", "copy" },
   }) do
-    vim.cmd(("amenu %d %s.%s <Cmd>lua require('configs.selection_popup').execute(%q)<CR>")
+    vim.cmd(("vnoremenu %d %s.%s <Cmd>lua require('configs.selection_popup').execute(%q)<CR>")
       :format(i * 10, menu, item[1]:gsub(" ", "\\ "), item[2]))
+    require("configs.popup_registry").register(item[1]:gsub(" ", "\\ "))
   end
-  vim.cmd("popup " .. menu)
+  return true
+end
+
+function M.open_at_mouse()
+  -- Visual right-click may be the first context-menu interaction this session.
+  -- Install the native MenuPopup handler before modifying the shared menu.
+  require("configs.context_menu")
+  if M.prepare() then
+    vim.cmd("popup! " .. menu)
+  end
 end
 
 return M

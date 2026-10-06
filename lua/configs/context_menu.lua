@@ -120,13 +120,21 @@ function M.open_at_mouse(mouse)
   end)
 end
 
+-- This config owns PopUp; the built-in callback assumes its default entries
+-- exist in every mode and errors after we replace the Visual menu.
+pcall(vim.api.nvim_clear_autocmds, { group = "nvim.popupmenu", event = "MenuPopup" })
 local group = vim.api.nvim_create_augroup("DynamicContextMenu", { clear = true })
 
 vim.api.nvim_create_autocmd("MenuPopup", {
   group = group,
-  pattern = "n",
-  callback = function()
+  pattern = { "n", "v" },
+  callback = function(event)
     request_serial = request_serial + 1
+
+    if event.match == "v" then
+      require("configs.selection_popup").prepare()
+      return
+    end
 
     local mouse = vim.fn.getmousepos()
 

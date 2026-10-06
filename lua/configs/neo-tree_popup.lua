@@ -11,7 +11,7 @@ local popup_context = {
   actions = {},
 }
 
-local separator_name = "────────────────────────"
+--local separator_name = "────────────────────────"
 
 -- Escape characters used by the :menu command.
 local function escape_menu_name(name)
@@ -50,9 +50,11 @@ local function add_menu(priority, name, id, action)
 end
 
 -- Add a non-functional menu entry that looks like a separator line.
+--[[
 local function add_separator(priority)
   add_menu(priority, separator_name, "separator", function() end)
 end
+]]
 
 -- Temporarily select the root line before invoking an action.
 local function run_on_root(state, action)
@@ -92,7 +94,7 @@ local function add_filesystem_menu(node)
     add_menu("10.20", "✏ Rename", "filesystem_rename", filesystem_commands.rename)
     add_menu("10.30", "🗑 Delete", "filesystem_delete", filesystem_commands.delete)
     add_menu("10.40", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
-    add_separator("10.99")
+    --add_separator("10.99")
     return
   end
 
@@ -106,7 +108,7 @@ local function add_filesystem_menu(node)
     add_menu("10.50", "✏ Rename", "filesystem_rename", filesystem_commands.rename)
     add_menu("10.60", "🗑 Delete", "filesystem_delete", filesystem_commands.delete)
     add_menu("10.70", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
-    add_separator("10.99")
+    --add_separator("10.99")
     return
   end
 
@@ -114,7 +116,7 @@ local function add_filesystem_menu(node)
   add_menu("10.10", "📄 New File", "filesystem_add_file", filesystem_commands.add)
   add_menu("10.20", "📁 New Directory", "filesystem_add_directory", filesystem_commands.add_directory)
   add_menu("10.30", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
-  add_separator("10.99")
+  --add_separator("10.99")
 end
 
 -- Build the filesystem menu for a right-click on empty space.
@@ -128,7 +130,7 @@ local function add_filesystem_empty_menu()
   end)
 
   add_menu("10.30", "🔄 Refresh", "filesystem_refresh", filesystem_commands.refresh)
-  add_separator("10.99")
+  --add_separator("10.99")
 end
 
 -- Build the buffers-source menu.
@@ -140,7 +142,7 @@ local function add_buffers_menu(node)
   add_menu("10.10", "📄 Open Buffer", "buffer_open", common_commands.open)
   --add_menu("10.20", "❌ Delete Buffer", "buffer_delete", buffer_commands.buffer_delete)
   add_menu("10.20", "❌ Close Buffer", "buffer_delete", require("configs.neo-tree_popup").close_nvchad_buffer)
-  add_separator("10.99")
+  --add_separator("10.99")
 end
 
 -- Build the git-status-source menu.
@@ -149,7 +151,7 @@ local function add_git_menu(node)
     add_menu("10.10", "📁 Expand or Collapse", "git_toggle_directory", common_commands.open)
     add_menu("10.20", "➕ Stage", "git_stage_directory", git_commands.git_add_file)
     add_menu("10.30", "↩ Unstage", "git_unstage_directory", git_commands.git_unstage_file)
-    add_separator("10.99")
+    --add_separator("10.99")
     return
   end
 
@@ -162,14 +164,14 @@ local function add_git_menu(node)
   add_menu("10.30", "↩ Unstage", "git_unstage", git_commands.git_unstage_file)
   add_menu("10.40", "⚠ Revert", "git_revert", git_commands.git_revert_file)
   add_menu("10.50", "✓ Commit", "git_commit", git_commands.git_commit)
-  add_separator("10.99")
+  --add_separator("10.99")
 end
 
 -- Build the document-symbols-source menu.
 local function add_symbols_menu(node)
   if node.type == "root" then
     add_menu("10.10", "📁 Expand or Collapse", "symbol_toggle_root", common_commands.open)
-    add_separator("10.99")
+    --add_separator("10.99")
     return
   end
 
@@ -182,7 +184,7 @@ local function add_symbols_menu(node)
   add_menu("10.30", "✏ Rename Symbol", "symbol_rename", symbol_commands.rename)
   add_menu("10.40", "↔ Open in Split", "symbol_split", symbol_commands.open_split)
   add_menu("10.50", "↕ Open in VSplit", "symbol_open_vsplit", symbol_commands.open_vsplit)
-  add_separator("10.99")
+  --add_separator("10.99")
 end
 
 -- Build and display the appropriate menu.
