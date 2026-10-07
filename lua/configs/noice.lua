@@ -42,6 +42,7 @@ require("noice").setup({
         width = "auto",
         height = "auto",
         --max_width = 80,
+        max_height = 10,
       },
       border = {
         style = "rounded",
