@@ -27,8 +27,10 @@ require("noice").setup({
         col = "50%",
       },
       size = {
-        width = 60,
+        --width = 60,
+        width = "auto",
         height = "auto",
+        --max_width = 80,
       },
       border = {
         style = "rounded",
