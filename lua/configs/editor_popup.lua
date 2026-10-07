@@ -1,5 +1,6 @@
 local M = {}
 
+local map = vim.keymap.set
 local dap_mode = false
 local popup_actions = {}
 
@@ -114,7 +115,7 @@ local function enable_mouse_selection(win)
 
   -- Single left click:
   -- Select inside the float, or close and focus the clicked window outside.
-  vim.keymap.set("n", "<LeftMouse>", function()
+  map("n", "<LeftMouse>", function()
     local mouse = vim.fn.getmousepos()
 
     if mouse.winid == win then
@@ -133,7 +134,7 @@ local function enable_mouse_selection(win)
 
   -- Double left click:
   -- Select and execute inside the float.
-  vim.keymap.set("n", "<2-LeftMouse>", function()
+  map("n", "<2-LeftMouse>", function()
     local mouse = vim.fn.getmousepos()
 
     if mouse.winid ~= win then
@@ -162,7 +163,7 @@ local function enable_mouse_selection(win)
   -- Right click:
   -- Keep the Rust float open when clicking inside it.
   -- Close it and open the corresponding context menu when clicking outside.
-  vim.keymap.set("n", "<RightMouse>", function()
+  map("n", "<RightMouse>", function()
     local mouse = vim.fn.getmousepos()
 
     if mouse.winid == win then
@@ -181,18 +182,32 @@ local function enable_mouse_selection(win)
       desc = "Close Rust popup and open context menu",
     })
 
-  vim.keymap.set("n", "<Esc>", close_float, {
+  map("n", "<Esc>", close_float, {
     buffer = buf,
     silent = true,
     nowait = true,
     desc = "Close Rust action popup",
   })
 
-  vim.keymap.set("n", "q", close_float, {
+  map("n", "q", close_float, {
     buffer = buf,
     silent = true,
     nowait = true,
     desc = "Close Rust action popup",
+  })
+
+  map("n", "<Tab>", "<Down>", {
+    buffer = buf,
+    silent = true,
+    nowait = true,
+    remap = false,
+  })
+
+  map("n", "<S-Tab>", "<Up>", {
+    buffer = buf,
+    silent = true,
+    nowait = true,
+    remap = false,
   })
 end
 
@@ -307,12 +322,13 @@ end
 local function rust_hover_actions()
   -- First call opens the Hover Actions window.
   vim.cmd.RustLsp({'hover', 'actions'})
+  configure_rust_float("hover")
 
   -- Second call focuses the existing Hover Actions window.
-  vim.defer_fn(function()
-    vim.cmd.RustLsp({'hover', 'actions'})
-    configure_rust_float("hover")
-  end, 50)
+  --vim.defer_fn(function()
+    --vim.cmd.RustLsp({'hover', 'actions'})
+    --configure_rust_float("hover")
+  --end, 50)
 end
 
 local function rust_code_action()
@@ -336,6 +352,51 @@ local function add_rust_menu()
   end)
   ]]
 end
+
+local group = vim.api.nvim_create_augroup("RustActionNavigation", {
+  clear = true,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = group,
+  pattern = "markdown",
+  callback = function(ev)
+    -- Wait until rustaceanvim has installed the Enter mapping.
+    vim.schedule(function()
+      local buf = ev.buf
+      if not vim.api.nvim_buf_is_valid(buf) then return end
+      if vim.bo[buf].buftype ~= "nofile" then return end
+
+      -- Avoid applying these mappings to other Markdown windows.
+      local is_code_action = false
+      for _, mapping in ipairs(vim.api.nvim_buf_get_keymap(buf, "n")) do
+        if mapping.lhs == "<CR>"
+          and type(mapping.callback) == "function"
+        then
+          local info = debug.getinfo(mapping.callback, "S")
+          local source = info.source:gsub("\\", "/")
+          is_code_action = source:find(
+            "/rustaceanvim/commands/code_action_group.lua",
+            1,
+            true
+          ) ~= nil
+          break
+        end
+      end
+
+      if not is_code_action then return end
+
+      local opts = {
+        buffer = buf,
+        silent = true,
+        nowait = true,
+        remap = false,
+      }
+      map("n", "<Tab>", "<Down>", opts)
+      map("n", "<S-Tab>", "<Up>", opts)
+    end)
+  end,
+})
 
 local function add_normal_menu()
   add_menu("10.10", "🚀 Run", "run", function() Run() end)
