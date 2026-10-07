@@ -30,7 +30,7 @@ local function add_menu(priority, name, id, action)
     id
   )
 
-  registry.register(escape_menu_name(name))
+  --registry.register(escape_menu_name(name))
 
   vim.cmd(command)
 end

@@ -101,7 +101,7 @@ function M.prepare()
   }) do
     vim.cmd(("vnoremenu %d %s.%s <Cmd>lua require('configs.selection_popup').execute(%q)<CR>")
       :format(i * 10, menu, item[1]:gsub(" ", "\\ "), item[2]))
-    require("configs.popup_registry").register(item[1]:gsub(" ", "\\ "))
+    --require("configs.popup_registry").register(item[1]:gsub(" ", "\\ "))
   end
   return true
 end
