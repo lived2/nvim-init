@@ -289,6 +289,8 @@ local mappings = {
 }
 
 vim.keymap.del("n", "<leader>e")
+vim.keymap.del("n", "<C-n>")
+
 for _, mapping in ipairs(mappings) do
   local opts = { noremap = true, silent = true, desc = mapping[4] }
   map(mapping[1], mapping[2], mapping[3], opts)
