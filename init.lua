@@ -49,6 +49,7 @@ opt.cinoptions = "l1,g0,:0,N-s"
 opt.winborder = "rounded"
 opt.pumborder = "rounded"
 opt.confirm = true
+opt.report = 0
 
 if vim.g.neovide then
   opt.clipboard = "unnamedplus"
