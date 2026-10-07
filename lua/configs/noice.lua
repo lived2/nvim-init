@@ -92,3 +92,30 @@ require("noice").setup({
     lsp_doc_border = false, -- add a border to hover docs and signature help
   },
 })
+
+local NuiView = require("noice.view.nui")
+
+if not NuiView._notification_follow_tail then
+  NuiView._notification_follow_tail = true
+  local original_show = NuiView.show
+
+  function NuiView:show()
+    original_show(self)
+
+    -- Follow the latest message only in the notification popup.
+    if self._opts.view ~= "notification_popup" then return end
+
+    local win = self._nui and self._nui.winid
+    if not win or not vim.api.nvim_win_is_valid(win) then return end
+
+    -- Show the end of the last line, including wrapped text.
+    vim.api.nvim_win_call(win, function()
+      vim.cmd("noautocmd normal! G$zb")
+    end)
+
+    -- Refresh the scrollbar after scrolling.
+    if self._scroll then
+      self._scroll:update()
+    end
+  end
+end
