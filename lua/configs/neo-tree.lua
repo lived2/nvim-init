@@ -115,9 +115,24 @@ set_hl(0, "NeoTreeGitAdded", {
 local nt = require("neo-tree.command")
 local map = vim.keymap.set
 
+local function move_focus_to_nt_source(source)
+  local state = require("neo-tree.sources.manager").get_state(source)
+
+  if state.winid and vim.api.nvim_win_is_valid(state.winid) then
+    vim.api.nvim_set_current_win(state.winid)
+  end
+end
+
 map("n", "<leader>ee", function()
-  vim.cmd("Neotree toggle last")
-  vim.api.nvim_set_current_win(Win_code)
+  --vim.cmd("Neotree toggle last")
+  --vim.api.nvim_set_current_win(Win_code)
+
+  -- Neotree show toggle last
+  require("neo-tree.command").execute({
+    source = "last",
+    action = "show",
+    toggle = true,
+  })
 end)
 
 map("n", "<leader>ef", function()
@@ -125,30 +140,34 @@ map("n", "<leader>ef", function()
     source = "filesystem",
     position = "left",
     reveal = true,
-    focus = false,
+    action = "focus",
   })
+  move_focus_to_nt_source("filesystem")
 end)
 
 map("n", "<leader>eb", function()
   nt.execute({
     source = "buffers",
     position = "left",
-    focus = false,
+    action = "focus",
   })
+  move_focus_to_nt_source("buffers")
 end)
 
 map("n", "<leader>eg", function()
   nt.execute({
     source = "git_status",
     position = "left",
-    focus = false,
+    action = "focus",
   })
+  move_focus_to_nt_source("git_status")
 end)
 
 map("n", "<leader>es", function()
   nt.execute({
     source = "document_symbols",
     position = "left",
-    focus = false,
+    action = "focus",
   })
+  move_focus_to_nt_source("document_symbols")
 end)
