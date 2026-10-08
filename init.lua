@@ -104,7 +104,7 @@ IsWorkSource = 0
 -- (happens when dropping a file on gvim) and for a commit message (it's
 -- likely a different one than last time).
 local autocmd = vim.api.nvim_create_autocmd
---local map = vim.keymap.set
+local map = vim.keymap.set
 
 -- adapted from https://github.com/ethanholz/nvim-lastplace/blob/main/lua/nvim-lastplace/init.lua
 local ignore_buftype = { "quickfix", "nofile", "help" }
@@ -299,7 +299,7 @@ autocmd("FileType", {
   pattern = "help",
   callback = function(ev)
     for _, key in ipairs({ "q", "<Esc>" }) do
-      vim.keymap.set("n", key, "<Cmd>quit<CR>", {
+      map("n", key, "<Cmd>quit<CR>", {
         buffer = ev.buf,
         silent = true,
         nowait = true,
@@ -312,7 +312,7 @@ autocmd("FileType", {
 autocmd("FileType", {
   pattern = "lazy",
   callback = function(event)
-    vim.keymap.set("n", "<Esc>", "<Cmd>close<CR>", {
+    map("n", "<Esc>", "<Cmd>close<CR>", {
       buffer = event.buf,
       silent = true,
       desc = "Close Lazy",
@@ -332,7 +332,7 @@ autocmd("FileType", {
 autocmd("FileType", {
   pattern = "dap-view-hover",
   callback = function(args)
-    vim.keymap.set("n", "<Esc>", "q", {
+    map("n", "<Esc>", "q", {
       buffer = args.buf,
       remap = true,
       silent = true,
