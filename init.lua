@@ -295,6 +295,21 @@ autocmd('BufReadPost', {
 ]]
 
 autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("HelpWindowClose", { clear = true }),
+  pattern = "help",
+  callback = function(ev)
+    for _, key in ipairs({ "q", "<Esc>" }) do
+      vim.keymap.set("n", key, "<Cmd>quit<CR>", {
+        buffer = ev.buf,
+        silent = true,
+        nowait = true,
+        desc = "Close help window",
+      })
+    end
+  end,
+})
+
+autocmd("FileType", {
   pattern = "lazy",
   callback = function(event)
     vim.keymap.set("n", "<Esc>", "<Cmd>close<CR>", {
@@ -424,7 +439,7 @@ local function open_layout()
 end
 
 --vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, {
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
+autocmd({ "VimEnter" }, {
   callback = function()
     vim.schedule(setup_dap)
     vim.schedule(open_layout)
