@@ -24,8 +24,8 @@ map('n', '<C-h>', ':wincmd h<CR>')
 map('n', '<C-l>', ':wincmd l<CR>')
 
 -- Fn keys
-map('n', '<F3>', '<cmd>:lua ReduceLSPDiag()<CR>')
-map('i', '<F3>', '<ESC><cmd>:lua ReduceLSPDiag()<CR>a')
+map('n', '<F3>', '<cmd>:lua require("configs.diagnostics").toggle()<CR>')
+map('i', '<F3>', '<ESC><cmd>:lua require("configs.diagnostics").toggle()<CR>')
 
 map('n', '<F4>', ':Outline<CR>')
 map('i', '<F4>', '<ESC>:Outline<CR>')
@@ -60,13 +60,6 @@ map('i', '<F9>', '<ESC>:DapToggleBreakpoint<CR>')
 map('n', '<F10>', ':w!<CR>')
 map('i', '<F10>', '<ESC>:w!<CR>')
 
---[[
-if IsWork == 1 then
-  map('n', '<F11>', ':lua ToggleLSPDiag()<CR>')
-  map('i', '<F11>', '<ESC>:lua ToggleLSPDiag()<CR>')
-end
-]]
-
 map('n', '<F12>', ':qall<CR>')
 map('i', '<F12>', '<ESC>:qall<CR>')
 
@@ -100,45 +93,6 @@ end, { silent = true, noremap = true, desc = 'toggle signature' })
 ]]
 -- Key mapping END
 -----------------------------------------------------------------------------------------------------------------------------------------------------
-
---[[
-if IsWork == 1 then
-  function ToggleLSPDiag()
-    if LspDiagEnabled == 1 then
-      LspDiagEnabled = 0
-      vim.cmd('LspStop')
-    else
-      LspDiagEnabled = 1
-      vim.cmd('LspStart')
-    end
-  end
-end
-]]
-
-if IsWorkSource == 1 then
-  LspDiagReduced = 1
-else
-  LspDiagReduced = 0
-end
-
-function ReduceLSPDiag()
-  -- Configure LSP diagnostic level
-  if LspDiagReduced == 1 then
-    LspDiagReduced = 0
-    vim.diagnostic.config({
-      virtual_text = {severity = {min = vim.diagnostic.severity.HINT}},
-      signs = {severity = {min = vim.diagnostic.severity.HINT}},
-      underline = {severity = {min = vim.diagnostic.severity.HINT}},
-    })
-  else
-    LspDiagReduced = 1
-    vim.diagnostic.config({
-      virtual_text = false,
-      signs = false,
-      underline = false,
-    })
-  end
-end
 
 local cpu_info = vim.loop.cpu_info()
 local core_count = #cpu_info

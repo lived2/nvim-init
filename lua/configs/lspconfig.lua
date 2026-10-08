@@ -21,12 +21,9 @@ vim.lsp.enable(servers)
 vim.lsp.enable('gopls')
 
 if IsWorkSource == 1 then
-  vim.diagnostic.config({
-    virtual_text = false,
-    signs = false,
-    underline = false,
-  })
+  require("configs.diagnostics").hide()
 end
+
 --[[
 local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
