@@ -66,7 +66,7 @@ end
 ]]
 
 --local back_from_neotree = 0
---Win_code = -1
+Code_win = -1
 IsMac = 0
 IsWin = 0
 local os = vim.loop.os_uname().sysname
@@ -217,7 +217,7 @@ autocmd('BufEnter', {
     end
     --[[
     if bt == "" and ft ~= "neo-tree" then
-      --Win_code = vim.api.nvim_get_current_win()
+      --Code_win = vim.api.nvim_get_current_win()
       if back_from_neotree == 0 then
         print(vim.fn.expand('%:p'))
       else
@@ -482,7 +482,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 ]]
 
 local function open_layout()
-  --Win_code = vim.api.nvim_get_current_win()
+  Code_win = vim.api.nvim_get_current_win()
   --vim.cmd("Neotree reveal left")
   require("neo-tree.command").execute({
     source = "filesystem",
@@ -493,7 +493,7 @@ local function open_layout()
   })
 
   --back_from_neotree = 1
-  --vim.api.nvim_set_current_win(Win_code)
+  --vim.api.nvim_set_current_win(Code_win)
 end
 
 --vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, {
