@@ -226,6 +226,10 @@ local mappings = {
   -- NvimTree
   --{ 'n', "<Leader>fe", "<cmd> NvimTreeToggle <CR>", "NvimTreeToggle" },
 
+
+  -- Noice
+  { 'n', "<Leader>oa",  function() require("noice").cmd("all") end, "Noice: All Messages" },
+
   -- Gitsigns
   { 'n', "<Leader>gp",  function() require("gitsigns").preview_hunk() end, "Git: Preview Hunk" },
 
