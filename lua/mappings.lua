@@ -226,6 +226,9 @@ local mappings = {
   -- NvimTree
   --{ 'n', "<Leader>fe", "<cmd> NvimTreeToggle <CR>", "NvimTreeToggle" },
 
+  -- Gitsigns
+  { 'n', "<Leader>gp",  function() require("gitsigns").preview_hunk() end, "Git: Preview Hunk" },
+
   -- DAP
   { 'n', "<Leader>dt", "<cmd> DapToggleBreakpoint <CR>", "Add breakpoint at line" },
   { 'n', "<Leader>dr", "<cmd> DapContinue <CR>", "Start or continue the debugger" },

@@ -294,6 +294,64 @@ autocmd('BufReadPost', {
 })
 ]]
 
+autocmd("WinNew", {
+  group = vim.api.nvim_create_augroup("GitHunkPreviewKeys", { clear = true }),
+  callback = function()
+    local source_win = vim.api.nvim_get_current_win()
+    local tab = vim.api.nvim_get_current_tabpage()
+
+    -- Wait until Gitsigns has tagged and configured the new window.
+    vim.schedule(function()
+      if not vim.api.nvim_tabpage_is_valid(tab) then return end
+
+      for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+        if vim.w[win].gitsigns_preview == "hunk"
+          and not vim.w[win].hunk_close_configured
+        then
+          vim.w[win].hunk_close_configured = true
+          local buf = vim.api.nvim_win_get_buf(win)
+
+          local function close()
+            if not vim.api.nvim_win_is_valid(win) then return end
+
+            local focused = vim.api.nvim_get_current_win() == win
+            vim.api.nvim_win_close(win, true)
+
+            if focused and vim.api.nvim_win_is_valid(source_win) then
+              vim.api.nvim_set_current_win(source_win)
+            end
+          end
+
+          for _, key in ipairs({ "q", "<Esc>" }) do
+            map("n", key, close, {
+              buffer = buf,
+              silent = true,
+              nowait = true,
+              desc = "Close Git hunk preview",
+            })
+          end
+
+          map("n", "<Tab>", "<Down>", {
+            buffer = buf,
+            silent = true,
+            nowait = true,
+            remap = false,
+          })
+
+          map("n", "<S-Tab>", "<Up>", {
+            buffer = buf,
+            silent = true,
+            nowait = true,
+            remap = false,
+          })
+
+          vim.api.nvim_set_current_win(win)
+        end
+      end
+    end)
+  end,
+})
+
 autocmd("FileType", {
   group = vim.api.nvim_create_augroup("HelpWindowClose", { clear = true }),
   pattern = "help",

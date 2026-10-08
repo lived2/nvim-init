@@ -341,8 +341,8 @@ local function add_rust_menu()
     return
   end
 
-  add_menu("10.40", "🦀 Hover Actions", "rust_hover_actions", rust_hover_actions)
-  add_menu("10.50", "💡 Code Actions", "rust_code_action", rust_code_action)
+  add_menu("10.50", "🦀 Hover Actions", "rust_hover_actions", rust_hover_actions)
+  add_menu("10.60", "💡 Code Actions", "rust_code_action", rust_code_action)
   --[[
   add_menu("10.50", "📖 Open Docs", "rust_open_docs", function()
     vim.cmd("RustLsp openDocs")
@@ -401,9 +401,8 @@ vim.api.nvim_create_autocmd("FileType", {
 local function add_normal_menu()
   add_menu("10.10", "🚀 Run", "run", function() Run() end)
   add_menu("10.20", "🐞 Run Debug", "run_debug", function() RunDebug() end)
-  add_menu("10.30", "🔴 Toggle Breakpoint", "toggle_breakpoint", function()
-    require("dap").toggle_breakpoint()
-  end)
+  add_menu("10.30", "🔴 Toggle Breakpoint", "toggle_breakpoint", function() require("dap").toggle_breakpoint() end)
+  add_menu("10.40", "🔍 Git: Preview Hunk", "git_preview_hunk", function() require("gitsigns").preview_hunk() end)
   add_rust_menu()
   add_separator("10.99")
 end
