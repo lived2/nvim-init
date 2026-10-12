@@ -173,12 +173,13 @@ map("n", "<leader>eg", function()
 end)
 
 map("n", "<leader>es", function()
-  nt.execute({
-    source = "document_symbols",
-    position = "left",
-    action = "focus",
-  })
-  move_focus_to_nt_source("document_symbols")
+  M.open_symbols(function()
+    move_focus_to_nt_source("document_symbols")
+  end)
+end)
+
+map("n", "<leader>ec", function()
+  vim.api.nvim_set_current_win(Code_win)
 end)
 
 set_hl(0, "NeoTreeNoticeFilesystem", {
@@ -197,7 +198,7 @@ set_hl(0, "NeoTreeSymbolNamespace", {
 
 local symbols_loading = false
 
-function M.open_symbols()
+function M.open_symbols(on_open)
   if symbols_loading then return end
 
   local source_win = vim.api.nvim_get_current_win()
@@ -266,11 +267,66 @@ function M.open_symbols()
 
       require("noice").cmd("dismiss")
       echo({{ "Symbol", "NeoTreeNoticeSymbols" }, { " Tab" }}, true, {})
-      nt.execute({
+      local subscription
+      local completed = false
+      local function cleanup()
+        completed = true
+        symbols_loading = false
+        if subscription then
+          manager.unsubscribe("document_symbols", subscription)
+          subscription = nil
+        end
+      end
+
+      local function complete(state)
+        if completed or state.name ~= "document_symbols"
+          or state.tabid ~= source_tab or state.lsp_bufnr ~= buf
+        then
+          return
+        end
+        local win = state.winid
+        if not win or not vim.api.nvim_win_is_valid(win)
+          or vim.api.nvim_win_get_buf(win) ~= state.bufnr
+        then
+          return
+        end
+
+        cleanup()
+        if context_unchanged() then on_open() end
+      end
+
+      if type(on_open) == "function" then
+        symbols_loading = true
+        subscription = {
+          event = require("neo-tree.events").AFTER_RENDER,
+          id = "user_document_symbols_on_open",
+          handler = complete,
+        }
+        manager.subscribe("document_symbols", subscription)
+      end
+
+      local ok, err = pcall(nt.execute, {
         source = "document_symbols",
         position = "left",
         action = "focus",
       })
+      if not ok then
+        cleanup()
+        vim.notify(tostring(err), vim.log.levels.ERROR)
+        return
+      end
+
+      if subscription then
+        -- A visible view can be focused without triggering another render.
+        complete(manager.get_state("document_symbols"))
+
+        -- Remove the listener if the second, Neo-tree-owned request stalls.
+        vim.defer_fn(function()
+          if completed then return end
+          cleanup()
+          vim.notify("Document symbols rendering timed out.", vim.log.levels.WARN)
+        end, 120000)
+      end
     end)
   )
 
