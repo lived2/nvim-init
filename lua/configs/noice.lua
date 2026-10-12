@@ -25,9 +25,6 @@ require("noice").setup({
       --relative = "win",
       relative = "editor",
       position = "bottom",
-      close = {
-        keys = { "q", "<Esc>" },
-      },
     },
     notification_popup = {
       backend = "popup",
@@ -66,9 +63,6 @@ require("noice").setup({
       --relative = "win",
       relative = "editor",
       position = "bottom",
-      close = {
-        keys = { "q", "<Esc>" },
-      },
     },
     popup = {
       close = {
