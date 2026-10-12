@@ -124,6 +124,12 @@ local nt = require("neo-tree.command")
 local manager = require("neo-tree.sources.manager")
 local map = vim.keymap.set
 
+local function dismiss()
+  require("noice").cmd("dismiss")
+  local state = package.loaded["noice.ui.state"]
+  if state then state.clear("msg_show") end
+end
+
 local function move_focus_to_nt_source(source)
   local state = manager.get_state(source)
 
@@ -220,9 +226,17 @@ function M.open_symbols(on_open)
   end
 
   symbols_loading = true
-  vim.notify("Loading symbols…")
 
   local finished = false
+  local delayed = false
+
+  -- Show a loading message only when the response takes time.
+  vim.defer_fn(function()
+    if finished then return end
+    delayed = true
+    vim.notify("Loading symbols…")
+  end, 100)
+
   local cancel_request
   local function context_unchanged()
     local current_win = vim.api.nvim_get_current_win()
@@ -265,8 +279,10 @@ function M.open_symbols(on_open)
         return
       end
 
-      require("noice").cmd("dismiss")
-      echo({{ "Symbol", "NeoTreeNoticeSymbols" }, { " Tab" }}, true, {})
+      if delayed then
+        dismiss()
+        echo({{ "Symbol", "NeoTreeNoticeSymbols" }, { " Tab" }}, true, {})
+      end
       local subscription
       local completed = false
       local function cleanup()
@@ -360,7 +376,7 @@ function M.toggle_view()
   local highlight = next_source == "filesystem" and "NeoTreeNoticeFilesystem" or "NeoTreeNoticeSymbols"
   local label = next_source == "filesystem" and "File" or "Symbol"
 
-  require("noice").cmd("dismiss")
+  dismiss()
 
   if next_source == "document_symbols" then
     M.open_symbols()
