@@ -22,7 +22,9 @@ require("noice").setup({
   views = {
     messages = {
       -- Keep history below the invoking window so closing returns there.
-      relative = "win",
+      --relative = "win",
+      relative = "editor",
+      position = "bottom",
       close = {
         keys = { "q", "<Esc>" },
       },
@@ -61,7 +63,9 @@ require("noice").setup({
     },
     split = {
       -- :Noice history/all use split directly, rather than the messages view.
-      relative = "win",
+      --relative = "win",
+      relative = "editor",
+      position = "bottom",
       close = {
         keys = { "q", "<Esc>" },
       },
@@ -97,6 +101,50 @@ require("noice").setup({
 })
 
 local NuiView = require("noice.view.nui")
+
+if not NuiView._split_return_focus then
+  NuiView._split_return_focus = true
+  local original_show = NuiView.show
+
+  function NuiView:show()
+    local previous_win = self._nui and self._nui.winid
+    if self._opts.type == "split"
+      and (not previous_win or not vim.api.nvim_win_is_valid(previous_win))
+    then
+      -- Refresh the origin each time a cached view is opened again.
+      self._return_win = vim.api.nvim_get_current_win()
+    end
+
+    original_show(self)
+
+    if self._opts.type ~= "split" then return end
+    local win = self._nui and self._nui.winid
+    if not win or not vim.api.nvim_win_is_valid(win) then return end
+    local buf = vim.api.nvim_win_get_buf(win)
+
+    local function close_and_return()
+      local return_win = self._return_win
+      local was_focused = vim.api.nvim_get_current_win() == win
+      self:hide()
+
+      -- Restore focus only when closing the active view successfully.
+      if was_focused and not vim.api.nvim_win_is_valid(win)
+        and return_win and vim.api.nvim_win_is_valid(return_win)
+      then
+        vim.api.nvim_set_current_win(return_win)
+      end
+    end
+
+    for _, key in ipairs({ "q", "<Esc>" }) do
+      vim.keymap.set("n", key, close_and_return, {
+        buffer = buf,
+        silent = true,
+        nowait = true,
+        desc = "Close Noice and return to the invoking window",
+      })
+    end
+  end
+end
 
 if not NuiView._notification_follow_tail then
   NuiView._notification_follow_tail = true
