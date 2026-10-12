@@ -482,7 +482,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 ]]
 
 local function open_layout()
-  Code_win = vim.api.nvim_get_current_win()
   --vim.cmd("Neotree reveal left")
   require("neo-tree.command").execute({
     source = "filesystem",
@@ -496,8 +495,23 @@ local function open_layout()
   --vim.api.nvim_set_current_win(Code_win)
 end
 
+autocmd("WinEnter", {
+  group = vim.api.nvim_create_augroup("TrackCodeWindow", { clear = true }),
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+
+    -- Track normal editing windows, excluding floating windows.
+    if vim.bo.buftype == ""
+      and vim.bo.filetype ~= "neo-tree"
+      and vim.api.nvim_win_get_config(win).relative == ""
+    then
+      Code_win = win
+    end
+  end,
+})
+
 --vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, {
-autocmd({ "VimEnter" }, {
+autocmd("VimEnter", {
   callback = function()
     vim.schedule(setup_dap)
     vim.schedule(open_layout)
