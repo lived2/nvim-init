@@ -319,4 +319,27 @@ function M.toggle_view()
   })
 end
 
+require("neo-tree.ui.selector")
+
+local original_click = _G.___neotree_selector_click
+
+_G.___neotree_selector_click = function(id, clicks, button, mods)
+  local sources = require("neo-tree").config.source_selector.sources or {}
+  local source_index = id % (#sources + 1)
+  local source = sources[source_index]
+
+  if id > 0
+    and button == "l"
+    and source
+    and source.source == "document_symbols"
+  then
+    vim.schedule(function()
+      M.open_symbols()
+    end)
+    return
+  end
+
+  return original_click(id, clicks, button, mods)
+end
+
 return M
