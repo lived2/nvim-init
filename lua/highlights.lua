@@ -55,6 +55,9 @@ M.add = {
     fg = "#cba6f7",
     bg = "#1e1e2e",
   },
+  TelescopeResultsBorder = {
+    fg = "#a6e3a1", -- Green
+  },
 }
 
 return M
