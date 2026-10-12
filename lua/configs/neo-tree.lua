@@ -379,7 +379,9 @@ function M.toggle_view()
   dismiss()
 
   if next_source == "document_symbols" then
-    M.open_symbols()
+    M.open_symbols(function()
+      echo({{ label, highlight }, { " Tab" }}, true, {})
+    end)
     return
   end
 
