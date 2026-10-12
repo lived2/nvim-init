@@ -31,6 +31,11 @@ require("neo-tree").setup({
   },
   document_symbols = {
     follow_cursor = true, -- Automatically highlights and tracks the symbol under the cursor in the current buffer
+    kinds = {
+      Namespace = {
+        hl = "NeoTreeSymbolNamespace",
+      },
+    },
   },
   source_selector = {
     winbar = true, -- or statusline = true
@@ -184,6 +189,10 @@ set_hl(0, "NeoTreeNoticeFilesystem", {
 set_hl(0, "NeoTreeNoticeSymbols", {
   fg = "#cba6f7",
   bold = true,
+})
+
+set_hl(0, "NeoTreeSymbolNamespace", {
+  fg = "#cba6f7", -- Mauve
 })
 
 local symbols_loading = false
