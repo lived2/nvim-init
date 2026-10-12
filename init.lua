@@ -495,7 +495,7 @@ local function open_layout()
   --vim.api.nvim_set_current_win(Code_win)
 end
 
-autocmd("WinEnter", {
+autocmd({ "WinEnter", "BufEnter" }, {
   group = vim.api.nvim_create_augroup("TrackCodeWindow", { clear = true }),
   callback = function()
     local win = vim.api.nvim_get_current_win()
