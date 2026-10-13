@@ -22,6 +22,7 @@ require("noice").setup({
   views = {
     cmdline_output = {
       enter = true,
+      size = "35%", -- Percentage of the editor height.
     },
     messages = {
       -- Keep history below the invoking window so closing returns there.
@@ -98,6 +99,78 @@ require("noice").setup({
 })
 
 local NuiView = require("noice.view.nui")
+
+if not NuiView._remember_split_height then
+  NuiView._remember_split_height = true
+  local heights = {}
+  local windows = {}
+  local tracked_views = { cmdline_output = true, split = true, messages = true }
+  local original_layout = NuiView.get_layout
+  local original_show = NuiView.show
+  local original_hide = NuiView.hide
+
+  local function remember(win)
+    local tracked = windows[win]
+    if not tracked then return end
+    if not vim.api.nvim_win_is_valid(win) then
+      windows[win] = nil
+      return
+    end
+    local height = vim.api.nvim_win_get_height(win)
+    if height ~= tracked.height then
+      heights[tracked.name] = height
+      tracked.height = height
+    end
+  end
+
+  function NuiView:get_layout()
+    local layout = original_layout(self)
+    if self._opts.type == "split" and tracked_views[self._opts.view]
+      and (layout.position == "bottom" or layout.position == "top")
+    then
+      local win = self._nui and self._nui.winid
+      if win then remember(win) end
+      local height = heights[self._opts.view]
+      if height then
+        -- Keep the saved preference while allowing smaller editor sizes.
+        layout.size = math.min(height, math.max(1, vim.o.lines - vim.o.cmdheight - 3))
+      end
+    end
+    return layout
+  end
+
+  function NuiView:show()
+    original_show(self)
+    local win = self._nui and self._nui.winid
+    if self._opts.type == "split" and tracked_views[self._opts.view]
+      and (self._opts.position == "bottom" or self._opts.position == "top")
+      and win and vim.api.nvim_win_is_valid(win)
+    then
+      -- Establish a baseline so opening a view does not save its default size.
+      windows[win] = {
+        name = self._opts.view,
+        height = vim.api.nvim_win_get_height(win),
+      }
+    end
+  end
+
+  function NuiView:hide()
+    local win = self._nui and self._nui.winid
+    if win then
+      -- Capture a resize even if the window closes before WinResized fires.
+      remember(win)
+      windows[win] = nil
+    end
+    return original_hide(self)
+  end
+
+  vim.api.nvim_create_autocmd("WinResized", {
+    group = vim.api.nvim_create_augroup("NoiceSplitHeight", { clear = true }),
+    callback = function()
+      for win in pairs(windows) do remember(win) end
+    end,
+  })
+end
 
 if not NuiView._split_return_focus then
   NuiView._split_return_focus = true
