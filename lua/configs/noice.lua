@@ -24,6 +24,10 @@ require("noice").setup({
       enter = true,
       size = "35%", -- Percentage of the editor height.
     },
+    debug_build = {
+      view = "cmdline_output",
+      enter = false, -- Keep focus available for the debugger picker.
+    },
     messages = {
       -- Keep history below the invoking window so closing returns there.
       --relative = "win",
@@ -104,7 +108,7 @@ if not NuiView._remember_split_height then
   NuiView._remember_split_height = true
   local heights = {}
   local windows = {}
-  local tracked_views = { cmdline_output = true, split = true, messages = true }
+  local tracked_views = { cmdline_output = true, debug_build = true, split = true, messages = true }
   local original_layout = NuiView.get_layout
   local original_show = NuiView.show
   local original_hide = NuiView.hide
@@ -214,7 +218,9 @@ if not NuiView._split_return_focus then
       })
     end
 
-    if self._opts.view == "cmdline_output" or self._opts.view == "split" then
+    if self._opts.view == "cmdline_output" or self._opts.view == "debug_build"
+      or self._opts.view == "split"
+    then
       -- Run after Noice's scheduled initial scroll to the top.
       vim.schedule(function()
         if not vim.api.nvim_win_is_valid(win)

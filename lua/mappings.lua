@@ -100,6 +100,15 @@ if core_count > 32 then
   core_count = 32
 end
 
+local function output_for_run(command)
+  -- Route run output
+  require("noice").redirect(function()
+    vim.cmd(command)
+  end, {
+    { filter = { event = "msg_show" }, view = "cmdline_output" },
+  })
+end
+
 function Run()
   local dap_session = require("dap").session() ~= nil
   if not dap_session and vim.bo.modified then
@@ -110,25 +119,18 @@ function Run()
   end
   local args = vim.fn.input("Arguments: ")
   print('\n')
-  require("noice").redirect(function()
-    if vim.bo.filetype == 'rust' then
-      --vim.cmd('RustLsp runnables ' .. args)
-      vim.cmd('!cargo run ' .. args)
-    elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-      vim.cmd('!cmake --build target/debug -j' .. core_count .. ' ; cd target/debug ; ./run.sh ' .. args)
-    elseif vim.bo.filetype == 'go' then
-      vim.cmd('!go run % ' .. args)
-    elseif vim.bo.filetype == 'python' then
-      vim.cmd('!python3 % ' .. args)
-    elseif vim.bo.filetype == 'c3' then
-      vim.cmd('!c3c run ' .. args)
-    end
-  end, {
-      {
-        filter = { event = "msg_show" },
-        view = "cmdline_output",
-      },
-    })
+  if vim.bo.filetype == 'rust' then
+    --vim.cmd('RustLsp runnables ' .. args)
+    output_for_run('!cargo run ' .. args)
+  elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+    output_for_run('!cmake --build target/debug -j' .. core_count .. ' ; cd target/debug ; ./run.sh ' .. args)
+  elseif vim.bo.filetype == 'go' then
+    output_for_run('!go run % ' .. args)
+  elseif vim.bo.filetype == 'python' then
+    output_for_run('!python3 % ' .. args)
+  elseif vim.bo.filetype == 'c3' then
+    output_for_run('!c3c run ' .. args)
+  end
 end
 
 function RunDebugPython()
@@ -144,6 +146,11 @@ function RunDebugPython()
   --require('dap-python').test_class()
 end
 
+local function build_for_debug(command)
+  -- Route build output before opening the debugger picker.
+  require("configs.debug_build").run(command)
+end
+
 function RunDebug()
   local dap_session = require("dap").session() ~= nil
   if not dap_session and vim.bo.modified then
@@ -153,17 +160,17 @@ function RunDebug()
     --vim.cmd.RustLsp('debug')
     --vim.cmd.RustLsp('debuggables')
     if not dap_session then
-      vim.cmd('!cargo build -j' .. core_count)
+      build_for_debug('!cargo build -j' .. core_count)
     end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
     if not dap_session then
-      vim.cmd('!cmake --build target/debug -j' .. core_count)
+      build_for_debug('!cmake --build target/debug -j' .. core_count)
     end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'c3' then
     if not dap_session then
-      vim.cmd('!c3c build')
+      build_for_debug('!c3c build')
     end
     vim.cmd('DapContinue')
   elseif vim.bo.filetype == 'python' then
