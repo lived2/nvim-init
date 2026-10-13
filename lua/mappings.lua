@@ -24,44 +24,44 @@ map('n', '<C-h>', ':wincmd h<CR>')
 map('n', '<C-l>', ':wincmd l<CR>')
 
 -- Fn keys
-map('n', '<F3>', '<cmd>:lua require("configs.diagnostics").toggle()<CR>')
-map('i', '<F3>', '<ESC><cmd>:lua require("configs.diagnostics").toggle()<CR>')
+map('n', '<F3>', '<cmd>lua require("configs.diagnostics").toggle()<CR>')
+map('i', '<F3>', '<ESC><cmd>lua require("configs.diagnostics").toggle()<CR>')
 
-map('n', '<F4>', '<cmd>:lua require("configs.neo-tree").toggle_view()<CR>')
-map('i', '<F4>', '<ESC>:lua require("configs.neo-tree").toggle_view()<CR>')
+map('n', '<F4>', '<cmd>lua require("configs.neo-tree").toggle_view()<CR>')
+map('i', '<F4>', '<ESC>lua require("configs.neo-tree").toggle_view()<CR>')
 
-map('n', '<F5>', '<cmd>:lua RunDebug()<CR>')
-map('i', '<F5>', '<ESC>:w!<CR><cmd>:lua RunDebug()<CR>')
-map('n', '<F6>', '<cmd>:lua Run()<CR>')
-map('i', '<F6>', '<ESC>:w!<CR><cmd>:lua Run()<CR>')
-map('n', '<F7>', ':DapStepOver<CR>')
+map('n', '<F5>', '<cmd>lua RunDebug()<CR>')
+map('i', '<F5>', '<ESC><cmd>w!<CR><cmd>lua RunDebug()<CR>')
+map('n', '<F6>', '<cmd>lua Run()<CR>')
+map('i', '<F6>', '<ESC><cmd>w!<CR><cmd>lua Run()<CR>')
+map('n', '<F7>', '<cmd>DapStepOver<CR>')
 
 if (IsMac == 1 or IsWSL == 1) and not vim.g.neovide then -- iTerm2 in Mac case
-  map('n', '<F17>', ':DapTerminate<CR>') -- Shift+F5
-  map('n', '<F35>', ':DapStepInto<CR>')  -- Ctrl+F11
-  map('n', '<F23>', ':DapStepOut<CR>')   -- Shift+F11
+  map('n', '<F17>', '<cmd>DapTerminate<CR>') -- Shift+F5
+  map('n', '<F35>', '<cmd>DapStepInto<CR>')  -- Ctrl+F11
+  map('n', '<F23>', '<cmd>DapStepOut<CR>')   -- Shift+F11
   if IsMac == 0 then
-    map('n', '<F41>', '<cmd>:lua require("dap").restart()<CR>')
+    map('n', '<F41>', '<cmd>lua require("dap").restart()<CR>')
   end
 else
-  map('n', '<S-F5>', ':DapTerminate<CR>')
+  map('n', '<S-F5>', '<cmd>DapTerminate<CR>')
   if IsMac == 1 then
-    map('n', '<D-S-F5>', '<cmd>:lua require("dap").restart()<CR>')
+    map('n', '<D-S-F5>', '<cmd>lua require("dap").restart()<CR>')
   else
-    map("n", "<C-S-F5>", '<cmd>:lua require("dap").restart()<CR>')
+    map("n", "<C-S-F5>", '<cmd>lua require("dap").restart()<CR>')
   end
-  map('n', '<C-F11>', ':DapStepInto<CR>')
-  map('n', '<S-F11>', ':DapStepOut<CR>')
+  map('n', '<C-F11>', '<cmd>DapStepInto<CR>')
+  map('n', '<S-F11>', '<cmd>DapStepOut<CR>')
 end
 
-map('n', '<F9>', ':DapToggleBreakpoint<CR>')
-map('i', '<F9>', '<ESC>:DapToggleBreakpoint<CR>')
+map('n', '<F9>', '<cmd>DapToggleBreakpoint<CR>')
+map('i', '<F9>', '<ESC><cmd>DapToggleBreakpoint<CR>')
 
-map('n', '<F10>', ':w!<CR>')
-map('i', '<F10>', '<ESC>:w!<CR>')
+map('n', '<F10>', '<cmd>w!<CR>')
+map('i', '<F10>', '<ESC><cmd>w!<CR>')
 
-map('n', '<F12>', ':qall<CR>')
-map('i', '<F12>', '<ESC>:qall<CR>')
+map('n', '<F12>', '<cmd>qall<CR>')
+map('i', '<F12>', '<ESC><cmd>qall<CR>')
 
 -- MacOS Start
 if IsMac == 1 then
@@ -79,7 +79,7 @@ if vim.g.neovide then
   map({'n', 'i', 'c'}, "<C-v>", "<C-r>+", { desc = "Paste" }) -- Ctrl-V
   if IsMac == 1 then
     map({'n', 'v'}, "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
-    map({'i'}, "<D-s>", "<ESC>:w<CR>", { desc = "Save file" })
+    map({'i'}, "<D-s>", "<ESC><cmd>w<CR>", { desc = "Save file" })
   end
 end
 
@@ -110,18 +110,25 @@ function Run()
   end
   local args = vim.fn.input("Arguments: ")
   print('\n')
-  if vim.bo.filetype == 'rust' then
-    --vim.cmd('RustLsp runnables ' .. args)
-    vim.cmd('!cargo run ' .. args)
-  elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
-    vim.cmd('!cmake --build target/debug -j' .. core_count .. ' ; cd target/debug ; ./run.sh ' .. args)
-  elseif vim.bo.filetype == 'go' then
-    vim.cmd('!go run % ' .. args)
-  elseif vim.bo.filetype == 'python' then
-    vim.cmd('!python3 % ' .. args)
-  elseif vim.bo.filetype == 'c3' then
-    vim.cmd('!c3c run ' .. args)
-  end
+  require("noice").redirect(function()
+    if vim.bo.filetype == 'rust' then
+      --vim.cmd('RustLsp runnables ' .. args)
+      vim.cmd('!cargo run ' .. args)
+    elseif vim.bo.filetype == 'cpp' or vim.bo.filetype == 'c' then
+      vim.cmd('!cmake --build target/debug -j' .. core_count .. ' ; cd target/debug ; ./run.sh ' .. args)
+    elseif vim.bo.filetype == 'go' then
+      vim.cmd('!go run % ' .. args)
+    elseif vim.bo.filetype == 'python' then
+      vim.cmd('!python3 % ' .. args)
+    elseif vim.bo.filetype == 'c3' then
+      vim.cmd('!c3c run ' .. args)
+    end
+  end, {
+      {
+        filter = { event = "msg_show" },
+        view = "cmdline_output",
+      },
+    })
 end
 
 function RunDebugPython()
@@ -202,8 +209,8 @@ local mappings = {
   { 'v', "<C-c>", '"*y', "Copy"},
   { 'i', "<C-v>", "<C-r>+", "Paste" },
   -- save
-  --{{ 'n', 'v' }, "<C-s>", "<cmd> w <CR>", "Save file" },
-  --{ 'i', "<C-s>", "<ESC>:w <CR>", "Save file" },
+  --{{ 'n', 'v' }, "<C-s>", "<cmd>w<CR>", "Save file" },
+  --{ 'i', "<C-s>", "<ESC><cmd>w<CR>", "Save file" },
 
   { 'n', "<C-c>", '"*y', "Copy" },
   --{ 'n', "<C-F11>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
