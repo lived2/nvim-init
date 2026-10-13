@@ -20,6 +20,9 @@ require("noice").setup({
     view_warn = "notification_popup",
   },
   views = {
+    cmdline_output = {
+      enter = true,
+    },
     messages = {
       -- Keep history below the invoking window so closing returns there.
       --relative = "win",
@@ -136,6 +139,21 @@ if not NuiView._split_return_focus then
         nowait = true,
         desc = "Close Noice and return to the invoking window",
       })
+    end
+
+    if self._opts.view == "cmdline_output" or self._opts.view == "split" then
+      -- Run after Noice's scheduled initial scroll to the top.
+      vim.schedule(function()
+        if not vim.api.nvim_win_is_valid(win)
+          or vim.api.nvim_win_get_buf(win) ~= buf
+        then
+          return
+        end
+        vim.api.nvim_win_call(win, function()
+          vim.cmd("noautocmd normal! G$zb")
+        end)
+        if self._scroll then self._scroll:update() end
+      end)
     end
   end
 end
