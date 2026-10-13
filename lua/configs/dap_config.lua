@@ -47,18 +47,18 @@ dap.listeners.after.event_initialized['me.dap.keys'] = function()
   --set("n", "<right>", dap.step_into)
   --set("n", "<F12>", dap.terminate)
   --set('n', "<F12>", ":DapTerminate<CR>:close!<CR>")
-  set('n', "<F12>", ":DapTerminate<CR>")
+  set('n', "<F12>", "<cmd>DapTerminate<CR>")
   local ft = vim.bo.filetype
   if ft == "c" or ft == "cpp" then
-    set('n', "<Leader>dh", ":DapViewHover!<CR>")
-    set('n', "<Leader>dw", ":DapViewWatch<CR>")
+    set('n', "<Leader>dh", "<cmd>DapViewHover!<CR>")
+    set('n', "<Leader>dw", "<cmd>DapViewWatch<CR>")
   end
 end
 local reset_keys = function()
   --set("n", "<down>", 'j')
   --set("n", "<left>", 'h')
   --set("n", "<right>", 'l')
-  set('n', "<F12>", ":qall<CR>")
+  set('n', "<F12>", "<cmd>qall<CR>")
   local ft = vim.bo.filetype
   if ft == "c" or ft == "cpp" then
     pcall(map.del, 'n', "<Leader>dh")
