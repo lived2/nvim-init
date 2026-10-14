@@ -151,9 +151,50 @@ local function build_for_debug(command)
   require("configs.debug_build").run(command)
 end
 
+local function focus_debug_code_window()
+  local function is_code_window(win)
+    if type(win) ~= "number" or not vim.api.nvim_win_is_valid(win) then return false end
+    if vim.api.nvim_win_get_tabpage(win) ~= vim.api.nvim_get_current_tabpage() then return false end
+    local buf = vim.api.nvim_win_get_buf(win)
+    local ft = vim.bo[buf].filetype
+    return vim.api.nvim_win_get_config(win).relative == ""
+      and vim.bo[buf].buftype == ""
+      and ft ~= "neo-tree"
+      and not ft:match("^dap")
+  end
+
+  local win = vim.api.nvim_get_current_win()
+  if not is_code_window(win) then
+    win = Code_win
+    if not is_code_window(win) then
+      win = nil
+      for _, candidate in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+        if is_code_window(candidate) then
+          win = candidate
+          break
+        end
+      end
+    end
+  end
+
+  if not win then
+    vim.notify("No code window is available.", vim.log.levels.WARN)
+    return false
+  end
+
+  Code_win = win
+  vim.api.nvim_set_current_win(win)
+  return true
+end
+
 function RunDebug()
   local dap_session = require("dap").session() ~= nil
-  if not dap_session and vim.bo.modified then
+  if dap_session then
+    vim.cmd('DapContinue')
+    return
+  end
+  if not focus_debug_code_window() then return end
+  if vim.bo.modified then
     vim.cmd('w')
   end
   if vim.bo.filetype == 'rust' then

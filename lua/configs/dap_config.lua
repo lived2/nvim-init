@@ -69,6 +69,19 @@ local function enter_dap_mode(session)
     temporary_key("<Leader>dw", "<cmd>DapViewWatch<CR>")
   end
   if first_session and neotree_restore.was_open then vim.cmd("Neotree close") end
+  if first_session and (session.filetype == "c" or session.filetype == "cpp" or session.filetype == "rust") then
+    local view = require("dap-view")
+    local state = require("dap-view.state")
+
+    if not state.winnr or not vim.api.nvim_win_is_valid(state.winnr) then
+      view.open()
+    end
+
+    -- Selecting the current section again would also move focus into the panel.
+    if state.current_section ~= "console" then
+      view.show_view("console")
+    end
+  end
 end
 
 local function leave_dap_mode(session)
