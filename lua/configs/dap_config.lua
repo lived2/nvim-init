@@ -6,67 +6,101 @@
 
 local dap = require("dap")
 
-local map = vim.keymap
-local function set(mode, lhs, rhs)
-  map.set(mode, lhs, rhs, { silent = true })
-end
-
 local editor_popup = require("configs.editor_popup")
+local active_sessions = {}
+local saved_keys = {}
+local listener_id = "user.dap_lifecycle"
+local neotree_restore
 
-dap.listeners.after.event_initialized["editor_popup"] = function()
-  editor_popup.set_dap_mode(true)
-end
-
-local function leave_dap_mode()
-  editor_popup.set_dap_mode(false)
-end
-
-dap.listeners.after.event_terminated["editor_popup"] = leave_dap_mode
-dap.listeners.after.event_exited["editor_popup"] = leave_dap_mode
-dap.listeners.after.disconnect["editor_popup"] = function()
-  editor_popup.set_dap_mode(false)
-end
-
--- Close neo-tree at DAP starts
-local function neotree_close()
-  vim.cmd("Neotree close")
-end
-dap.listeners.before.attach.dapui_config = neotree_close
-dap.listeners.before.event_initialized.dapui_config = neotree_close
-
--- Re-open neo-tree at DAP ends
-local function neotree_open()
-  vim.cmd("Neotree show last")
-end
-dap.listeners.before.event_terminated.dapui_config = neotree_open
-dap.listeners.before.event_exited.dapui_config = neotree_open
-
-dap.listeners.after.event_initialized['me.dap.keys'] = function()
-  --set("n", "<down>", dap.step_over)
-  --set("n", "<left>", dap.step_out)
-  --set("n", "<right>", dap.step_into)
-  --set("n", "<F12>", dap.terminate)
-  --set('n', "<F12>", ":DapTerminate<CR>:close!<CR>")
-  set('n', "<F12>", "<cmd>DapTerminate<CR>")
-  local ft = vim.bo.filetype
-  if ft == "c" or ft == "cpp" then
-    set('n', "<Leader>dh", "<cmd>DapViewHover!<CR>")
-    set('n', "<Leader>dw", "<cmd>DapViewWatch<CR>")
+local function temporary_key(lhs, rhs)
+  if saved_keys[lhs] then return end
+  local expanded = vim.api.nvim_replace_termcodes(lhs, true, true, true)
+  local original
+  -- Inspect global mappings only; a focused panel may have local mappings.
+  for _, mapping in ipairs(vim.fn.maplist()) do
+    if mapping.buffer == 0 and (mapping.mode:find("n") or mapping.mode == " ")
+      and vim.api.nvim_replace_termcodes(mapping.lhs, true, true, true) == expanded
+    then
+      original = mapping
+      break
+    end
   end
+  saved_keys[lhs] = { original = original }
+  vim.keymap.set("n", lhs, rhs, { silent = true })
 end
-local reset_keys = function()
-  --set("n", "<down>", 'j')
-  --set("n", "<left>", 'h')
-  --set("n", "<right>", 'l')
-  set('n', "<F12>", "<cmd>qall<CR>")
-  local ft = vim.bo.filetype
-  if ft == "c" or ft == "cpp" then
-    pcall(map.del, 'n', "<Leader>dh")
-    pcall(map.del, 'n', "<Leader>dw")
+
+local function restore_key(lhs)
+  local saved = saved_keys[lhs]
+  if not saved then return end
+  if saved.original then
+    vim.fn.mapset("n", false, saved.original)
+  else
+    pcall(vim.keymap.del, "n", lhs)
   end
+  saved_keys[lhs] = nil
 end
-dap.listeners.after.event_terminated['me.dap.keys'] = reset_keys
-dap.listeners.after.disconnected['me.dap.keys'] = reset_keys
+
+local function has_cpp_session()
+  for _, ft in pairs(active_sessions) do
+    if ft == "c" or ft == "cpp" then return true end
+  end
+  return false
+end
+
+local function enter_dap_mode(session)
+  if active_sessions[session] then return end
+  local first_session = next(active_sessions) == nil
+  active_sessions[session] = session.filetype or ""
+
+  if first_session then
+    neotree_restore = { was_open = false }
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+      local buf = vim.api.nvim_win_get_buf(win)
+      if vim.bo[buf].filetype == "neo-tree" then
+        neotree_restore.was_open = true
+        break
+      end
+    end
+    editor_popup.set_dap_mode(true)
+    temporary_key("<F12>", "<cmd>DapTerminate<CR>")
+  end
+  if has_cpp_session() then
+    temporary_key("<Leader>dh", "<cmd>DapViewHover!<CR>")
+    temporary_key("<Leader>dw", "<cmd>DapViewWatch<CR>")
+  end
+  if first_session and neotree_restore.was_open then vim.cmd("Neotree close") end
+end
+
+local function leave_dap_mode(session)
+  -- Termination and disconnect can both arrive for the same session.
+  if not active_sessions[session] then return end
+  active_sessions[session] = nil
+
+  if not has_cpp_session() then
+    restore_key("<Leader>dh")
+    restore_key("<Leader>dw")
+  end
+  if next(active_sessions) then return end
+
+  restore_key("<F12>")
+  editor_popup.set_dap_mode(false)
+  local restore = neotree_restore
+  if not restore or not restore.was_open then return end
+  -- Run after dap-view's synchronous close handlers, regardless of their order.
+  vim.schedule(function()
+    -- Ignore a pending restore if another debugging cycle has started.
+    if neotree_restore == restore and not next(active_sessions) then
+      vim.cmd("Neotree show last")
+    end
+  end)
+end
+
+dap.listeners.after.event_initialized[listener_id] = enter_dap_mode
+-- Process exit alone does not mean the debugging session has ended.
+dap.listeners.after.event_terminated[listener_id] = leave_dap_mode
+dap.listeners.after.disconnect[listener_id] = function(session, err)
+  if not err then leave_dap_mode(session) end
+end
 
 local function file_exists(name)
   local f = io.open(name, "r")
