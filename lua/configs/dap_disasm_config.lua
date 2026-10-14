@@ -1,3 +1,17 @@
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("DapDisassemblyNavigation", { clear = true }),
+  pattern = "dap-disassembly",
+  callback = function(event)
+    -- This custom view does not inherit dap-view's base keymaps.
+    vim.keymap.set("n", "<Tab>", function()
+      require("dap-view").navigate({ count = vim.v.count1, wrap = true })
+    end, { buffer = event.buf, desc = "Next DAP view" })
+    vim.keymap.set("n", "<S-Tab>", function()
+      require("dap-view").navigate({ count = -vim.v.count1, wrap = true })
+    end, { buffer = event.buf, desc = "Previous DAP view" })
+  end,
+})
+
 require("dap-disasm").setup({
   -- Add disassembly view to elements of nvim-dap-ui
   dapui_register = false,

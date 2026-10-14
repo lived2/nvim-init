@@ -1,5 +1,11 @@
 local opts = {
   auto_toggle = true,
+  keymaps = {
+    base = {
+      next_view = { "]v", "<Tab>" },
+      prev_view = { "[v", "<S-Tab>" },
+    },
+  },
   winbar = {
     sections = { "watches", "scopes", "exceptions", "repl", "sessions", "breakpoints", "threads", "disassembly", "console" },
     --default_section = "disassembly",
