@@ -187,6 +187,12 @@ local function smart_quit()
     return
   end
 
+  local dap_panel = require("configs.dap_panel")
+  if dap_panel.is_panel() then
+    dap_panel.close_if_idle()
+    return
+  end
+
   local real_buffers = {}
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -248,13 +254,22 @@ local mappings = {
   { 'n', "<Leader>gp",  function() require("gitsigns").preview_hunk() end, "Git: Preview Hunk" },
 
   -- DAP
-  { 'n', "<Leader>dt", "<cmd> DapToggleBreakpoint <CR>", "Add breakpoint at line" },
-  { 'n', "<Leader>dr", "<cmd> DapContinue <CR>", "Start or continue the debugger" },
-  { 'n', "<Leader>dx", "<cmd> DapTerminate <CR>", "Terminate the debugger" },
-  { 'n', "<Leader>do", "<cmd> DapStepOver <CR>", "Step Over" },
-  { 'n', "<Leader>di", "<cmd> DapStepInto <CR>", "Step Into" },
-  { 'n', "<Leader>du", "<cmd> DapStepOut <CR>", "Step Out" },
-  --{ 'n', "<Leader>dh", "<cmd> DapViewHover <CR>", "Dap View Hover" },
+  { 'n', "<Leader>dt", "<cmd>DapToggleBreakpoint<CR>", "Add breakpoint at line" },
+  { 'n', "<Leader>dr", "<cmd>DapContinue<CR>", "Start or continue the debugger" },
+  { 'n', "<Leader>dx", "<cmd>DapTerminate<CR>", "Terminate the debugger" },
+  { 'n', "<Leader>do", "<cmd>DapStepOver<CR>", "Step Over" },
+  { 'n', "<Leader>di", "<cmd>DapStepInto<CR>", "Step Into" },
+  { 'n', "<Leader>du", "<cmd>DapStepOut<CR>", "Step Out" },
+  --{ 'n', "<Leader>dh", "<cmd>DapViewHover <CR>", "Dap View Hover" },
+  { 'n', "<Leader>db", function()
+    local view = require("dap-view")
+    local state = require("dap-view.state")
+    if not state.winnr or not vim.api.nvim_win_is_valid(state.winnr) then
+      view.open()
+    end
+    view.jump_to_view("breakpoints")
+  end, "Show Breakpoints" },
+  { 'n', "<Leader>dB", function() require("configs.dap_panel").clear_breakpoints() end, "Clear All Breakpoints" },
 
   -- DAP python
   { 'n', "<Leader>dpr", function() require('dap-python').test_method() end, "DAP Python" },

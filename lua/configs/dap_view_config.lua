@@ -1,3 +1,5 @@
+require("configs.dap_panel").setup()
+
 local opts = {
   auto_toggle = true,
   keymaps = {
