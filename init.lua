@@ -514,7 +514,11 @@ autocmd({ "WinEnter", "BufEnter" }, {
 autocmd("VimEnter", {
   callback = function()
     vim.schedule(setup_dap)
-    vim.schedule(open_layout)
+    vim.schedule(function()
+      if not require("configs.workspace_session").restore_on_startup() then
+        open_layout()
+      end
+    end)
   end,
 })
 
