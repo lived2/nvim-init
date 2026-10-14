@@ -6,9 +6,9 @@ require("nvchad.mappings")
 local map = vim.keymap.set
 
 map("n", "<Esc>", "<Esc><Cmd>nohlsearch<CR>", {
+  desc = "Cancel and clear search highlights",
   noremap = true,
   silent = true,
-  desc = "Cancel and clear search highlights",
 })
 
 map('n', ';', ':', { desc = 'CMD enter command mode' })
@@ -104,9 +104,7 @@ local function output_for_run(command)
   -- Route run output
   require("noice").redirect(function()
     vim.cmd(command)
-  end, {
-      { filter = { event = "msg_show" }, view = "cmdline_output" },
-    })
+  end, {{ filter = { event = "msg_show" }, view = "cmdline_output" }, })
 end
 
 function Run()
@@ -329,17 +327,11 @@ end
 
 map("x", "<RightMouse>", function()
   require("configs.selection_popup").open_at_mouse()
-end, {
-    desc = "Selection Context Menu",
-    silent = true,
-  })
+end, { desc = "Selection Context Menu", silent = true, })
 
 map("n", "<RightMouse>", function()
   require("configs.context_menu").open_at_mouse()
-end, {
-    desc = "Context Menu",
-    silent = true,
-  })
+end, { desc = "Context Menu", silent = true, })
 
 --[[
 local M = {}
