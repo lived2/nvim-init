@@ -286,6 +286,22 @@ autocmd("BufWritePre", {
   end,
 })
 
+autocmd("BufWritePost", {
+  group = vim.api.nvim_create_augroup("NotifyFileWritten", { clear = true }),
+  callback = function(event)
+    if vim.bo[event.buf].buftype ~= "" then return end
+
+    local path = vim.fn.fnamemodify(
+      vim.api.nvim_buf_get_name(event.buf),
+      ":~:."
+    )
+
+    vim.notify(path .. " written", vim.log.levels.INFO, {
+      title = "Save",
+    })
+  end,
+})
+
 --[[
 autocmd('BufReadPost', {
   callback = function()
