@@ -105,8 +105,8 @@ local function output_for_run(command)
   require("noice").redirect(function()
     vim.cmd(command)
   end, {
-    { filter = { event = "msg_show" }, view = "cmdline_output" },
-  })
+      { filter = { event = "msg_show" }, view = "cmdline_output" },
+    })
 end
 
 function Run()
@@ -167,7 +167,7 @@ local function focus_debug_code_window()
   if not is_code_window(win) then
     win = Code_win
     if not is_code_window(win) then
-      win = nil
+      win = -1
       for _, candidate in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
         if is_code_window(candidate) then
           win = candidate
@@ -330,9 +330,9 @@ end
 map("x", "<RightMouse>", function()
   require("configs.selection_popup").open_at_mouse()
 end, {
-  desc = "Selection Context Menu",
-  silent = true,
-})
+    desc = "Selection Context Menu",
+    silent = true,
+  })
 
 map("n", "<RightMouse>", function()
   require("configs.context_menu").open_at_mouse()
