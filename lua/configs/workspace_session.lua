@@ -87,7 +87,10 @@ function M.restore_on_startup()
     return false
   end
   local files = {}
-  for _, arg in ipairs(vim.fn.argv(-1, -1)) do
+  local args = vim.fn.argv(-1, -1)
+  ---@cast args string[]
+
+  for _, arg in ipairs(args) do
     local path = vim.fn.fnamemodify(arg, ":p")
     if vim.fn.isdirectory(path) == 0 then
       files[#files + 1] = path
