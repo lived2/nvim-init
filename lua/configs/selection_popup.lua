@@ -55,7 +55,10 @@ function M.execute(action)
       return
     end
 
-    if action == "format" then
+    if action == "indent" then
+      restore(saved)
+      normal("=")
+    elseif action == "format" then
       normal(esc)
       local range = format_range(saved)
       if vim.bo[saved.buf].filetype == "lua" then
@@ -95,9 +98,10 @@ function M.prepare()
   }
   require("configs.popup_registry").clear()
   for i, item in ipairs({
-    { "Format Selection", "format" },
-    { "Delete Selection", "delete" },
-    { "Copy Selection", "copy" },
+    { "📐 Indent Selection", "indent" },
+    { "✨ Format Selection", "format" },
+    { "🗑 Delete Selection", "delete" },
+    { "📋 Copy Selection", "copy" },
   }) do
     vim.cmd(("vnoremenu %d %s.%s <Cmd>lua require('configs.selection_popup').execute(%q)<CR>")
       :format(i * 10, menu, item[1]:gsub(" ", "\\ "), item[2]))

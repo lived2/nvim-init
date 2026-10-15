@@ -403,7 +403,38 @@ local function add_normal_menu()
   add_menu("10.20", "🐞 Run Debug", "run_debug", function() RunDebug() end)
   add_menu("10.30", "🔴 Toggle Breakpoint", "toggle_breakpoint", function() require("dap").toggle_breakpoint() end)
   add_menu("10.40", "🔍 Git: Preview Hunk", "git_preview_hunk", function() require("gitsigns").preview_hunk() end)
-  add_rust_menu()
+  add_rust_menu() -- 10.50~10.60
+  local buf = vim.api.nvim_get_current_buf()
+  if vim.bo[buf].buftype == "" then
+    add_menu("10.70", "📐 Indent All", "indent_all", function()
+      if not vim.api.nvim_buf_is_valid(buf) then return end
+      if vim.bo[buf].buftype ~= "" then return end
+
+      if not vim.bo[buf].modifiable then
+        vim.notify("This buffer is not modifiable", vim.log.levels.WARN)
+        return
+      end
+
+      vim.api.nvim_buf_call(buf, function()
+        local view = vim.fn.winsaveview()
+
+        -- Reindent the entire buffer and restore the cursor and scroll position.
+        vim.cmd("normal! gg=G")
+        vim.fn.winrestview(view)
+      end)
+    end)
+    add_menu("10.80", "✨ Format All", "format_all", function()
+      if not vim.api.nvim_buf_is_valid(buf) then return end
+      if vim.bo[buf].buftype ~= "" then return end
+
+      if not vim.bo[buf].modifiable then
+        vim.notify("This buffer is not modifiable", vim.log.levels.WARN)
+        return
+      end
+
+      require("conform").format({ bufnr = buf })
+    end)
+  end
   add_separator("10.99")
 end
 
