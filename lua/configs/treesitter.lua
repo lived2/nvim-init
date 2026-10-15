@@ -129,6 +129,7 @@ return {
       'neo-tree-popup',
       'noice',
       'notify',
+      'registry',
       --'aerial',
       --'aerial-nav',
       --'Outline',
