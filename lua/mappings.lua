@@ -128,6 +128,8 @@ function Run()
     output_for_run('!python3 % ' .. args)
   elseif vim.bo.filetype == 'c3' then
     output_for_run('!c3c run ' .. args)
+  elseif vim.bo.filetype == 'lua' then
+    output_for_run('!lua % ' .. args)
   end
 end
 
