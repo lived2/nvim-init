@@ -7,6 +7,8 @@ require("conform").setup({
     go = { "goimports", "gofmt" },
     -- You can also customize some of the format options for the filetype
     rust = { "rustfmt", lsp_format = "fallback" },
+    sh = { "shfmt" },
+    --bash = { "shfmt" },
     -- You can use a function here to determine the formatters dynamically
     python = function(bufnr)
       if require("conform").get_formatter_info("ruff_format", bufnr).available then
@@ -20,6 +22,14 @@ require("conform").setup({
     -- Use the "_" filetype to run formatters on filetypes that don't
     -- have other formatters configured.
     ["_"] = { "trim_whitespace" },
+  },
+  formatters = {
+    shfmt = {
+      -- -i 2: indent with 2 spaces (default is tab)
+      -- -ci: switch case statement indentation
+      -- -bn: binary operators at the start of the next line
+      prepend_args = { "-i", "2", "-ci", "-bn" },
+    },
   },
   -- Set this to change the default values when calling conform.format()
   default_format_opts = {

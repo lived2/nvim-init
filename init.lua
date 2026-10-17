@@ -233,12 +233,15 @@ function string.starts(String, Start)
 end
 
 local workspace_paths = {
-  "/Users/lived/project/",
-  "/home/lived/project/",
-  "/usr2/seonggoo/build/project/",
-  "/Users/lived/gh/",
-  "/home/lived/gh/",
-  "/usr2/seonggoo/gh/",
+  "/Users/lived/project",
+  "/home/lived/project",
+  "/usr2/seonggoo/build/project",
+  "/Users/lived/gh",
+  "/home/lived/gh",
+  "/usr2/seonggoo/gh",
+  "/Users/lived/bin",
+  "/home/lived/bin",
+  "/usr2/seonggoo/bin",
   "D:\\workspace",
   "d:\\workspace",
   "D:\\GitHub",
