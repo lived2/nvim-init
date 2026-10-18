@@ -386,6 +386,7 @@ autocmd("FileType", {
   end,
 })
 
+--[[
 autocmd("FileType", {
   pattern = "lazy",
   callback = function(event)
@@ -393,6 +394,19 @@ autocmd("FileType", {
       buffer = event.buf,
       silent = true,
       desc = "Close Lazy",
+    })
+  end,
+})
+]]
+
+-- map Esc/q to close the buffer/window
+autocmd("FileType", {
+  pattern = { "lazy", "dap-view-hover", "conform-info" },
+  callback = function(args)
+    map("n", "<Esc>", "q", {
+      buffer = args.buf,
+      remap = true,
+      silent = true,
     })
   end,
 })
@@ -406,6 +420,7 @@ autocmd("FileType", {
   end,
 })
 
+--[[
 autocmd("FileType", {
   pattern = "dap-view-hover",
   callback = function(args)
@@ -416,6 +431,7 @@ autocmd("FileType", {
     })
   end,
 })
+]]
 
 local function setup_dap()
   local ok, base46 = pcall(require, "base46")
