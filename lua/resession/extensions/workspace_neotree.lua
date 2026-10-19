@@ -1,6 +1,16 @@
 local M = {}
 local pending
 
+local function sidebar_width(width, position)
+  if position ~= "left" and position ~= "right" then
+    return width
+  end
+  local default = require("neo-tree").ensure_config().window.width or 60
+  -- Repair snapshots captured after the last editor closed and the tree expanded.
+  local limit = math.max(1, math.floor(vim.o.columns / 2))
+  return width and width <= limit and width or math.min(default, limit)
+end
+
 function M.config()
   vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("WorkspaceSessionSymbols", { clear = true }),
@@ -67,7 +77,7 @@ function M.on_save()
             source = state.name,
             path = state.path,
             position = state.current_position or "left",
-            width = vim.api.nvim_win_get_width(win),
+            width = sidebar_width(vim.api.nvim_win_get_width(win), state.current_position or "left"),
             focused = win == vim.api.nvim_get_current_win(),
             selected = node and node:get_id(),
             expanded = state.tree and renderer.get_expanded_nodes(state.tree) or {},
@@ -127,7 +137,7 @@ function M.restore_pending()
       end
       require("neo-tree.command").execute(args)
       if state.winid and vim.api.nvim_win_is_valid(state.winid) then
-        vim.api.nvim_win_set_width(state.winid, saved.width)
+        vim.api.nvim_win_set_width(state.winid, sidebar_width(saved.width, saved.position))
         if saved.focused then
           focus_win = state.winid
         end

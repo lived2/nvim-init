@@ -1,7 +1,7 @@
 local M = {}
 
 require("neo-tree").setup({
-  close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
+  close_if_last_window = false, -- Buffer-aware quitting is handled by configs.smart_quit.
   popup_border_style = "", -- "NC"(default) or "" to use 'winborder' on Neovim v0.11+
   sources = {
     "filesystem",

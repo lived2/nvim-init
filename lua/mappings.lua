@@ -223,35 +223,10 @@ end
 
 
 local function smart_quit()
-  if vim.fn.getcmdwintype() ~= "" then
-    vim.cmd("quit")
-    return
-  end
-
-  local dap_panel = require("configs.dap_panel")
-  if dap_panel.is_panel() then
-    dap_panel.close_if_idle()
-    return
-  end
-
-  local real_buffers = {}
-
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[buf].buflisted
-      and vim.bo[buf].filetype ~= "neo-tree"
-    then
-      table.insert(real_buffers, buf)
-    end
-  end
-
-  if #real_buffers > 1 then
-    require("nvchad.tabufline").close_buffer()
-  else
-    vim.cmd("qall")
-  end
+  require("configs.smart_quit").close(false, false)
 end
 
-vim.api.nvim_create_user_command("Q", smart_quit, {})
+require("configs.smart_quit").setup()
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 local toggle_modes = {'n', 't'}
