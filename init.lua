@@ -31,6 +31,7 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require "options"
 require "nvchad.autocmds"
+require("configs.cursorline_flash").setup()
 
 vim.schedule(function()
   require "mappings"

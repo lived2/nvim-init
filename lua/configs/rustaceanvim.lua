@@ -18,6 +18,32 @@ end
 local cfg = require('rustaceanvim.config')
 ]]
 
+local hover_cursorline_group = vim.api.nvim_create_augroup(
+  "RustHoverActionsCursorLine",
+  { clear = true }
+)
+
+vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, {
+  group = hover_cursorline_group,
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+    vim.schedule(function()
+      if not vim.api.nvim_win_is_valid(win) then return end
+      local ok = pcall(
+        vim.api.nvim_win_get_var,
+        win,
+        "rust-analyzer-hover-actions"
+      )
+      if not ok then return end
+
+      -- The popup has no number column, so the global "number" setting
+      -- cannot show rustaceanvim's cursorline selection.
+      vim.wo[win].cursorline = true
+      vim.wo[win].cursorlineopt = "line"
+    end)
+  end,
+})
+
 vim.g.rustaceanvim = {
   -- Plugin configuration
   tools = {
@@ -37,7 +63,7 @@ vim.g.rustaceanvim = {
         { silent = true, buffer = bufnr })
       vim.keymap.set("n", "K",  -- Override Neovim's built-in hover keymap with rustaceanvim's hover actions
         function()
-          vim.cmd.RustLsp({'hover', 'actions'})
+          require("configs.editor_popup").rust_hover_actions()
         end,
         { silent = true, buffer = bufnr })
       --[[

@@ -319,7 +319,7 @@ local function configure_rust_float(kind)
   vim.defer_fn(find_float, 25)
 end
 
-local function rust_hover_actions()
+function M.rust_hover_actions()
   -- First call opens the Hover Actions window.
   vim.cmd.RustLsp({'hover', 'actions'})
   configure_rust_float("hover")
@@ -341,7 +341,7 @@ local function add_rust_menu()
     return
   end
 
-  add_menu("10.50", "🦀 Hover Actions", "rust_hover_actions", rust_hover_actions)
+  add_menu("10.50", "🦀 Hover Actions", "rust_hover_actions", M.rust_hover_actions)
   add_menu("10.60", "💡 Code Actions", "rust_code_action", rust_code_action)
   --[[
   add_menu("10.50", "📖 Open Docs", "rust_open_docs", function()
