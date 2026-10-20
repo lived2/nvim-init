@@ -18,10 +18,10 @@ map('n', ';', ':', { desc = 'CMD enter command mode' })
 --
 -- Key mapping
 -- Navigate vim panes better
-map('n', '<C-k>', ':wincmd k<CR>')
-map('n', '<C-j>', ':wincmd j<CR>')
-map('n', '<C-h>', ':wincmd h<CR>')
-map('n', '<C-l>', ':wincmd l<CR>')
+map('n', '<C-k>', '<cmd>wincmd k<CR>')
+map('n', '<C-j>', '<cmd>wincmd j<CR>')
+map('n', '<C-h>', '<cmd>wincmd h<CR>')
+map('n', '<C-l>', '<cmd>wincmd l<CR>')
 
 -- Fn keys
 map('n', '<F3>', '<cmd>lua require("configs.diagnostics").toggle()<CR>')
