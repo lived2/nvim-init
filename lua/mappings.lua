@@ -300,7 +300,7 @@ local mappings = {
   end, "Close All Buffers" },
 
   -- Close All Buffers except the current one
-  { 'n', "<leader>cb", function() require("nvchad.tabufline").closeAllBufs(false) end, "Close All Buffers" },
+  { 'n', "<leader>cb", function() require("nvchad.tabufline").closeAllBufs(false) end, "Close All Other Buffers" },
 
   -- Next/Prev hunk
   { 'n', "]c", function()
