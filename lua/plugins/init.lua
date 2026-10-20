@@ -2,9 +2,9 @@ return {
   {
     "stevearc/conform.nvim",
     --event = 'BufWritePre', -- uncomment for format on save
-    --opts = require "configs.conform",
+    --opts = require "configs.conform_config",
     config = function()
-      require "configs.conform"
+      require "configs.conform_config"
     end,
   },
 
@@ -327,7 +327,7 @@ return {
       --"rcarriga/nvim-notify",
     },
     config = function()
-      require "configs.noice"
+      require "configs.noice_config"
     end,
   },
   {

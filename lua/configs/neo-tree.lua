@@ -125,9 +125,12 @@ local manager = require("neo-tree.sources.manager")
 local map = vim.keymap.set
 
 local function dismiss()
+  require("configs.noice_config").dismiss()
+  --[[
   require("noice").cmd("dismiss")
   local state = package.loaded["noice.ui.state"]
   if state then state.clear("msg_show") end
+  ]]
 end
 
 local function move_focus_to_nt_source(source)

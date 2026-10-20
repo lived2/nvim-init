@@ -165,6 +165,27 @@ function M.delete()
   end)
 end
 
+function M.delete_current()
+  local resession = require("resession")
+  local name = resession.get_current()
+
+  if not name then
+    vim.notify("No active workspace session.", vim.log.levels.INFO)
+    return
+  end
+
+  resession.detach()
+  resession.delete(name, { notify = false })
+
+  -- Prevent re-creating the deleted session
+  vim.api.nvim_clear_autocmds({
+    group = "WorkspaceSession",
+    event = "VimLeavePre",
+  })
+
+  vim.notify(("Workspace %s session deleted."):format(name))
+end
+
 function M.setup()
   require("resession").setup({
     dir = directory,

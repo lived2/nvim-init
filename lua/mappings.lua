@@ -291,7 +291,35 @@ local mappings = {
   { 'n', "<Leader>dpr", function() require('dap-python').test_method() end, "DAP Python" },
 
   -- Smart Quit
-  { 'n', "<leader>q", smart_quit, "Smart Quit" }
+  { 'n', "<leader>q", smart_quit, "Smart Quit" },
+
+  -- Close All Buffers
+  { 'n', "<leader>ca", function()
+    require("nvchad.tabufline").closeAllBufs()
+    require("configs.workspace_session").delete_current()
+  end, "Close All Buffers" },
+
+  -- Close All Buffers except the current one
+  { 'n', "<leader>cb", function() require("nvchad.tabufline").closeAllBufs(false) end, "Close All Buffers" },
+
+  -- Next/Prev hunk
+  { 'n', "]c", function()
+    if vim.wo.diff then
+      vim.cmd.normal({ "]c", bang = true })
+    else
+      require("configs.noice_config").dismiss()
+      require("configs.git_hunk_flash").nav("next")
+    end
+  end, "Next Git hunk" },
+
+  { 'n', "[c", function()
+    if vim.wo.diff then
+      vim.cmd.normal({ "[c", bang = true })
+    else
+      require("configs.noice_config").dismiss()
+      require("configs.git_hunk_flash").nav("prev")
+    end
+  end, "Prev Git hunk" },
 }
 
 vim.keymap.del("n", "<leader>e")

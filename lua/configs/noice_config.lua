@@ -1,3 +1,5 @@
+local M = {}
+
 -- Popup timeout hides the view without clearing Noice's last msg_show event.
 -- Treat each Ex command as a fresh output, even when its text is unchanged.
 vim.api.nvim_create_autocmd("CmdlineEnter", {
@@ -261,3 +263,14 @@ if not NuiView._notification_follow_tail then
     end
   end
 end
+
+function M.dismiss()
+  require("noice").cmd("dismiss")
+
+  local state = package.loaded["noice.ui.state"]
+  if state then
+    state.clear("msg_show")
+  end
+end
+
+return M
