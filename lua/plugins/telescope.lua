@@ -7,6 +7,13 @@ return {
     },
     opts = function(_, opts)
       opts.defaults = opts.defaults or {}
+      opts.defaults.file_ignore_patterns = vim.list_extend(
+        opts.defaults.file_ignore_patterns or {},
+        {
+          "^tags$",
+          "/tags$",
+        }
+      )
       opts.defaults.mappings = opts.defaults.mappings or {}
       opts.defaults.mappings.i = opts.defaults.mappings.i or {}
 
