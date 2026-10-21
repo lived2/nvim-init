@@ -220,7 +220,7 @@ return {
     },
     event = "InsertEnter",
     config = function()
-      require("configs.cmp")
+      require("configs.cmp_config")
     end,
     --opts = function()
       --require("configs.cmp").setup()
@@ -309,7 +309,7 @@ return {
     },
     lazy = false, -- neo-tree will lazily load itself
     config = function()
-      require "configs.neo-tree"
+      require "configs.neo-tree_config"
     end,
   },
   {

@@ -22,7 +22,7 @@ function M.close(force, write)
     return
   end
   if vim.bo[current].modified and not force then
-    vim.api.nvim_err_writeln("No write since last change (add ! to override)")
+    vim.api.nvim_echo({ { "No write since last change (add ! to override)", "ErrorMsg" } }, true, {})
     return
   end
 

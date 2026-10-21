@@ -27,8 +27,8 @@ map('n', '<C-l>', '<cmd>wincmd l<CR>')
 map('n', '<F3>', '<cmd>lua require("configs.diagnostics").toggle()<CR>')
 map('i', '<F3>', '<ESC><cmd>lua require("configs.diagnostics").toggle()<CR>')
 
-map('n', '<F4>', '<cmd>lua require("configs.neo-tree").toggle_view()<CR>')
-map('i', '<F4>', '<ESC>lua require("configs.neo-tree").toggle_view()<CR>')
+map('n', '<F4>', '<cmd>lua require("configs.neo-tree_config").toggle_view()<CR>')
+map('i', '<F4>', '<ESC>lua require("configs.neo-tree_config").toggle_view()<CR>')
 
 map('n', '<F5>', '<cmd>lua RunDebug()<CR>')
 map('i', '<F5>', '<ESC><cmd>w!<CR><cmd>lua RunDebug()<CR>')
