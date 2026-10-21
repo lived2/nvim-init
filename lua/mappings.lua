@@ -347,10 +347,10 @@ local function prev_hunk()
   end
 end
 
-for _, key in ipairs({"]c", "<C-S-Down>"}) do
+for _, key in ipairs({"]c", "<leader><Down>"}) do
   map('n', key, next_hunk, { desc = "Next Git hunk" })
 end
-for _, key in ipairs({"[c", "<C-S-Up>"}) do
+for _, key in ipairs({"[c", "<leader><Up>"}) do
   map('n', key, prev_hunk, { desc = "Prev Git hunk" })
 end
 
