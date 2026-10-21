@@ -2,15 +2,31 @@ local M = {}
 local directory = "workspace-sessions"
 local using_stdin = false
 
-local function session_name()
+local function workspace_root()
   -- Use the global cwd so a sidebar's local cwd cannot change the workspace.
   local cwd = vim.fn.getcwd(-1, -1)
-  cwd = vim.fs.normalize(vim.uv.fs_realpath(cwd) or cwd)
+  return vim.fs.normalize(vim.uv.fs_realpath(cwd) or cwd)
+end
+
+local function session_name()
+  local cwd = workspace_root()
   return vim.fn.fnamemodify(cwd, ":t") .. "-" .. vim.fn.sha256(cwd)
 end
 
 local function file_buffer(buf)
   return vim.bo[buf].buftype == "" and vim.bo[buf].buflisted and vim.api.nvim_buf_get_name(buf) ~= ""
+end
+
+local function outside_workspace(path)
+  local root = workspace_root()
+  path = vim.fs.normalize(vim.uv.fs_realpath(path) or vim.fn.fnamemodify(path, ":p"))
+  return path ~= root and path:sub(1, #root + 1) ~= root .. "/"
+end
+
+local function has_outside_file_buffer()
+  return vim.iter(vim.api.nvim_list_bufs()):any(function(buf)
+    return file_buffer(buf) and outside_workspace(vim.api.nvim_buf_get_name(buf))
+  end)
 end
 
 local function sync_tabufline()
@@ -43,6 +59,9 @@ end
 function M.save(automatic)
   local resession = require("resession")
   if resession.is_loading() then
+    return
+  end
+  if automatic and has_outside_file_buffer() then
     return
   end
   local name = session_name()
@@ -93,6 +112,9 @@ function M.restore_on_startup()
   for _, arg in ipairs(args) do
     local path = vim.fn.fnamemodify(arg, ":p")
     if vim.fn.isdirectory(path) == 0 then
+      if outside_workspace(path) then
+        return false
+      end
       files[#files + 1] = path
     end
   end
