@@ -221,6 +221,30 @@ function RunDebug()
   end
 end
 
+local function tabufline_buffers()
+  local order = {}
+
+  for index, buf in ipairs(vim.t.bufs or {}) do
+    order[buf] = index
+  end
+
+  require("telescope.builtin").buffers({
+    sort_mru = false,
+    sort_lastused = false,
+
+    sort_buffers = function(a, b)
+      local a_index = order[a] or math.huge
+      local b_index = order[b] or math.huge
+
+      if a_index == b_index then
+        return a < b
+      end
+
+      return a_index < b_index
+    end,
+  })
+end
+
 
 local function smart_quit()
   require("configs.smart_quit").close(false, false)
@@ -246,6 +270,7 @@ local mappings = {
   { 'n', "<D-Enter>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
   { 'n', "<leader>fg", "<cmd> lua require'telescope.builtin'.live_grep({default_text = vim.fn.expand(\"<cword>\")})<CR>", "Live grep with cword" },
   { 'n', "<leader>fc", "<cmd> lua require'telescope.builtin'.commands()<CR>", "Commands" },
+  { 'n', "<leader>fb", tabufline_buffers, "Buffers" },
   { 'n', "<Leader>cf", "<cmd> echo expand('%:p') <CR>", "Current File Path" },
   -- close buffer + hide terminal buffer
   { 'n', "<C-w>", function() require("nvchad.tabufline").close_buffer() end, "Close buffer" },
