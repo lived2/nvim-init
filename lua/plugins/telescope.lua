@@ -12,6 +12,8 @@ return {
         {
           "^tags$",
           "/tags$",
+          "%.orig$",
+          "%.rej$",
         }
       )
       opts.defaults.mappings = opts.defaults.mappings or {}
