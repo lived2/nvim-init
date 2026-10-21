@@ -5,7 +5,7 @@ require("nvchad.mappings")
 --local autocmd = vim.api.nvim_create_autocmd
 local map = vim.keymap.set
 
-map("n", "<Esc>", "<Esc><Cmd>nohlsearch<CR>", {
+map('n', "<Esc>", "<Esc><Cmd>nohlsearch<CR>", {
   desc = "Cancel and clear search highlights",
   noremap = true,
   silent = true,
@@ -301,26 +301,33 @@ local mappings = {
 
   -- Close All Buffers except the current one
   { 'n', "<leader>cb", function() require("nvchad.tabufline").closeAllBufs(false) end, "Close All Other Buffers" },
-
-  -- Next/Prev hunk
-  { 'n', "]c", function()
-    if vim.wo.diff then
-      vim.cmd.normal({ "]c", bang = true })
-    else
-      require("configs.noice_config").dismiss()
-      require("configs.git_hunk_flash").nav("next")
-    end
-  end, "Next Git hunk" },
-
-  { 'n', "[c", function()
-    if vim.wo.diff then
-      vim.cmd.normal({ "[c", bang = true })
-    else
-      require("configs.noice_config").dismiss()
-      require("configs.git_hunk_flash").nav("prev")
-    end
-  end, "Prev Git hunk" },
 }
+
+-- Next/Prev hunk
+local function next_hunk()
+  if vim.wo.diff then
+    vim.cmd.normal({ "]c", bang = true })
+  else
+    require("configs.noice_config").dismiss()
+    require("configs.git_hunk_flash").nav("next")
+    end
+end
+
+local function prev_hunk()
+  if vim.wo.diff then
+    vim.cmd.normal({ "[c", bang = true })
+  else
+    require("configs.noice_config").dismiss()
+    require("configs.git_hunk_flash").nav("prev")
+  end
+end
+
+for _, key in ipairs({"]c", "<C-Down>"}) do
+  map('n', key, next_hunk, { desc = "Next Git hunk" })
+end
+for _, key in ipairs({"[c", "<C-Up>"}) do
+  map('n', key, prev_hunk, { desc = "Prev Git hunk" })
+end
 
 vim.keymap.del("n", "<leader>e")
 vim.keymap.del("n", "<C-n>")
