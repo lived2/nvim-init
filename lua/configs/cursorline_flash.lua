@@ -72,9 +72,9 @@ local function set_cursorline_target(value, target)
 	return table.concat(items, ",")
 end
 
-local function stop(win)
+local function stop(win, expected_state)
 	local state = timers[win]
-	if not state then
+	if not state or (expected_state and state ~= expected_state) then
 		return
 	end
 	timers[win] = nil
@@ -86,14 +86,11 @@ local function stop(win)
 	end
 	local current = vim.wo[win].winhighlight
 	local target = cursorline_target(current)
-	if target and vim.startswith(target, group_prefix) then
+	local owns_flash = target and vim.startswith(target, group_prefix)
+	if owns_flash then
 		vim.wo[win].winhighlight = set_cursorline_target(current, state.original_target)
-	end
-	if vim.wo[win].cursorlineopt == "both" then
 		vim.wo[win].cursorlineopt = state.cursorlineopt
-	end
-	if not state.cursorline and vim.wo[win].cursorline then
-		vim.wo[win].cursorline = false
+		vim.wo[win].cursorline = state.cursorline
 	end
 end
 
@@ -104,7 +101,7 @@ local function eligible(win, buf)
 	return vim.bo[buf].buftype == "" or vim.bo[buf].filetype == "neo-tree"
 end
 
-local function clear_inherited_flash(win)
+local function clear_inherited_flash(win, buf)
 	if not vim.api.nvim_win_is_valid(win) then
 		return
 	end
@@ -112,9 +109,7 @@ local function clear_inherited_flash(win)
 	local target = cursorline_target(current)
 	if target and vim.startswith(target, group_prefix) then
 		vim.wo[win].winhighlight = set_cursorline_target(current, nil)
-		if vim.wo[win].cursorlineopt == "both" then
-			vim.wo[win].cursorlineopt = "number"
-		end
+		vim.wo[win].cursorlineopt = vim.bo[buf].filetype == "neo-tree" and "line" or "number"
 	end
 end
 
@@ -122,11 +117,16 @@ local function flash(win, buf)
 	if not vim.api.nvim_win_is_valid(win) or not vim.api.nvim_buf_is_valid(buf) then
 		return
 	end
+	if vim.api.nvim_win_get_buf(win) ~= buf then
+		return
+	end
 	if not eligible(win, buf) then
-		clear_inherited_flash(win)
+		stop(win)
+		clear_inherited_flash(win, buf)
 		return
 	end
 	stop(win)
+	clear_inherited_flash(win, buf)
 	if not define_highlights() then
 		return
 	end
@@ -147,19 +147,22 @@ local function flash(win, buf)
 		math.floor(duration_ms / steps),
 		math.floor(duration_ms / steps),
 		vim.schedule_wrap(function()
-			if timers[win] ~= state or not vim.api.nvim_win_is_valid(win) then
-				stop(win)
+			if timers[win] ~= state then
+				return
+			end
+			if not vim.api.nvim_win_is_valid(win) then
+				stop(win, state)
 				return
 			end
 			state.step = state.step + 1
 			if state.step > steps then
-				stop(win)
+				stop(win, state)
 				return
 			end
 			local current = vim.wo[win].winhighlight
 			local target = cursorline_target(current)
 			if not target or not vim.startswith(target, group_prefix) then
-				stop(win)
+				stop(win, state)
 				return
 			end
 			vim.wo[win].winhighlight = set_cursorline_target(current, group_prefix .. state.step)
