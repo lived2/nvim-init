@@ -23,11 +23,13 @@ local function outside_workspace(path)
   return path ~= root and path:sub(1, #root + 1) ~= root .. "/"
 end
 
+--[[
 local function has_outside_file_buffer()
   return vim.iter(vim.api.nvim_list_bufs()):any(function(buf)
     return file_buffer(buf) and outside_workspace(vim.api.nvim_buf_get_name(buf))
   end)
 end
+]]
 
 local function sync_tabufline()
   if not package.loaded["nvchad.tabufline.lazyload"] then
@@ -61,9 +63,11 @@ function M.save(automatic)
   if resession.is_loading() then
     return
   end
+  --[[
   if automatic and has_outside_file_buffer() then
     return
   end
+  ]]
   local name = session_name()
   -- Do not replace an existing session that the user has not restored yet.
   if automatic and resession.get_current() ~= name and vim.tbl_contains(resession.list(), name) then
