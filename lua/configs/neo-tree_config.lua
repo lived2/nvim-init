@@ -141,7 +141,7 @@ local function move_focus_to_nt_source(source)
   end
 end
 
-map("n", "<leader>ee", function()
+map("n", "<Leader>ee", function()
   --vim.cmd("Neotree toggle last")
   --vim.api.nvim_set_current_win(Win_code)
 
@@ -153,7 +153,7 @@ map("n", "<leader>ee", function()
   })
 end)
 
-map("n", "<leader>ef", function()
+map("n", "<Leader>ef", function()
   nt.execute({
     source = "filesystem",
     position = "left",
@@ -163,7 +163,7 @@ map("n", "<leader>ef", function()
   move_focus_to_nt_source("filesystem")
 end)
 
-map("n", "<leader>eb", function()
+map("n", "<Leader>eb", function()
   nt.execute({
     source = "buffers",
     position = "left",
@@ -172,7 +172,7 @@ map("n", "<leader>eb", function()
   move_focus_to_nt_source("buffers")
 end)
 
-map("n", "<leader>eg", function()
+map("n", "<Leader>eg", function()
   nt.execute({
     source = "git_status",
     position = "left",
@@ -181,13 +181,13 @@ map("n", "<leader>eg", function()
   move_focus_to_nt_source("git_status")
 end)
 
-map("n", "<leader>es", function()
+map("n", "<Leader>es", function()
   M.open_symbols(function()
     move_focus_to_nt_source("document_symbols")
   end)
 end)
 
-map("n", "<leader>ec", function()
+map("n", "<Leader>ec", function()
   vim.api.nvim_set_current_win(Code_win)
 end)
 

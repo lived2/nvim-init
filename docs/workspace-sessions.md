@@ -1,8 +1,8 @@
 # Workspace sessions
 
-- `<leader>ss` or `:WorkspaceSave`: save the current workspace.
-- `<leader>sl` or `:WorkspaceLoad`: restore the current workspace.
-- `<leader>sd` or `:WorkspaceDelete`: select a saved session to delete, then disable
+- `<Leader>ss` or `:WorkspaceSave`: save the current workspace.
+- `<Leader>sl` or `:WorkspaceLoad`: restore the current workspace.
+- `<Leader>sd` or `:WorkspaceDelete`: select a saved session to delete, then disable
   exit autosave for this Neovim instance. Canceling leaves autosave enabled.
 - Start Neovim to restore the current workspace automatically, including when file arguments are supplied.
 - Exit Neovim to save automatically.

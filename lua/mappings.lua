@@ -273,9 +273,9 @@ local mappings = {
   { 'n', "<C-c>", '"*y', "Copy" },
   --{ 'n', "<C-F11>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
   { 'n', "<D-Enter>", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle Fullscreen" },
-  { 'n', "<leader>fg", "<cmd> lua require'telescope.builtin'.live_grep({default_text = vim.fn.expand(\"<cword>\")})<CR>", "Live grep with cword" },
-  { 'n', "<leader>fc", "<cmd> lua require'telescope.builtin'.commands()<CR>", "Commands" },
-  { 'n', "<leader>fb", tabufline_buffers, "Buffers" },
+  { 'n', "<Leader>fg", "<cmd> lua require'telescope.builtin'.live_grep({default_text = vim.fn.expand(\"<cword>\")})<CR>", "Live grep with cword" },
+  { 'n', "<Leader>fc", "<cmd> lua require'telescope.builtin'.commands()<CR>", "Commands" },
+  { 'n', "<Leader>fb", tabufline_buffers, "Buffers" },
   { 'n', "<Leader>cf", print_cur_path, "Current File Path" },
   -- close buffer + hide terminal buffer
   { 'n', "<C-w>", function() require("nvchad.tabufline").close_buffer() end, "Close buffer" },
@@ -287,7 +287,7 @@ local mappings = {
 
   -- Term
   { toggle_modes, "<F2>", function() require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" } end, "Toggle Terminal" },
-  { toggle_modes, "<leader>h", function() require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" } end, "Toggle Terminal" },
+  { toggle_modes, "<Leader>h", function() require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" } end, "Toggle Terminal" },
 
   -- NvimTree
   --{ 'n', "<Leader>fe", "<cmd> NvimTreeToggle <CR>", "NvimTreeToggle" },
@@ -321,16 +321,16 @@ local mappings = {
   { 'n', "<Leader>dpr", function() require('dap-python').test_method() end, "DAP Python" },
 
   -- Smart Quit
-  { 'n', "<leader>q", smart_quit, "Smart Quit" },
+  { 'n', "<Leader>q", smart_quit, "Smart Quit" },
 
   -- Close All Buffers
-  { 'n', "<leader>ca", function()
+  { 'n', "<Leader>ca", function()
     require("nvchad.tabufline").closeAllBufs()
     require("configs.workspace_session").delete_current()
   end, "Close All Buffers" },
 
   -- Close All Buffers except the current one
-  { 'n', "<leader>cb", function() require("nvchad.tabufline").closeAllBufs(false) end, "Close All Other Buffers" },
+  { 'n', "<Leader>cb", function() require("nvchad.tabufline").closeAllBufs(false) end, "Close All Other Buffers" },
 }
 
 -- Next/Prev hunk
@@ -352,14 +352,14 @@ local function prev_hunk()
   end
 end
 
-for _, key in ipairs({"]c", "<leader><Down>"}) do
+for _, key in ipairs({"]c", "<Leader><Down>"}) do
   map('n', key, next_hunk, { desc = "Next Git hunk" })
 end
-for _, key in ipairs({"[c", "<leader><Up>"}) do
+for _, key in ipairs({"[c", "<Leader><Up>"}) do
   map('n', key, prev_hunk, { desc = "Prev Git hunk" })
 end
 
-vim.keymap.del("n", "<leader>e")
+vim.keymap.del("n", "<Leader>e")
 vim.keymap.del("n", "<C-n>")
 
 for _, mapping in ipairs(mappings) do
@@ -450,7 +450,7 @@ M.general = {
       end,
       "Toggle Fullscreen"
     },
-    ["<leader>fg"] = { "<cmd> lua require'telescope.builtin'.live_grep({default_text = vim.fn.expand(\"<cword>\")})<CR>", "Live grep with cword" },
+    ["<Leader>fg"] = { "<cmd> lua require'telescope.builtin'.live_grep({default_text = vim.fn.expand(\"<cword>\")})<CR>", "Live grep with cword" },
     ["<Leader>cf"] = {
       "<cmd> echo expand('%:p') <CR>",
       "Current File Path",

@@ -55,7 +55,7 @@ vim.g.rustaceanvim = {
   server = {
     on_attach = function(client, bufnr)
       -- you can also put keymaps in here
-      vim.keymap.set("n", "<leader>a",
+      vim.keymap.set("n", "<Leader>a",
         function()
           vim.cmd.RustLsp('codeAction') -- supports rust-analyzer's grouping
           -- or vim.lsp.buf.codeAction() if you don't want grouping.
