@@ -245,6 +245,11 @@ local function tabufline_buffers()
   })
 end
 
+local function print_cur_path()
+  require("configs.noice_config").dismiss()
+  local path = vim.fn.expand("%:p")
+  vim.notify(path)
+end
 
 local function smart_quit()
   require("configs.smart_quit").close(false, false)
@@ -271,7 +276,7 @@ local mappings = {
   { 'n', "<leader>fg", "<cmd> lua require'telescope.builtin'.live_grep({default_text = vim.fn.expand(\"<cword>\")})<CR>", "Live grep with cword" },
   { 'n', "<leader>fc", "<cmd> lua require'telescope.builtin'.commands()<CR>", "Commands" },
   { 'n', "<leader>fb", tabufline_buffers, "Buffers" },
-  { 'n', "<Leader>cf", "<cmd> echo expand('%:p') <CR>", "Current File Path" },
+  { 'n', "<Leader>cf", print_cur_path, "Current File Path" },
   -- close buffer + hide terminal buffer
   { 'n', "<C-w>", function() require("nvchad.tabufline").close_buffer() end, "Close buffer" },
   { 'n', "<C-x>", ':q<CR>', "Close Window" },
