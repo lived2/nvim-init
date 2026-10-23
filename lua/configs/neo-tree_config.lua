@@ -444,9 +444,7 @@ function M.open_symbols(on_open)
   end, 120000)
 end
 
-local prev_source = ""
 function M.toggle_view(next_source)
-  --local next_source = "document_symbols"
   if next_source ~= "filesystem" and
     next_source ~= "buffers" and
     next_source ~= "git_status" and
@@ -457,19 +455,9 @@ function M.toggle_view(next_source)
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     local state = manager.get_state_for_window(win)
     if state then
-      if prev_source == "" or
-        (prev_source ~= state.name and
-        prev_source ~= next_source and
-        next_source ~= state.name) then
-        prev_source = state.name
-        print('!? prev_source=', prev_source)
-      end
-      --next_source = state.name == "document_symbols" and prev_source or "document_symbols"
       if next_source == state.name then
-        next_source = prev_source
+        next_source = "filesystem"
       end
-      print("prev_source=", prev_source)
-      print("next_source=", next_source)
       break
     end
   end
