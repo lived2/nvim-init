@@ -151,7 +151,7 @@ map("n", "<Leader>ee", function()
     action = "show",
     toggle = true,
   })
-end)
+end, { desc = "Toggle neo-tree view" })
 
 map("n", "<Leader>ef", function()
   nt.execute({
@@ -161,7 +161,7 @@ map("n", "<Leader>ef", function()
     action = "focus",
   })
   move_focus_to_nt_source("filesystem")
-end)
+end, { desc = "Focus neo-tree Files" })
 
 map("n", "<Leader>eb", function()
   nt.execute({
@@ -170,7 +170,7 @@ map("n", "<Leader>eb", function()
     action = "focus",
   })
   move_focus_to_nt_source("buffers")
-end)
+end, { desc = "Focus neo-tree Buffers" })
 
 map("n", "<Leader>eg", function()
   nt.execute({
@@ -179,17 +179,17 @@ map("n", "<Leader>eg", function()
     action = "focus",
   })
   move_focus_to_nt_source("git_status")
-end)
+end, { desc = "Focus neo-tree Git" })
 
 map("n", "<Leader>es", function()
   M.open_symbols(function()
     move_focus_to_nt_source("document_symbols")
   end)
-end)
+end, { desc = "Focus neo-tree Symbols" })
 
 map("n", "<Leader>ec", function()
   vim.api.nvim_set_current_win(Code_win)
-end)
+end, { desc = "Focus code buffer" })
 
 set_hl(0, "NeoTreeNoticeFilesystem", {
   fg = "#89b4fa",
