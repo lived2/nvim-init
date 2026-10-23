@@ -42,13 +42,24 @@ local function find_current_hunk(buf, win)
 	local hunks = require("gitsigns").get_hunks(buf) or {}
 	local cursor_line = vim.api.nvim_win_get_cursor(win)[1]
 	local line_count = vim.api.nvim_buf_line_count(buf)
+	local ranges = {}
 
 	for _, hunk in ipairs(hunks) do
 		local first = math.max(1, math.min(hunk.added.start, line_count))
 		local count = hunk.added.count
 		local last = count > 0 and math.min(first + count - 1, line_count) or first
-		if cursor_line >= first and cursor_line <= last then
-			return first, last
+		local previous = ranges[#ranges]
+
+		if previous and first <= previous.last + 1 then
+			previous.last = math.max(previous.last, last)
+		else
+			ranges[#ranges + 1] = { first = first, last = last }
+		end
+	end
+
+	for _, range in ipairs(ranges) do
+		if cursor_line >= range.first and cursor_line <= range.last then
+			return range.first, range.last
 		end
 	end
 end
