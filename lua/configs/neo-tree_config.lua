@@ -196,6 +196,16 @@ set_hl(0, "NeoTreeNoticeFilesystem", {
   bold = true,
 })
 
+set_hl(0, "NeoTreeNoticeBuffers", {
+  fg = "#a6e3a1",
+  bold = true,
+})
+
+set_hl(0, "NeoTreeNoticeGit", {
+  fg = "#fab387",
+  bold = true,
+})
+
 set_hl(0, "NeoTreeNoticeSymbols", {
   fg = "#cba6f7",
   bold = true,
@@ -365,19 +375,50 @@ function M.open_symbols(on_open)
   end, 120000)
 end
 
-function M.toggle_view()
-  local next_source = "document_symbols"
+local prev_source = ""
+function M.toggle_view(next_source)
+  --local next_source = "document_symbols"
+  if next_source ~= "filesystem" and
+    next_source ~= "buffers" and
+    next_source ~= "git_status" and
+    next_source ~= "document_symbols" then
+    return
+  end
 
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     local state = manager.get_state_for_window(win)
     if state then
-      next_source = state.name == "document_symbols" and "filesystem" or "document_symbols"
+      if prev_source == "" or
+        (prev_source ~= state.name and
+        prev_source ~= next_source and
+        next_source ~= state.name) then
+        prev_source = state.name
+        print('!? prev_source=', prev_source)
+      end
+      --next_source = state.name == "document_symbols" and prev_source or "document_symbols"
+      if next_source == state.name then
+        next_source = prev_source
+      end
+      print("prev_source=", prev_source)
+      print("next_source=", next_source)
       break
     end
   end
 
-  local highlight = next_source == "filesystem" and "NeoTreeNoticeFilesystem" or "NeoTreeNoticeSymbols"
-  local label = next_source == "filesystem" and "File" or "Symbol"
+  local highlight, label
+  if next_source == "filesystem" then
+    highlight = "NeoTreeNoticeFilesystem"
+    label = "File"
+  elseif next_source == "buffers" then
+    highlight = "NeoTreeNoticeBuffers"
+    label = "Buffer"
+  elseif next_source == "git_status" then
+    highlight = "NeoTreeNoticeGit"
+    label = "Git"
+  elseif next_source == "document_symbols" then
+    highlight = "NeoTreeNoticeSymbols"
+    label = "Symbol"
+  end
 
   dismiss()
 

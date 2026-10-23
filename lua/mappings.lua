@@ -24,11 +24,13 @@ map('n', '<C-h>', '<cmd>wincmd h<CR>')
 map('n', '<C-l>', '<cmd>wincmd l<CR>')
 
 -- Fn keys
-map('n', '<F3>', '<cmd>lua require("configs.diagnostics").toggle()<CR>')
-map('i', '<F3>', '<ESC><cmd>lua require("configs.diagnostics").toggle()<CR>')
+--map('n', '<F3>', '<cmd>lua require("configs.diagnostics").toggle()<CR>')
+--map('i', '<F3>', '<ESC><cmd>lua require("configs.diagnostics").toggle()<CR>')
+map('n', '<F3>', '<cmd>lua require("configs.neo-tree_config").toggle_view("buffers")<CR>')
+map('i', '<F3>', '<ESC>lua require("configs.neo-tree_config").toggle_view("buffers")<CR>')
 
-map('n', '<F4>', '<cmd>lua require("configs.neo-tree_config").toggle_view()<CR>')
-map('i', '<F4>', '<ESC>lua require("configs.neo-tree_config").toggle_view()<CR>')
+map('n', '<F4>', '<cmd>lua require("configs.neo-tree_config").toggle_view("document_symbols")<CR>')
+map('i', '<F4>', '<ESC>lua require("configs.neo-tree_config").toggle_view("document_symbols)<CR>')
 
 map('n', '<F5>', '<cmd>lua RunDebug()<CR>')
 map('i', '<F5>', '<ESC><cmd>w!<CR><cmd>lua RunDebug()<CR>')
@@ -281,6 +283,9 @@ local mappings = {
   { 'n', "<C-w>", function() require("nvchad.tabufline").close_buffer() end, "Close buffer" },
   { 'n', "<C-x>", ':q<CR>', "Close Window" },
   { 'n', "<Leader>i", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, "Toggle Inlay Hints" },
+
+  -- Toggle LSP Diagnostics
+  { 'n', "<Leader>rd", function() require("configs.diagnostics").toggle() end, "Toggle LSP Diagnostics" },
 
   -- Crates
   { 'n', "<Leader>rcu", function() require('crates').upgrade_all_crates() end, "Update crates" },
