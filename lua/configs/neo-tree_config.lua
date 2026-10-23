@@ -216,6 +216,58 @@ set_hl(0, "NeoTreeSymbolNamespace", {
 })
 
 local symbols_loading = false
+local active_symbols_request
+local renderer = require("neo-tree.ui.renderer")
+
+if not renderer._manual_symbols_guard then
+  renderer._manual_symbols_guard = true
+  local show_nodes = renderer.show_nodes
+  renderer.show_nodes = function(source_items, state, parent_id, callback)
+    local request = state.name == "document_symbols" and state._manual_symbols_request
+    if request then
+      state._manual_symbols_request = nil
+      if request.cancelled then
+        if request.cleanup then
+          request.cleanup()
+        else
+          request.finish()
+        end
+        return
+      end
+    end
+    return show_nodes(source_items, state, parent_id, callback)
+  end
+end
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+  group = vim.api.nvim_create_augroup("NeoTreeManualSymbols", { clear = true }),
+  callback = function(event)
+    local function cancel_if_source_changed()
+      local request = active_symbols_request
+      if not request
+        or not vim.api.nvim_buf_is_valid(event.buf)
+        or vim.bo[event.buf].filetype ~= "neo-tree"
+      then
+        return
+      end
+
+      local source = vim.b[event.buf].neo_tree_source
+      local tab = vim.b[event.buf].neo_tree_tabid
+      if not source or source == "document_symbols" or tab ~= request.tab then
+        return
+      end
+
+      request.cancelled = true
+      if request.cancel then request.cancel() end
+      if request.delayed then dismiss() end
+      if not request.rendering then request.finish() end
+    end
+
+    cancel_if_source_changed()
+    -- Neo-tree sets b:neo_tree_source just after a new buffer is displayed.
+    vim.schedule(cancel_if_source_changed)
+  end,
+})
 
 function M.open_symbols(on_open)
   if symbols_loading then return end
@@ -241,12 +293,21 @@ function M.open_symbols(on_open)
   symbols_loading = true
 
   local finished = false
-  local delayed = false
+  local request = {
+    cancelled = false,
+    delayed = false,
+    tab = source_tab,
+  }
+  request.finish = function()
+    if active_symbols_request == request then active_symbols_request = nil end
+    symbols_loading = false
+  end
+  active_symbols_request = request
 
   -- Show a loading message only when the response takes time.
   vim.defer_fn(function()
-    if finished then return end
-    delayed = true
+    if finished or request.cancelled then return end
+    request.delayed = true
     vim.notify("Loading symbols…")
   end, 100)
 
@@ -267,12 +328,12 @@ function M.open_symbols(on_open)
     "textDocument/documentSymbol",
     { textDocument = { uri = vim.uri_from_bufnr(buf) } },
     vim.schedule_wrap(function(results)
-      if finished then return end
+      if finished or request.cancelled or active_symbols_request ~= request then return end
       finished = true
-      symbols_loading = false
 
       -- Allow movement between the code and tree, but not to another file.
       if not context_unchanged() then
+        request.finish()
         vim.notify("Symbols switch cancelled: the active tab, window, or file changed.", vim.log.levels.INFO)
         return
       end
@@ -288,11 +349,12 @@ function M.open_symbols(on_open)
       end
 
       if not has_symbols then
+        request.finish()
         vim.notify(request_error or "No symbols found in this file.", vim.log.levels.INFO)
         return
       end
 
-      if delayed then
+      if request.delayed then
         dismiss()
         echo({{ "Symbol", "NeoTreeNoticeSymbols" }, { " Tab" }}, true, {})
       end
@@ -300,12 +362,17 @@ function M.open_symbols(on_open)
       local completed = false
       local function cleanup()
         completed = true
-        symbols_loading = false
+        local state = manager.get_state("document_symbols", source_tab)
+        if state._manual_symbols_request == request then
+          state._manual_symbols_request = nil
+        end
+        request.finish()
         if subscription then
           manager.unsubscribe("document_symbols", subscription)
           subscription = nil
         end
       end
+      request.cleanup = cleanup
 
       local function complete(state)
         if completed or state.name ~= "document_symbols"
@@ -321,18 +388,19 @@ function M.open_symbols(on_open)
         end
 
         cleanup()
-        if context_unchanged() then on_open() end
+        if type(on_open) == "function" and context_unchanged() then on_open() end
       end
 
-      if type(on_open) == "function" then
-        symbols_loading = true
-        subscription = {
-          event = require("neo-tree.events").AFTER_RENDER,
-          id = "user_document_symbols_on_open",
-          handler = complete,
-        }
-        manager.subscribe("document_symbols", subscription)
-      end
+      subscription = {
+        event = require("neo-tree.events").AFTER_RENDER,
+        id = "user_document_symbols_on_open",
+        handler = complete,
+      }
+      manager.subscribe("document_symbols", subscription)
+
+      local symbol_state = manager.get_state("document_symbols", source_tab)
+      request.rendering = true
+      symbol_state._manual_symbols_request = request
 
       local ok, err = pcall(nt.execute, {
         source = "document_symbols",
@@ -358,18 +426,19 @@ function M.open_symbols(on_open)
       end
     end)
   )
+  request.cancel = cancel_request
 
   -- Keep the request alive while the server finishes its initial loading.
   vim.defer_fn(function()
-    if finished then return end
+    if finished or request.cancelled then return end
     vim.notify("Still waiting for document symbols; the view will open when ready.", vim.log.levels.INFO)
   end, 10000)
 
   -- Bound stalled requests without discarding normal startup responses.
   vim.defer_fn(function()
-    if finished then return end
+    if finished or request.cancelled then return end
     finished = true
-    symbols_loading = false
+    request.finish()
     if cancel_request then cancel_request() end
     vim.notify("Document symbols request timed out after 120 seconds.", vim.log.levels.WARN)
   end, 120000)
