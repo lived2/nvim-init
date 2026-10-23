@@ -66,6 +66,10 @@ if term ~= nil then
 end
 ]]
 
+function string.starts(String, Start)
+  return string.sub(String, 1, string.len(Start)) == Start
+end
+
 --local back_from_neotree = 0
 Code_win = -1
 IsMac = 0
@@ -96,6 +100,9 @@ for _, work_hostname in ipairs(work_hostnames) do
   if hostname == work_hostname then
     IsWork = 1
   end
+end
+if string.starts(hostname, "QCOM") then
+  IsWork = 1
 end
 IsWorkSource = 0
 
@@ -229,10 +236,6 @@ autocmd('BufEnter', {
   end
 })
 
-function string.starts(String, Start)
-  return string.sub(String, 1, string.len(Start)) == Start
-end
-
 local workspace_paths = {
   "/Users/lived/project",
   "/home/lived/project",
@@ -262,7 +265,8 @@ if IsWork == 1 then
     callback = function()
       --local cur_path = vim.fn.getcwd()
       local cur_path = vim.fn.expand('%:p')
-      if string.starts(cur_path, "/usr2/seonggoo/build/") and not string.starts(cur_path, "/usr2/seonggoo/build/project/") then
+      if (string.starts(cur_path, "/usr2/seonggoo/build/") and not string.starts(cur_path, "/usr2/seonggoo/build/project/"))
+        or string.starts(cur_path, "C:\\Users\\seonggoo\\Downloads\\case") then
         IsWorkSource = 1
         for _, path in ipairs(ctags_paths) do
           local start_pos, end_pos = string.find(cur_path, path, 1, true)
