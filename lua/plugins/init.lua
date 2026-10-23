@@ -266,6 +266,9 @@ return {
   {
     "petertriho/nvim-scrollbar",
     init = function()
+      vim.g.scrollbar_v2_notice = false
+    end,
+    config = function()
       local colors = require("tokyonight.colors").setup()
       require("scrollbar").setup({
         handle = {
@@ -280,8 +283,6 @@ return {
           Misc = { color = colors.purple },
         }
       })
-    end,
-    config = function()
       require("scrollbar.handlers.gitsigns").setup()
     end,
   },
