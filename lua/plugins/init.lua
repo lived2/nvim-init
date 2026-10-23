@@ -149,13 +149,13 @@ return {
     dependencies = {
       "igorlfs/nvim-dap-view",
     },
-    init = function()
-      return require "configs.dap_disasm_config"
+    opts = function()
+      return require("configs.dap_disasm_config")
     end,
   },
   {
     "LiadOz/nvim-dap-repl-highlights",
-    init = function()
+    config = function()
       require('nvim-dap-repl-highlights').setup()
     end,
   },
@@ -287,7 +287,7 @@ return {
   },
   {
     "kevinhwang91/nvim-hlslens",
-    init = function()
+    config = function()
       return require "configs.hlslens"
     end,
     --[[
