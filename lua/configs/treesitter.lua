@@ -130,6 +130,7 @@ return {
       'noice',
       'notify',
       'registry',
+      'tmux',
       --'aerial',
       --'aerial-nav',
       --'Outline',
