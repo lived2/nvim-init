@@ -18,7 +18,10 @@ return {
   {
     "williamboman/mason.nvim",
     opts = {
-      ensure_installed = {
+    },
+    --[[
+    config = function()
+      local ensure_installed = {
         "rust-analyzer",
         "clangd",
         "codelldb",
@@ -26,8 +29,18 @@ return {
         "debugpy",
         "mypy",
         "ruff",
-      },
-    },
+      }
+      local registry = require("mason-registry")
+      registry.refresh(function()
+        for _, tool in ipairs(ensure_installed) do
+          local p = registry.get_package(tool)
+          if not p:is_installed() then
+            p:install()
+          end
+        end
+      end)
+    end,
+    ]]
   },
   --[[
   {
