@@ -19,16 +19,38 @@ return {
     "williamboman/mason.nvim",
     opts = {
     },
+    -- Uncomment this at very first install only one time
     --[[
     config = function()
+      require("mason").setup({
+        ui = {
+          icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+          }
+        }
+      })
+
       local ensure_installed = {
         "rust-analyzer",
         "clangd",
+        "clang-format",
         "codelldb",
+        "c3-lsp",
+        "codespell",
+        "css-lsp",
+        "goimports",
+        "gopls",
+        "html-lsp",
+        "isort",
+        "lua-language-server",
+        "stylua",
         "pyright",
         "debugpy",
         "mypy",
         "ruff",
+        "black",
       }
       local registry = require("mason-registry")
       registry.refresh(function()
