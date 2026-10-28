@@ -8,6 +8,7 @@ require("conform").setup({
     -- You can also customize some of the format options for the filetype
     rust = { "rustfmt", lsp_format = "fallback" },
     sh = { "shfmt" },
+    zsh = { "shfmt" },
     --bash = { "shfmt" },
     -- You can use a function here to determine the formatters dynamically
     python = function(bufnr)
