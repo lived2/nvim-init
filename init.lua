@@ -54,6 +54,7 @@ opt.confirm = true
 
 if vim.g.neovide then
   opt.clipboard = "unnamedplus"
+  vim.opt.cmdheight = 0
 end
 
 -- ---
