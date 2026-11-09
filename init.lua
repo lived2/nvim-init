@@ -267,7 +267,8 @@ if IsWork == 1 then
       --local cur_path = vim.fn.getcwd()
       local cur_path = vim.fn.expand('%:p')
       if (string.starts(cur_path, "/usr2/seonggoo/build/") and not string.starts(cur_path, "/usr2/seonggoo/build/project/"))
-        or string.starts(cur_path, "C:\\Users\\seonggoo\\Downloads\\case") then
+        or string.starts(cur_path, "C:\\Users\\seonggoo\\Downloads\\case")
+        or string.starts(cur_path, "/local3/mnt/workspace/seonggoo/build/") then
         IsWorkSource = 1
         for _, path in ipairs(ctags_paths) do
           local start_pos, end_pos = string.find(cur_path, path, 1, true)
