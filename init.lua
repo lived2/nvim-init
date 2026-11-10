@@ -260,6 +260,20 @@ local ctags_paths = {
   "/boot/QcomPkg/",
 }
 
+local work_source_paths = {
+  "C:\\Users\\seonggoo\\Downloads\\case",
+  "/local3/mnt/workspace/seonggoo/build/",
+}
+
+local function is_path(cur_path, path_list)
+  for _, path in ipairs(path_list) do
+    if string.starts(cur_path, path) then
+      return true
+    end
+  end
+  return false
+end
+
 if IsWork == 1 then
   autocmd("BufReadPre", {
     pattern = "*",
@@ -267,8 +281,7 @@ if IsWork == 1 then
       --local cur_path = vim.fn.getcwd()
       local cur_path = vim.fn.expand('%:p')
       if (string.starts(cur_path, "/usr2/seonggoo/build/") and not string.starts(cur_path, "/usr2/seonggoo/build/project/"))
-        or string.starts(cur_path, "C:\\Users\\seonggoo\\Downloads\\case")
-        or string.starts(cur_path, "/local3/mnt/workspace/seonggoo/build/") then
+        or is_path(cur_path, work_source_paths) then
         IsWorkSource = 1
         for _, path in ipairs(ctags_paths) do
           local start_pos, end_pos = string.find(cur_path, path, 1, true)
